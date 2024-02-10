@@ -52,10 +52,8 @@
           ;; (setq this-command (lambda () (interactive) (setq isearch-string (key-description key)) (isearch-update)))
           (setq isearch-string (key-description key))
           (setq isearch-message (key-description key))
-          (isearch-update)
-    ))
-)
-;; (defvar dired-e-mode)
+          (isearch-update))))
+
 ;;;###autoload
 (define-minor-mode dired-e-mode
   "Alphabet fast navigation like dired-explorer."
@@ -65,14 +63,12 @@
 
   (if dired-e-mode
       (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
-    (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
-    ))
+    (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)))
 
 
 (defun dired-e--isearch-exit-advice (&rest args)
   "Execute RET for Dired when in RET in isearch mode for exit."
-  (execute-kbd-macro (kbd "RET"))
-  )
+  (execute-kbd-macro (kbd "RET")))
 
 (advice-add 'isearch-exit :after #'dired-e--isearch-exit-advice)
 
