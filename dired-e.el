@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/dired-e-mode
-;; Version: 0.0.2
+;; Version: 0.0.3
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is not part of GNU Emacs.
