@@ -6,7 +6,7 @@
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/dired-e-mode
 ;; Version: 0.0.2
-;; Package-Requires: ((emacs "28.1"))
+;; Package-Requires: ((emacs "28.2"))
 
 ;; This file is not part of GNU Emacs.
 
