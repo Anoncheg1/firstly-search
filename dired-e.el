@@ -82,7 +82,10 @@ It looks for string from the begining of it."
       ;; activate isearch by file name
       (setq isearch-string (key-description key))
       (setq isearch-message (key-description key))
-      (isearch-update))
+      ;;
+      (isearch-update)
+      (call-interactively 'isearch-repeat-forward)
+      )
      ;; ignore dired-special keys during isearch
      ((and isearch-mode
             (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
