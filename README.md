@@ -13,7 +13,11 @@ Standard Dired keys i, k, d, m should be rebinded before usage.
 
 
 # to activate
+add this lines to your configuration (/home/user/.emacs)
 ```lisp
 (require 'dired-e)
 (add-hook 'dired-mode-hook #'dired-e-mode)
 ```
+
+# demo
+![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)
