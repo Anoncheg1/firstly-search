@@ -1,9 +1,7 @@
 # dired-e-mode
-Modern navigation for file manager.
+Modern navigation for file manager, like in Thunar, Delphin, Windows and MacOS file managers.
 
 Dired minor mode for Emacs text editor to move cursor by typing name of file.
-
-Fast like with Thunar, Delphin, Windows and MacOS file managers.
 
 Standard Dired keys i, k, d, m should be rebinded before usage.
 
