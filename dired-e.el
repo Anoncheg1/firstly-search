@@ -145,8 +145,8 @@ It looks for string from the begining of it."
   "M-Z"       #'dired-do-compress
   "M-c"       #'dired-do-compress-to
   "M-U"       #'dired-unmark-all-marks
-  "M-<"       #'dired-prev-dirline
-  "M->"       #'dired-next-dirline
+  ;; "M-<"       #'dired-prev-dirline
+  ;; "M->"       #'dired-next-dirline
   "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line
 )
