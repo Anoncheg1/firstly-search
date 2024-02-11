@@ -26,9 +26,10 @@
 ;;; Commentary:
 ;; Modern way of navigation. Dired minor mode to move cursor by just
 ;; pressing alphabet or number key or any printable characters of
-;; target filename or directory in current folder.
+;; target filename or directory in current folder. Are you still using
+;; arrays?
 ;;
-;; to activate add lines to your Emacs configuration:
+;; to activate, add lines to your Emacs configuration:
 ;; (require 'dired-e)
 ;; (add-hook 'dired-mode-hook #'dired-e-mode)
 ;;
