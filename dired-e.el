@@ -6,7 +6,7 @@
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/dired-e-mode
 ;; Version: 0.0.2
-;; Package-Requires: ((emacs "28.2"))
+;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -24,9 +24,9 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Modern way of navigation. Dired minor mode to move cursor by just
+;; Modern way of navigation.  Dired minor mode to move cursor by just
 ;; pressing alphabet or number key or any printable characters of
-;; target filename or directory in current folder. Are you still using
+;; target filename or directory in current folder.  Are you still using
 ;; arrays?
 ;;
 ;; to activate, add lines to your Emacs configuration:
@@ -35,13 +35,15 @@
 ;;
 ;;; Code:
 
+(declare-function word-search-regexp "isearch")
+
 (defgroup dired-e nil
   "Name Matching."
   :group 'dired-e
   :prefix "dired-e-")
 
 (defcustom dired-e-ignore-keys-re "^[*%:.~#&=!]$"
-  "Non-nil means apply this keys as dired command not like name."
+  "Non-nil means apply this keys as Dired command not like name."
   :local t
   :type '(string)
   :group 'dired-e)
@@ -54,7 +56,9 @@
 
 (defun dired-e--isearch-regexp-function (string &optional lax)
   "Replacement for `isearch-regexp-function' to search by file name.
-It looks for string from the begining of it."
+It looks for STRING from the begining of it.
+Optional argument LAX not used."
+  (setq lax lax) ; suppers Warning: Unused lexical argument `lax'
   (cond
    ((equal string "") "")
    (t  (concat "\\_<" string)))) ;; from begining
@@ -62,7 +66,7 @@ It looks for string from the begining of it."
 (defun dired-e--pre-command-hook-advice ()
   "Advice to add alphabet fast navigation to Dired mode."
   (let* ((key (this-single-command-keys))
-         (command (lookup-key global-map key nil))
+         ;; (command (lookup-key global-map key nil))
          (key-char (key-description key)))
     (cond
      ;; activate navigation if printable character key was pressed
@@ -76,7 +80,7 @@ It looks for string from the begining of it."
       ;; from begining of word or not
       (setq isearch-regexp-function (if dired-e-from-begin
                                         #'dired-e--isearch-regexp-function
-                                      word-search-regexp)) ; not from begining
+                                      #'word-search-regexp)) ; not from begining
       ;; suppress current command
       (setq this-command (lambda () (interactive) ()))
       ;; activate isearch by file name
@@ -84,19 +88,16 @@ It looks for string from the begining of it."
       (setq isearch-message (key-description key))
       (setq isearch-success t isearch-adjusted 'toggle)
       ;; (isearch-update)
-      (call-interactively 'isearch-repeat-forward)
-      )
+      (call-interactively 'isearch-repeat-forward))
      ;; ignore dired-special keys during isearch
      ((and isearch-mode
             (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
       (setq this-command (lambda () (interactive) ()))
       (isearch-done)
-      (isearch-clean-overlays)
-      )
+      (isearch-clean-overlays))
      ;; speed up navigation
      ((and (eq last-command 'isearch-repeat-backward) (eq this-command 'isearch-repeat-forward))
-      (call-interactively 'isearch-repeat-forward))
-)))
+      (call-interactively 'isearch-repeat-forward)) )))
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
@@ -148,8 +149,7 @@ It looks for string from the begining of it."
   ;; "M-<"       #'dired-prev-dirline
   ;; "M->"       #'dired-next-dirline
   "M-^"       #'dired-up-directory
-  "M-SPC"     #'dired-next-line
-)
+  "M-SPC"     #'dired-next-line)
 
 ;;;###autoload
 (define-minor-mode dired-e-mode
@@ -160,9 +160,7 @@ It looks for string from the begining of it."
 
   (if dired-e-mode
       (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
-    (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t))
-
-)
+    (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)))
 
 ;; -- fix that exit search and do other work
 (keymap-unset isearch-mode-map "C-m")
@@ -179,11 +177,11 @@ It looks for string from the begining of it."
 (define-key isearch-mode-map "\C-n" #'isearch-repeat-forward)
 
 
-(defun my-goto-match-beginning ()
-  "Place cursor always at the end"
+(defun dired-e--my-goto-match-beginning ()
+  "Place cursor always at the end."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
-(add-hook 'isearch-update-post-hook 'my-goto-match-beginning)
+(add-hook 'isearch-update-post-hook 'dired-e--my-goto-match-beginning)
 
 
 
