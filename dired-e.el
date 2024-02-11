@@ -122,7 +122,7 @@ Optional argument LAX not used."
   "M-v"       #'dired-view-file
   "M-w"       #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
-  "M-x"       #'dired-do-flagged-delete
+  "C-M-x"       #'dired-do-flagged-delete
   "M-y"       #'dired-show-file-type
   "M-+"       #'dired-create-directory
   "M-A"       #'dired-do-find-regexp
