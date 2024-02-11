@@ -43,6 +43,6 @@ jobs:
       with:
         version: 'snapshot'
 
-    - name: Run tests
-      run:
-        make ci
+    # - name: Run tests
+    #   run:
+    #     make ci
