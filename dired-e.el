@@ -4,7 +4,7 @@
 
 ;; Author: Anoncheg1
 ;; Keywords: matching, dired, isearch
-;; URL: https://github.com/Anoncheg1/dired-e-mode
+;; URL: https://github.com/Anoncheg1/dired-e
 ;; Version: 0.0.3
 ;; Package-Requires: ((emacs "29.1"))
 
@@ -25,9 +25,8 @@
 
 ;;; Commentary:
 ;; Modern way of navigation.  Dired minor mode to move cursor by just
-;; pressing alphabet or number key or any printable characters of
-;; target filename or directory in current folder.  Are you still using
-;; arrays?
+;; pressing any printable characters of target filename or directory
+;; in current folder.  Are you still using arrays?
 ;;
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'dired-e)

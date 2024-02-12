@@ -1,4 +1,4 @@
-![example workflow](https://github.com/Anoncheg1/dired-e-mode/actions/workflows/test.yml/badge.svg?event=release)
+![example workflow](https://github.com/Anoncheg1/dired-e/actions/workflows/test.yml/badge.svg?event=release)
 
 # dired-e-mode
 Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
