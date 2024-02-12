@@ -105,8 +105,8 @@ Optional argument LAX not used."
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
   ;; --- speed up navigation
-  "C-p"       #'isearch-repeat-backward
-  "C-n"       #'isearch-repeat-forward
+  ;; "C-p"       #'isearch-repeat-backward
+  ;; "C-n"       #'isearch-repeat-forward
   ;; -- standard dired
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
@@ -163,6 +163,14 @@ Optional argument LAX not used."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
 
+(defun dired-e--isearch-change-map ()
+  "Speed up navigation by rebinding isearch keys."
+  ;; -- fix that exit search and do other work
+  (keymap-unset overriding-terminal-local-map "C-m")
+  ;; -- Speed up navigation with navigation keys
+  (define-key overriding-terminal-local-map "\C-p" #'isearch-repeat-backward)
+  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward))
+
 ;;;###autoload
 (define-minor-mode dired-e-mode
   "Alphabet fast navigation like dired-explorer."
@@ -171,22 +179,25 @@ Optional argument LAX not used."
   (if dired-e-mode
       (progn
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
-        (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t))
+        (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
+        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t)
+        ;; ;; -- fix that exit search and do other work
+        ;; (keymap-unset isearch-mode-map "C-m")
+        ;; ;; -- Speed up navigation with navigation keys
+        ;; (define-key isearch-mode-map "\C-p" #'isearch-repeat-backward)
+        ;; (define-key isearch-mode-map "\C-n" #'isearch-repeat-forward)
+        )
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
-      (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t))))
-
-;; -- fix that exit search and do other work
-(keymap-unset isearch-mode-map "C-m")
+      (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t)
+      (remove-hook 'isearch-mode-hook #'dired-e--isearch-change-map t)
+      )))
 
 ;; (defun dired-e--isearch-exit-advice (&rest args)
 ;;   "Execute RET for Dired when in RET in isearch mode for exit."
 ;;   (execute-kbd-macro (kbd "RET")))
 
 ;; (advice-add 'isearch-exit :after #'dired-e--isearch-exit-advice)
-
-;; -- Speed up navigation with navigation keys
-
 
 
 (provide 'dired-e)
