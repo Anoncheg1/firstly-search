@@ -97,8 +97,8 @@ Optional argument LAX not used."
       (isearch-done)
       (isearch-clean-overlays))
      ;; speed up navigation
-     ((and (eq last-command 'isearch-repeat-backward) (eq this-command 'isearch-repeat-forward))
-      (call-interactively 'isearch-repeat-forward)) )))
+     ((and (eq last-command #'isearch-repeat-backward) (eq this-command 'isearch-repeat-forward))
+      (call-interactively #'isearch-repeat-forward)) )))
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
@@ -168,10 +168,8 @@ Optional argument LAX not used."
   :global nil :group 'dired :version "28.2"
   (if dired-e-mode
       (progn
-
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
-        (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
-      )
+        (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t))
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t))))
