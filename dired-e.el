@@ -32,6 +32,9 @@
 ;; (require 'dired-e)
 ;; (add-hook 'dired-mode-hook #'dired-e-mode)
 ;;
+;; Note:
+;; C-n and C-p used during searching as C-s and C-r
+;;
 ;;; Code:
 
 (require 'dired)
