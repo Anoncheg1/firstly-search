@@ -104,9 +104,6 @@ Optional argument LAX not used."
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
-  ;; --- speed up navigation
-  ;; "C-p"       #'isearch-repeat-backward
-  ;; "C-n"       #'isearch-repeat-forward
   ;; -- standard dired
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
@@ -181,23 +178,11 @@ Optional argument LAX not used."
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
         (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
         (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t)
-        ;; ;; -- fix that exit search and do other work
-        ;; (keymap-unset isearch-mode-map "C-m")
-        ;; ;; -- Speed up navigation with navigation keys
-        ;; (define-key isearch-mode-map "\C-p" #'isearch-repeat-backward)
-        ;; (define-key isearch-mode-map "\C-n" #'isearch-repeat-forward)
         )
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t)
-      (remove-hook 'isearch-mode-hook #'dired-e--isearch-change-map t)
-      )))
-
-;; (defun dired-e--isearch-exit-advice (&rest args)
-;;   "Execute RET for Dired when in RET in isearch mode for exit."
-;;   (execute-kbd-macro (kbd "RET")))
-
-;; (advice-add 'isearch-exit :after #'dired-e--isearch-exit-advice)
+      (remove-hook 'isearch-mode-hook #'dired-e--isearch-change-map t))))
 
 
 (provide 'dired-e)
