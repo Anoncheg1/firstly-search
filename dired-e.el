@@ -34,6 +34,8 @@
 ;;
 ;;; Code:
 
+(require 'dired)
+
 (declare-function word-search-regexp "isearch")
 
 (defgroup dired-e nil
