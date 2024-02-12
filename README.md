@@ -1,5 +1,5 @@
 ![Eask badge](https://github.com/Anoncheg1/dired-e/actions/workflows/test.yml/badge.svg?event=release)
-![melpazoid badge](file:https://github.com/Anoncheg1/dired-e/actions/workflows/melpazoid.yml/badge.svg)
+![melpazoid badge](https://github.com/Anoncheg1/dired-e/actions/workflows/melpazoid.yml/badge.svg)
 
 # dired-e-mode
 Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
