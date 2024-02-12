@@ -177,8 +177,7 @@ Optional argument LAX not used."
       (progn
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
         (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
-        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t)
-        )
+        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t))
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t)
