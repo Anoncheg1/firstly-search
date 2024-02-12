@@ -12,13 +12,15 @@ Standard Dired keys i, k, d, m should be rebinded before usage.
 - high-level dired-isearch-filenames is used instead of low-level re-search-forward and re-search-backward.
 - more customization and accurate navigation
 
-
 # to activate
 add this lines to your configuration (/home/user/.emacs)
 ```lisp
 (require 'dired-e)
 (add-hook 'dired-mode-hook #'dired-e-mode)
 ```
+
+# TODO
+- separate navigation from isearch, allow normal isearch in buffer.
 
 # demo
 ![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)
