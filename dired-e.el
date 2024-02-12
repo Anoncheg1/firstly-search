@@ -74,24 +74,26 @@ Optional argument LAX not used."
                      dired-e-ignore-keys-re
                      key-char) 0))
            (eq (string-match-p "^[[:print:]]$" key-char) 0))
+      ;; isearch activation
+      (setq-local dired-isearch-filenames t)
+      (setq-local isearch-wrap-pause 'no)
       (dired-isearch-filenames)
-      isearch-regexp-function
       ;; from begining of word or not
       (setq isearch-regexp-function (if dired-e-from-begin
                                         #'dired-e--isearch-regexp-function
                                       #'word-search-regexp)) ; not from begining
       ;; suppress current command
-      (setq this-command (lambda () (interactive) ()))
+      (setq this-command (lambda () (interactive) ())) ;; do nothing
       ;; activate isearch by file name
       (setq isearch-string (key-description key))
       (setq isearch-message (key-description key))
       (setq isearch-success t isearch-adjusted 'toggle)
       ;; (isearch-update)
-      (call-interactively 'isearch-repeat-forward))
+      (call-interactively #'isearch-repeat-forward))
      ;; ignore dired-special keys during isearch
      ((and isearch-mode
             (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
-      (setq this-command (lambda () (interactive) ()))
+      (setq this-command (lambda () (interactive) ())) ;; do nothing
       (isearch-done)
       (isearch-clean-overlays))
      ;; speed up navigation
@@ -100,6 +102,10 @@ Optional argument LAX not used."
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
+  ;; --- speed up navigation
+  "C-p"       #'isearch-repeat-backward
+  "C-n"       #'isearch-repeat-forward
+  ;; -- standard dired
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
   "M-e"       #'dired-find-file
@@ -150,16 +156,25 @@ Optional argument LAX not used."
   "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line)
 
+(defun dired-e--my-goto-match-beginning ()
+  "Place cursor always at the end."
+  (when (and isearch-forward isearch-other-end)
+    (goto-char isearch-other-end)))
+
 ;;;###autoload
 (define-minor-mode dired-e-mode
   "Alphabet fast navigation like dired-explorer."
-  :lighter " dired-e" :global nil :group 'dired :version "28.2"
-  (setq-local dired-isearch-filenames t)
-  (setq-local isearch-wrap-pause 'no)
-
+  :lighter " dired-e"
+  :global nil :group 'dired :version "28.2"
   (if dired-e-mode
-      (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
-    (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)))
+      (progn
+
+        (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
+        (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
+      )
+    (progn
+      (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
+      (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t))))
 
 ;; -- fix that exit search and do other work
 (keymap-unset isearch-mode-map "C-m")
@@ -171,16 +186,6 @@ Optional argument LAX not used."
 ;; (advice-add 'isearch-exit :after #'dired-e--isearch-exit-advice)
 
 ;; -- Speed up navigation with navigation keys
-
-(define-key isearch-mode-map "\C-p" #'isearch-repeat-backward)
-(define-key isearch-mode-map "\C-n" #'isearch-repeat-forward)
-
-
-(defun dired-e--my-goto-match-beginning ()
-  "Place cursor always at the end."
-  (when (and isearch-forward isearch-other-end)
-    (goto-char isearch-other-end)))
-(add-hook 'isearch-update-post-hook 'dired-e--my-goto-match-beginning)
 
 
 
