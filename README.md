@@ -19,8 +19,5 @@ add this lines to your configuration (/home/user/.emacs)
 (add-hook 'dired-mode-hook #'dired-e-mode)
 ```
 
-# TODO
-- separate navigation from isearch, allow normal isearch in buffer.
-
 # demo
 ![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)

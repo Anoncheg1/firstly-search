@@ -67,42 +67,65 @@ Optional argument LAX not used."
    ((equal string "") "")
    (t  (concat "\\_<" string)))) ;; from begining
 
+
+(defvar-local dired-e--isearch-navigation-flag nil
+  "Allow to separate dired-e navigation from isearch.
+May be sub-minor-mode.")
+
+;; (defun dired-e--ignore-dired-advanced-keys-durion-navigation()
+;;   (interactive)
+;;   (isearch-done)
+;;   (isearch-clean-overlays))
+
+(defvar-local dired-e--saved-isearch-regexp-function nil)
+(defvar-local dired-e--saved-isearch-wrap-pause nil)
+
 (defun dired-e--pre-command-hook-advice ()
   "Advice to add alphabet fast navigation to Dired mode."
   (let* ((key (this-single-command-keys))
          ;; (command (lookup-key global-map key nil))
          (key-char (key-description key)))
     (cond
-     ;; activate navigation if printable character key was pressed
+     ;; - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
+           (not dired-e--isearch-navigation-flag)
            (not (eq (string-match-p
                      dired-e-ignore-keys-re
                      key-char) 0))
            (eq (string-match-p "^[[:print:]]$" key-char) 0))
       ;; isearch activation
-      (setq-local dired-isearch-filenames t)
-      (setq-local isearch-wrap-pause 'no)
+      ;; (setq-local dired-isearch-filenames t)
+      (setq dired-e--saved-isearch-wrap-pause isearch-wrap-pause)
+      (setopt isearch-wrap-pause 'no)
       (dired-isearch-filenames)
       ;; from begining of word or not
+      (setq dired-e--saved-isearch-regexp-function isearch-regexp-function)
       (setq isearch-regexp-function (if dired-e-from-begin
                                         #'dired-e--isearch-regexp-function
                                       #'word-search-regexp)) ; not from begining
-      ;; suppress current command
-      (setq this-command (lambda () (interactive) ())) ;; do nothing
       ;; activate isearch by file name
       (setq isearch-string (key-description key))
       (setq isearch-message (key-description key))
       (setq isearch-success t isearch-adjusted 'toggle)
-      ;; (isearch-update)
-      (call-interactively #'isearch-repeat-forward))
-     ;; ignore dired-special keys during isearch
-     ((and isearch-mode
-            (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
-      (setq this-command (lambda () (interactive) ())) ;; do nothing
-      (isearch-done)
-      (isearch-clean-overlays))
-     ;; speed up navigation
-     ((and (eq last-command #'isearch-repeat-backward) (eq this-command 'isearch-repeat-forward))
+      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
+      ;; replace current command
+      (setq this-command #'isearch-repeat-forward) ; do nothing
+
+      )
+     ;; ;; - disable navigation and ignore dired-special keys during isearch
+     ;; ((and dired-e--isearch-navigation-flag ; isearch-mode
+     ;;        (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
+
+     ;;  (setq this-command (lambda () (interactive) ())) ;; do nothing
+     ;;  ;; (setq this-command #'dired-e--ignore-dired-advanced-keys-durion-navigation) ; do nothing
+     ;;  (setq dired-e--isearch-navigation-flag nil)
+     ;;  (isearch-done)
+     ;;  (isearch-clean-overlays)
+     ;;  )
+     ;; - speed up navigation
+     ((and dired-e--isearch-navigation-flag
+           (eq last-command #'isearch-repeat-backward)
+           (eq this-command 'isearch-repeat-forward))
       (call-interactively #'isearch-repeat-forward)) )))
 
 ;; rebind dired-mode-map - totally optional and may be nil
@@ -169,7 +192,18 @@ Optional argument LAX not used."
   (keymap-unset overriding-terminal-local-map "C-m")
   ;; -- Speed up navigation with navigation keys
   (define-key overriding-terminal-local-map "\C-p" #'isearch-repeat-backward)
-  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward))
+  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward)
+  )
+
+(defun dired-e--isearch-mode-end-hook ()
+  "Disable navigation."
+  (when dired-e--isearch-navigation-flag
+    (setq dired-e--isearch-navigation-flag nil)
+    ;; restore isearch options
+    (setopt isearch-wrap-pause dired-e--saved-isearch-wrap-pause)
+    (setq isearch-regexp-function dired-e--saved-isearch-regexp-function)
+    ;; attempt to clear our keymap modifications of isearch
+    (setq overriding-terminal-local-map nil)))
 
 ;;;###autoload
 (define-minor-mode dired-e-mode
@@ -180,7 +214,8 @@ Optional argument LAX not used."
       (progn
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
         (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
-        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t))
+        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t)
+        (add-hook 'isearch-mode-end-hook #'dired-e--isearch-mode-end-hook nil t))
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t)
