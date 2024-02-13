@@ -69,13 +69,9 @@ Optional argument LAX not used."
 
 
 (defvar-local dired-e--isearch-navigation-flag nil
-  "Allow to separate dired-e navigation from isearch.
+  "Non-nil means dired-e navigation activated.
+Allow to separate dired-e navigation from isearch.
 May be sub-minor-mode.")
-
-;; (defun dired-e--ignore-dired-advanced-keys-durion-navigation()
-;;   (interactive)
-;;   (isearch-done)
-;;   (isearch-clean-overlays))
 
 (defvar-local dired-e--saved-isearch-regexp-function nil)
 (defvar-local dired-e--saved-isearch-wrap-pause nil)
@@ -110,18 +106,7 @@ May be sub-minor-mode.")
       (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
       ;; replace current command
       (setq this-command #'isearch-repeat-forward) ; do nothing
-
       )
-     ;; ;; - disable navigation and ignore dired-special keys during isearch
-     ;; ((and dired-e--isearch-navigation-flag ; isearch-mode
-     ;;        (eq (string-match-p dired-e-ignore-keys-re key-char) 0))
-
-     ;;  (setq this-command (lambda () (interactive) ())) ;; do nothing
-     ;;  ;; (setq this-command #'dired-e--ignore-dired-advanced-keys-durion-navigation) ; do nothing
-     ;;  (setq dired-e--isearch-navigation-flag nil)
-     ;;  (isearch-done)
-     ;;  (isearch-clean-overlays)
-     ;;  )
      ;; - speed up navigation
      ((and dired-e--isearch-navigation-flag
            (eq last-command #'isearch-repeat-backward)
@@ -192,8 +177,7 @@ May be sub-minor-mode.")
   (keymap-unset overriding-terminal-local-map "C-m")
   ;; -- Speed up navigation with navigation keys
   (define-key overriding-terminal-local-map "\C-p" #'isearch-repeat-backward)
-  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward)
-  )
+  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward))
 
 (defun dired-e--isearch-mode-end-hook ()
   "Disable navigation."
