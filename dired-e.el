@@ -156,7 +156,7 @@ May be sub-minor-mode.")
   "M-s"       #'dired-sort-toggle-or-edit
   "M-t"       #'dired-toggle-marks
   "M-u"       #'dired-unmark
-  "M-v"       #'dired-view-file
+  "C-M-v"       #'dired-view-file
   "M-w"       #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
   "C-M-x"       #'dired-do-flagged-delete
