@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/dired-e
-;; Version: 0.0.5
+;; Version: 0.0.6
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is not part of GNU Emacs.
@@ -213,7 +213,7 @@ May be sub-minor-mode.")
 (define-minor-mode dired-e-mode
   "Alphabet fast navigation like dired-explorer."
   :lighter " dired-e"
-  :global nil :group 'dired :version "28.2"
+  :global nil :group 'dired
   (if dired-e-mode
       (progn
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
