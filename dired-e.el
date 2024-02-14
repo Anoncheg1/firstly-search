@@ -76,6 +76,25 @@ May be sub-minor-mode.")
 (defvar-local dired-e--saved-isearch-regexp-function nil)
 (defvar-local dired-e--saved-isearch-wrap-pause nil)
 
+(defvar dired-e--saved-isearch-mode-map nil)
+
+;; create copy
+(defvar-keymap dired-e-nav-map
+      :parent isearch-mode-map
+      "C-p" #'isearch-repeat-backward
+      "C-n" #'isearch-repeat-forward
+      ;; "C-m" #'dired-find-file
+      )
+
+(defun dired-e--isearch-change-map ()
+  "Speed up navigation by rebinding active isearch keys."
+  (when dired-e--isearch-navigation-flag
+    ;; - fix that exit search and do other work
+    (keymap-unset dired-e-nav-map "C-m") ;; this do not modify original in fact
+    ;; -- copy isearch map to create our replacement
+    (setq dired-e--saved-isearch-mode-map isearch-mode-map)
+    (setq isearch-mode-map dired-e-nav-map)))
+
 (defun dired-e--pre-command-hook-advice ()
   "Advice to add alphabet fast navigation to Dired mode."
   (let* ((key (this-single-command-keys))
@@ -90,6 +109,9 @@ May be sub-minor-mode.")
                      key-char) 0))
            (eq (string-match-p "^[[:print:]]$" key-char) 0))
       ;; isearch activation
+      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
+      ;; (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map)
+      (dired-e--isearch-change-map)
       ;; (setq-local dired-isearch-filenames t)
       (setq dired-e--saved-isearch-wrap-pause isearch-wrap-pause)
       (setopt isearch-wrap-pause 'no)
@@ -103,7 +125,7 @@ May be sub-minor-mode.")
       (setq isearch-string (key-description key))
       (setq isearch-message (key-description key))
       (setq isearch-success t isearch-adjusted 'toggle)
-      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
+
       ;; replace current command
       (setq this-command #'isearch-repeat-forward) ; do nothing
       )
@@ -164,30 +186,28 @@ May be sub-minor-mode.")
   ;; "M-<"       #'dired-prev-dirline
   ;; "M->"       #'dired-next-dirline
   "M-^"       #'dired-up-directory
-  "M-SPC"     #'dired-next-line)
+  "M-SPC"     #'dired-next-line
+  "C-m" #'dired-find-file)
 
 (defun dired-e--my-goto-match-beginning ()
   "Place cursor always at the end."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
 
-(defun dired-e--isearch-change-map ()
-  "Speed up navigation by rebinding isearch keys."
-  ;; -- fix that exit search and do other work
-  (keymap-unset overriding-terminal-local-map "C-m")
-  ;; -- Speed up navigation with navigation keys
-  (define-key overriding-terminal-local-map "\C-p" #'isearch-repeat-backward)
-  (define-key overriding-terminal-local-map "\C-n" #'isearch-repeat-forward))
+
+
+
 
 (defun dired-e--isearch-mode-end-hook ()
   "Disable navigation."
   (when dired-e--isearch-navigation-flag
+    (print "restore")
     (setq dired-e--isearch-navigation-flag nil)
     ;; restore isearch options
     (setopt isearch-wrap-pause dired-e--saved-isearch-wrap-pause)
     (setq isearch-regexp-function dired-e--saved-isearch-regexp-function)
     ;; attempt to clear our keymap modifications of isearch
-    (setq overriding-terminal-local-map nil)))
+    (setq isearch-mode-map dired-e--saved-isearch-mode-map)))
 
 ;;;###autoload
 (define-minor-mode dired-e-mode
@@ -198,12 +218,10 @@ May be sub-minor-mode.")
       (progn
         (add-hook 'pre-command-hook #'dired-e--pre-command-hook-advice nil t)
         (add-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning nil t)
-        (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map nil t)
         (add-hook 'isearch-mode-end-hook #'dired-e--isearch-mode-end-hook nil t))
     (progn
       (remove-hook 'pre-command-hook #'dired-e--pre-command-hook-advice t)
-      (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t)
-      (remove-hook 'isearch-mode-hook #'dired-e--isearch-change-map t))))
+      (remove-hook 'isearch-update-post-hook #'dired-e--my-goto-match-beginning t))))
 
 
 (provide 'dired-e)
