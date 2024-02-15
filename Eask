@@ -1,5 +1,5 @@
 (package "pinyin-isearch"
-         "0.0.6"
+         "0.0.7"
          "Dired minor mode for fast navigation")
 
 (website-url "https://github.com/Anoncheg1/dired-e")
