@@ -134,7 +134,7 @@ May be sub-minor-mode.")
   "M-L"       #'dired-do-load
   "M-M"       #'dired-do-chmod
   "M-N"       #'dired-do-man
-  "M-O"       #'dired-do-chown
+  "C-M-O"       #'dired-do-chown ;; something special here
   "M-P"       #'dired-do-print
   "M-Q"       #'dired-do-find-regexp-and-replace
   "M-R"       #'dired-do-rename
