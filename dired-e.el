@@ -27,6 +27,7 @@
 ;; Modern way of navigation.  Dired minor mode to move cursor by just
 ;; pressing any printable characters of target filename or directory
 ;; in current folder.  Are you still using arrays?
+;; Old dired-explorer.el package do the same.
 ;;
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'dired-e)
@@ -78,7 +79,7 @@ May be sub-minor-mode.")
 
 (defvar dired-e--saved-isearch-mode-map nil)
 
-;; create copy
+;; create copy of isearch-mode-map. Activates after typing.
 (defvar-keymap dired-e-nav-map
       :parent isearch-mode-map
       "C-p" #'isearch-repeat-backward
@@ -88,52 +89,13 @@ May be sub-minor-mode.")
 
 (defun dired-e--isearch-change-map ()
   "Speed up navigation by rebinding active isearch keys."
-  (when dired-e--isearch-navigation-flag
+  ;; (when dired-e--isearch-navigation-flag
     ;; - fix that exit search and do other work
     (keymap-unset dired-e-nav-map "C-m") ;; this do not modify original in fact
     ;; -- copy isearch map to create our replacement
     (setq dired-e--saved-isearch-mode-map isearch-mode-map)
-    (setq isearch-mode-map dired-e-nav-map)))
+    (setq isearch-mode-map dired-e-nav-map))
 
-(defun dired-e--pre-command-hook-advice ()
-  "Advice to add alphabet fast navigation to Dired mode."
-  (let* ((key (this-single-command-keys))
-         ;; (command (lookup-key global-map key nil))
-         (key-char (key-description key)))
-    (cond
-     ;; - activate navigation if printable character key was pressed
-     ((and (not isearch-mode)
-           (not dired-e--isearch-navigation-flag)
-           (not (eq (string-match-p
-                     dired-e-ignore-keys-re
-                     key-char) 0))
-           (eq (string-match-p "^[[:print:]]$" key-char) 0))
-      ;; isearch activation
-      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
-      ;; (add-hook 'isearch-mode-hook #'dired-e--isearch-change-map)
-      (dired-e--isearch-change-map)
-      ;; (setq-local dired-isearch-filenames t)
-      (setq dired-e--saved-isearch-wrap-pause isearch-wrap-pause)
-      (setopt isearch-wrap-pause 'no)
-      (dired-isearch-filenames)
-      ;; from begining of word or not
-      (setq dired-e--saved-isearch-regexp-function isearch-regexp-function)
-      (setq isearch-regexp-function (if dired-e-from-begin
-                                        #'dired-e--isearch-regexp-function
-                                      #'word-search-regexp)) ; not from begining
-      ;; activate isearch by file name
-      (setq isearch-string (key-description key))
-      (setq isearch-message (key-description key))
-      (setq isearch-success t isearch-adjusted 'toggle)
-
-      ;; replace current command
-      (setq this-command #'isearch-repeat-forward) ; do nothing
-      )
-     ;; - speed up navigation
-     ((and dired-e--isearch-navigation-flag
-           (eq last-command #'isearch-repeat-backward)
-           (eq this-command 'isearch-repeat-forward))
-      (call-interactively #'isearch-repeat-forward)) )))
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-e-mode-map
@@ -189,13 +151,54 @@ May be sub-minor-mode.")
   "M-SPC"     #'dired-next-line
   "C-m" #'dired-find-file)
 
+
+(defun dired-e--pre-command-hook-advice ()
+  "Advice to add alphabet fast navigation to Dired mode."
+  (let* ((key (this-single-command-keys))
+         ;; (command (lookup-key global-map key nil))
+         (key-char (key-description key)))
+    (cond
+     ;; - activate navigation if printable character key was pressed
+     ((and (not isearch-mode)
+           (not dired-e--isearch-navigation-flag)
+           (not (eq (string-match-p
+                     dired-e-ignore-keys-re
+                     key-char) 0)) ; ignore some characters
+           (eq (string-match-p "^[[:print:]]$" key-char) 0)
+           ;; no command exist in dired-e-mode-map - additional ignore some characters
+           (not (commandp (lookup-key dired-e-mode-map key nil)))
+           )
+      ;; isearch activation
+      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
+      (dired-e--isearch-change-map)
+      ;; (setq-local dired-isearch-filenames t)
+      (setq dired-e--saved-isearch-wrap-pause isearch-wrap-pause)
+      (setopt isearch-wrap-pause 'no)
+      (dired-isearch-filenames)
+      ;; from begining of word or not
+      (setq dired-e--saved-isearch-regexp-function isearch-regexp-function)
+      (setq isearch-regexp-function (if dired-e-from-begin
+                                        #'dired-e--isearch-regexp-function
+                                      #'word-search-regexp)) ; not from begining
+      ;; activate isearch by file name
+      (setq isearch-string (key-description key))
+      (setq isearch-message (key-description key))
+      (setq isearch-success t isearch-adjusted 'toggle)
+
+      ;; replace current command
+      (setq this-command #'isearch-repeat-forward) ; do nothing
+      )
+     ;; - speed up navigation
+     ((and dired-e--isearch-navigation-flag
+           (eq last-command #'isearch-repeat-backward)
+           (eq this-command 'isearch-repeat-forward))
+      (call-interactively #'isearch-repeat-forward)) )))
+
+
 (defun dired-e--my-goto-match-beginning ()
   "Place cursor always at the end."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
-
-
-
 
 
 (defun dired-e--isearch-mode-end-hook ()
@@ -211,7 +214,8 @@ May be sub-minor-mode.")
 
 ;;;###autoload
 (define-minor-mode dired-e-mode
-  "Alphabet fast navigation like dired-explorer."
+  "Instant search in file names.
+Typing any printable character activate incremental search."
   :lighter " dired-e"
   :global nil :group 'dired
   (if dired-e-mode
