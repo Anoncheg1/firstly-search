@@ -166,8 +166,7 @@ May be sub-minor-mode.")
                      key-char) 0)) ; ignore some characters
            (eq (string-match-p "^[[:print:]]$" key-char) 0)
            ;; no command exist in dired-e-mode-map - additional ignore some characters
-           (not (commandp (lookup-key dired-e-mode-map key nil)))
-           )
+           (not (commandp (lookup-key dired-e-mode-map key nil))))
       ;; isearch activation
       (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
       (dired-e--isearch-change-map)
