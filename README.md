@@ -6,9 +6,9 @@ Tested with Emacs 29.1
 # dired-e
 Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
-Typing any printable character activate incremental search.
+Typing any printable character activate incremental search in file names.
 
-This is Dired minor mode for Emacs text editor for instant search and cursor movement in file names.
+This is Dired minor mode for Emacs text editor. No external dependencies required.
 
 Standard Dired keys i, k, d, m should be rebinded before usage.
 
