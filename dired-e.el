@@ -36,6 +36,19 @@
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
 ;;
+;; How it works:
+;;
+;; `dired-mode' add `dired-isearch-filenames-setup' to
+;; `isearch-mode-hook', that activate `dired-isearch-filenames-mode'
+;; which add advice to isearch to search in filenames when isearch
+;; started with `dired-isearch-filenames' variable. We replace
+;; `isearch-regexp-function' that search string in filename and just
+;; call isearch with `dired-isearch-filenames'.
+;; `isearch-search-fun-function' replaced with
+;; `dired-isearch-search-filenames' that wrap ? with
+;; `isearch-search-fun-in-text-property' properties `dired-filename'
+;; and `dired-symlink-filename'.
+;;
 ;;; Code:
 
 (require 'dired)
@@ -168,12 +181,15 @@ May be sub-minor-mode.")
            ;; no command exist in dired-e-mode-map - additional ignore some characters
            (not (commandp (lookup-key dired-e-mode-map key nil))))
       ;; isearch activation
-      (setq dired-e--isearch-navigation-flag t) ; separate navigation from isearch flag
+      (setq dired-e--isearch-navigation-flag t) ; separate navigation and isearch - flag
       (dired-e--isearch-change-map)
-      ;; (setq-local dired-isearch-filenames t)
+
       (setq dired-e--saved-isearch-wrap-pause isearch-wrap-pause)
       (setopt isearch-wrap-pause 'no)
-      (dired-isearch-filenames)
+      ;; dired variant of activation of isearch
+      (setq-local dired-isearch-filenames t)
+      (isearch-forward nil t)
+      ;; (dired-isearch-filenames)
       ;; from begining of word or not
       (setq dired-e--saved-isearch-regexp-function isearch-regexp-function)
       (setq isearch-regexp-function (if dired-e-from-begin
@@ -195,7 +211,8 @@ May be sub-minor-mode.")
 
 
 (defun dired-e--my-goto-match-beginning ()
-  "Place cursor always at the end."
+  "Place cursor always at the end of search result.
+Used for speed up navingation."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
 
