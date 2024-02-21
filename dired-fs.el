@@ -54,7 +54,10 @@
 ;;
 ;;; Code:
 
+(require 'dired-aux)
 (require 'firstly-search)
+
+
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap dired-fs-mode-map

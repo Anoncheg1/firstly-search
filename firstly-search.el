@@ -261,24 +261,6 @@ Used for speed up navingation."
   "C-m" #'dired-find-file)
 
 
-;;;###autoload
-(define-minor-mode dired-fs-mode
-  "Instant search in file names.
-Typing any printable character activate incremental search."
-  :lighter " dired-fs"
-  :global nil :group 'firstly-search
-  (if dired-fs-mode
-      (progn
-        (setq firstly-search-ignore-mode-map dired-fs-mode-map) ; ignore keys
-        (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
-        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
-        (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
-        )
-    (progn
-      (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
-
-
 (defun firstly-search--check-same (str1 str2 str3)
   "Compare two string values both equal to 3 or not equal."
   (if (and (equal str1 str3) (equal str2 str3))

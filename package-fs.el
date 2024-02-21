@@ -90,7 +90,7 @@ Typing any printable character activate incremental search."
     (progn
       ;; (remove-hook 'isearch-mode-end-hook #'package-fs--isearch-mode-hook t)
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
 
 
 (provide 'package-fs)
