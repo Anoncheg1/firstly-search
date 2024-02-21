@@ -1,11 +1,11 @@
-(package "pinyin-isearch"
+(package "firstly-search"
          "0.0.7"
-         "Dired minor mode for fast navigation")
+         "")
 
-(website-url "https://github.com/Anoncheg1/dired-e")
-(keywords "matching" "dired" "isearch")
+(website-url "https://github.com/Anoncheg1/firstly-search")
+(keywords "matching" "isearch" "navigation")
 
-(package-file "dired-e.el")
+(package-file "firstly-search.el")
 
 (source "gnu")
 (source "melpa")

@@ -3,7 +3,7 @@
 
 Tested with Emacs 29.1
 
-# dired-e
+# firstly-search
 Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
 Typing any printable character activate incremental search in file names.
@@ -20,8 +20,8 @@ Standard Dired keys i, k, d, m should be rebinded before usage.
 # Activation
 Add this lines to your configuration (/home/user/.emacs):
 ```lisp
-(require 'dired-e)
-(add-hook 'dired-mode-hook #'dired-e-mode)
+(require 'dired-fs)
+(add-hook 'dired-mode-hook #'dired-fs-mode)
 ```
 
 # demo
