@@ -27,21 +27,21 @@
 ;; pressing any printable characters of target filename or directory
 ;; in current folder.  Are you still using arrays?
 ;; Old dired-explorer.el package do the same.
-;;
+
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'firstly-search-dired)
 ;; (add-hook 'dired-mode-hook #'firstly-search-dired-mode)
-;;
+
 ;; C-m or RET may be used to fast choose item.
-;;
+
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
-;;
+
 ;; Many functions use text properties, to find properties use:
 ;;   M-: (print (text-properties-at (point)))
-;;
+
 ;; How it works:
-;;
+
 ;; `dired-mode' add `dired-isearch-filenames-setup' to
 ;; `isearch-mode-hook', that activate `dired-isearch-filenames-mode'
 ;; which add advice to isearch to search in filenames when isearch
@@ -52,13 +52,11 @@
 ;; `dired-isearch-search-filenames' that wrap ? with
 ;; `isearch-search-fun-in-text-property' that search in text wthat
 ;; have properties `dired-filename' and `dired-symlink-filename'.
-;;
+
 ;;; Code:
 
 (require 'dired-aux)
 (require 'firstly-search)
-
-
 
 ;; rebind dired-mode-map - totally optional and may be nil
 (defvar-keymap firstly-search-dired-mode-map

@@ -15,8 +15,9 @@ Pay attention, standard keys: **i**, **k**, **d**, m is rebinded to **M-** and *
 
 # Features
 - Support for two modes: Dired, Package Menu.
+- **C-n** and **C-p** is used during searching as **C-s** isearch-forward and **C-r** isearch-backward commands.
 - any printable character activate isearch-navigation. Modifiers used for commands.
-- C-m or RET quit search and allow quickly select item.
+- **C-m** or **RET** quit search and allow quickly select item.
 
 
 # Activation

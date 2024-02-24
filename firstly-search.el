@@ -24,23 +24,29 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Modern way of navigation.  Dired minor mode to move cursor by just
-;; pressing any printable characters of target filename or directory
-;; in current folder.  Are you still using arrays?
+
+;; Any key activate search. This is modern way of navigation.
+;; There is minor modes for major modes: Dired, Package Menu.
+;; Cursor is moved by just pressing any printable characters
+;; of target filename or directory in current folder.  Do you still
+;; use arrays?
+
 ;; Old dired-explorer.el package do the same.
-;;
+
 ;; to activate, add lines to your Emacs configuration:
-;; (require 'firstly-search)
-;; (add-hook 'dired-mode-hook #'firstly-search-mode)
-;;
+;; (require 'firstly-search-dired)
+;; (require 'firstly-search-package)
+;; (add-hook 'dired-mode-hook #'firstly-search-dired-mode)
+;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
+
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
-;;
+
 ;; Many functions use text properties, to find properties use:
 ;;   M-: (print (text-properties-at (point)))
-;;
+
 ;; How it works:
-;;
+
 ;; `dired-mode' add `dired-isearch-filenames-setup' to
 ;; `isearch-mode-hook', that activate `dired-isearch-filenames-mode'
 ;; which add advice to isearch to search in filenames when isearch
@@ -51,7 +57,7 @@
 ;; `dired-isearch-search-filenames' that wrap ? with
 ;; `isearch-search-fun-in-text-property' that search in text wthat
 ;; have properties `dired-filename' and `dired-symlink-filename'.
-;;
+
 ;;; Code:
 
 (declare-function word-search-regexp "isearch")
