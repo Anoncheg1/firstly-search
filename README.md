@@ -5,13 +5,15 @@ Tested with Emacs 29.1
 
 # firstly-search
 
-Typing any printable character activate incremental search in file names.
+Typing any printable character move cursor with incremental search. Now for two modes:
 
-Dired File manager - Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
+- For Dired File manager - Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
-This is Dired minor mode for Emacs text editor. No external dependencies required.
+- For Package Menu - fast search in package names.
 
-Pay attention, standard keys: **i**, **k**, **d**, m is rebinded to **M-** and **C-M-** prefix, by default. They may be rebinded manually.
+This is minor mode for Emacs text editor. No external dependencies required.
+
+Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. They may be rebinded manually.
 
 # Features
 - Support for two modes: Dired, Package Menu.
