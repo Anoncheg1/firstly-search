@@ -85,7 +85,7 @@ Argument ORIG-FUN isearch internal function."
   "M-r"	#'revert-buffer
   "M-u"	#'package-menu-mark-unmark
   "M-w"	#'package-browse-url
-  "M-x"	#'package-menu-execute)
+  "C-M-x"	#'package-menu-execute)
 
 ;;;###autoload
 (define-minor-mode firstly-search-package-mode
