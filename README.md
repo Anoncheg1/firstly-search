@@ -4,25 +4,36 @@
 Tested with Emacs 29.1
 
 # firstly-search
-Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
 Typing any printable character activate incremental search in file names.
 
+Dired File manager - Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
+
 This is Dired minor mode for Emacs text editor. No external dependencies required.
 
-Standard Dired keys i, k, d, m should be rebinded before usage.
+Pay attention, standard keys: **i**, **k**, **d**, m is rebinded to **M-** and **C-M-** prefix, by default. They may be rebinded manually.
 
-# Features, difference with dired-explorer.el package
+# Features
+- Support for two modes: Dired, Package Menu.
 - any printable character activate isearch-navigation. Modifiers used for commands.
-- high-level dired-isearch-filenames is used instead of low-level re-search-forward and re-search-backward.
-- more customization and accurate navigation
+- C-m or RET quit search and allow quickly select item.
+
 
 # Activation
-Add this lines to your configuration (/home/user/.emacs):
+Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
+
 ```lisp
-(require 'dired-fs)
-(add-hook 'dired-mode-hook #'dired-fs-mode)
+;; Dired
+(require 'firstly-search-dired)
+(add-hook 'dired-mode-hook #'firstly-search-dired-mode)
+;; Package menu
+(require 'firstly-search-package)
+(add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
 ```
 
 # demo
 ![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)
+
+# Notes
+
+dired-explorer.el package have same functionality for Dired mode.
