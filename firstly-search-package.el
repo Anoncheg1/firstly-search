@@ -1,4 +1,4 @@
-;;; package-fs.el --- package-menu-mode minor mode for fast navigation  -*- lexical-binding: t -*-
+;;; firstly-search-package.el --- Fast navigation for Package Menu mode -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 Anoncheg1
 
@@ -30,28 +30,45 @@
 ;; Old dired-explorer.el package do the same.
 ;;
 ;; to activate, add lines to your Emacs configuration:
-;; (require 'package-fs)
-;; (add-hook 'package-menu-mode-hook #'package-fs-mode)
+;; (require 'firstly-search-package)
+;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
 
 (require 'firstly-search)
 
-(defgroup package-fs nil
-  "For major mode `package-menu-mode'."
-  :group 'package-fs
-  :prefix "package-fs-")
+;;; Code:
 
-(defcustom package-fs-columns '((tabulated-list-column-name . "Package" ))
+(defgroup firstly-search-package nil
+  "For major mode `package-menu-mode'."
+  :group 'firstly-search-package
+  :prefix "firstly-search-package-")
+
+(defcustom firstly-search-package-columns '((tabulated-list-column-name . "Package" ))
   "Non-nil means search in these columns."
   :local t
-  :type '(string)
-  :group 'package-fs)
+  :type 'sexp
+  :group 'firstly-search-package)
 
-(defun package-fs--isearch-search-fun-function (orig-fun)
-  "`isearch-mode-hook'."
+(defcustom firstly-search-package-isearch-prefix " Package"
+  "Regex for word search in package names."
+  :local t
+  :type 'string
+  :group 'firstly-search-package)
+
+
+(defcustom firstly-search-package-regex "\\(\\_<\\|-\\)"
+  "Regex for word search in package names."
+  :local t
+  :type 'string
+  :group 'firstly-search-package)
+
+(defun firstly-search-package--isearch-search-fun-function (orig-fun)
+  "Replacement for `isearch-search-fun-function'.
+This function limit search to desired columns.
+Argument ORIG-FUN isearch internal function."
   (firstly-search-fun-match-text-property
-   (funcall orig-fun) package-fs-columns))
+   (funcall orig-fun) firstly-search-package-columns))
 
-(defvar-keymap package-fs-mode-map
+(defvar-keymap firstly-search-package-mode-map
   "-"		#'negative-argument
   ;; "0 .. 9"	digit-argument
   ;; ?		package-menu-describe-package
@@ -69,29 +86,28 @@
   "M-r"	#'revert-buffer
   "M-u"	#'package-menu-mark-unmark
   "M-w"	#'package-browse-url
-  "M-x"	#'package-menu-execute
-)
+  "M-x"	#'package-menu-execute)
 
 ;;;###autoload
-(define-minor-mode package-fs-mode
+(define-minor-mode firstly-search-package-mode
   "Instant search in package names.
 Typing any printable character activate incremental search."
-  :lighter " p-fs"
-  :global nil :group 'package-fs
-  (if package-fs-mode
+  :lighter " Fsearch"
+  :global nil :group 'firstly-search-package
+  (if firstly-search-package-mode
       (progn
-        (setq firstly-search-ignore-mode-map package-fs-mode-map) ; ignore keys
-        (setq firstly-search-isearch-prefix "Package ")
+        (setq firstly-search-ignore-mode-map firstly-search-package-mode-map) ; ignore keys
+        (setq firstly-search-isearch-prefix firstly-search-package-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-regex "\\(\\_<\\|-\\)")
-        (setq firstly-search--isearch-search-fun-function #'package-fs--isearch-search-fun-function) ; dired-isearch-search-filenames
+
+        (setq firstly-search--isearch-search-fun-function #'firstly-search-package--isearch-search-fun-function) ; dired-isearch-search-filenames
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn
-      ;; (remove-hook 'isearch-mode-end-hook #'package-fs--isearch-mode-hook t)
+      ;; (remove-hook 'isearch-mode-end-hook #'firstly-search-package--isearch-mode-hook t)
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
 
 
-(provide 'package-fs)
-;;; package-fs.el ends here
+(provide 'firstly-search-package)
+;;; firstly-search-package.el ends here

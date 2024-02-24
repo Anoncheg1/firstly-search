@@ -153,6 +153,7 @@ May be sub-minor-mode.")
   (let* ((key (this-single-command-keys))
          ;; (command (lookup-key global-map key nil))
          (key-char (key-description key)))
+    ;; (print (list "key-char" key-char))
     (cond
      ;; - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
@@ -192,11 +193,19 @@ May be sub-minor-mode.")
       (setq this-command #'isearch-repeat-forward) ; do nothing
       (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
       )
+     ;; - clearn isearch for C-m
+     ((and firstly-search--isearch-navigation-flag
+           (equal "RET" key-char)) ; C-m also
+      (setq isearch-string "")
+      (setq isearch-message "")
+      (isearch-done)
+      )
      ;; - speed up navigation
      ((and firstly-search--isearch-navigation-flag
            (eq last-command #'isearch-repeat-backward)
            (eq this-command 'isearch-repeat-forward))
-      (call-interactively #'isearch-repeat-forward)) )))
+      (call-interactively #'isearch-repeat-forward)) ;
+     )))
 
 
 (defun firstly-search--my-goto-match-beginning ()

@@ -1,4 +1,4 @@
-;;; dired-fs.el --- Dired minor mode for fast navigation  -*- lexical-binding: t -*-
+;;; firstly-search-dired.el --- Dired minor mode for fast navigation  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 Anoncheg1
 
@@ -30,8 +30,10 @@
 ;; Old dired-explorer.el package do the same.
 ;;
 ;; to activate, add lines to your Emacs configuration:
-;; (require 'dired-fs)
-;; (add-hook 'dired-mode-hook #'dired-fs-mode)
+;; (require 'firstly-search-dired)
+;; (add-hook 'dired-mode-hook #'firstly-search-dired-mode)
+;;
+;; C-m or RET may be used to fast choose item.
 ;;
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
@@ -60,13 +62,13 @@
 
 
 ;; rebind dired-mode-map - totally optional and may be nil
-(defvar-keymap dired-fs-mode-map
+(defvar-keymap firstly-search-dired-mode-map
   ;; -- standard dired
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
   "M-e"       #'dired-find-file
   "M-f"       #'dired-find-file
-  ;; "C-m"     #'dired-find-file
+  "C-m"       #'dired-find-file
   "M-g"       #'revert-buffer
   "M-i"       #'dired-maybe-insert-subdir
   "M-j"       #'dired-goto-file
@@ -80,10 +82,10 @@
   "M-s"       #'dired-sort-toggle-or-edit
   "M-t"       #'dired-toggle-marks
   "M-u"       #'dired-unmark
-  "C-M-v"       #'dired-view-file
+  "C-M-v"     #'dired-view-file
   "M-w"       #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
-  "C-M-x"       #'dired-do-flagged-delete
+  "C-M-x"     #'dired-do-flagged-delete
   "M-y"       #'dired-show-file-type
   "M-+"       #'dired-create-directory
   "M-A"       #'dired-do-find-regexp
@@ -96,7 +98,7 @@
   "M-L"       #'dired-do-load
   "M-M"       #'dired-do-chmod
   "M-N"       #'dired-do-man
-  "C-M-O"       #'dired-do-chown ;; something special here
+  "C-M-O"     #'dired-do-chown ;; something special here
   "M-P"       #'dired-do-print
   "M-Q"       #'dired-do-find-regexp-and-replace
   "M-R"       #'dired-do-rename
@@ -110,29 +112,36 @@
   ;; "M-<"       #'dired-prev-dirline
   ;; "M->"       #'dired-next-dirline
   "M-^"       #'dired-up-directory
-  "M-SPC"     #'dired-next-line
-  "C-m" #'dired-find-file)
+  "M-SPC"     #'dired-next-line)
+
+;; (defun firstly-search-dired--dired-before-readin-hook ()
+;;   "Hook for `dired-before-readin-hook'.
+;; Clearn isearch for case when RET was pressed during isearch, we
+;; should close isearch appropriate."
 
 
 ;;;###autoload
-(define-minor-mode dired-fs-mode
+(define-minor-mode firstly-search-dired-mode
   "Instant search in file names.
 Typing any printable character activate incremental search."
-  :lighter " dired-fs"
+  :lighter " Fsearch"
   :global nil :group 'firstly-search
-  (if dired-fs-mode
+  (if firstly-search-dired-mode
       (progn
-        (setq firstly-search-ignore-mode-map dired-fs-mode-map) ; ignore keys
+        (setq firstly-search-ignore-mode-map firstly-search-dired-mode-map) ; ignore keys
         (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
+        ;; (add-hook 'dired-before-readin-hook #'firstly-search-dired--dired-before-readin-hook)
         )
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
+      ;; (add-hook 'dired-before-readin-hook #'firstly-search-dired--dired-before-readin-hook)
+      )))
 
 
 
 
-(provide 'dired-fs)
-;;; dired-fs.el ends here
+(provide 'firstly-search-dired)
+;;; firstly-search-dired.el ends here
