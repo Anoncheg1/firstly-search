@@ -1,9 +1,9 @@
-;;; firstly-search.el --- Dired minor mode for fast navigation  -*- lexical-binding: t -*-
+;;; firstly-search.el --- Activation of search with any key. For Dired and Package modes.  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 Anoncheg1
 
 ;; Author: Anoncheg1
-;; Keywords: matching, dired, isearch
+;; Keywords: matching, isearch, navigation, dired
 ;; URL: https://github.com/Anoncheg1/firstly-search
 ;; Version: 0.0.7
 ;; Package-Requires: ((emacs "29.1"))
@@ -62,7 +62,7 @@
   :prefix "firstly-search-")
 
 (defcustom firstly-search-ignore-keys-re "^[*%:.~#&=!]$"
-  "Non-nil means apply this keys as Dired command not like name."
+  "Non-nil means apply ignore this keys, for mode specific commands."
   :local t
   :type '(string)
   :group 'firstly-search)
@@ -149,7 +149,7 @@ May be sub-minor-mode.")
 
 
 (defun firstly-search--pre-command-hook-advice ()
-  "Advice to add alphabet fast navigation to Dired mode."
+  "Advice to add alphabet fast navigation."
   (let* ((key (this-single-command-keys))
          ;; (command (lookup-key global-map key nil))
          (key-char (key-description key)))
@@ -204,61 +204,6 @@ May be sub-minor-mode.")
 Used for speed up navingation."
   (when (and isearch-forward isearch-other-end)
     (goto-char isearch-other-end)))
-
-
-;; rebind dired-mode-map - totally optional and may be nil
-(defvar-keymap dired-fs-mode-map
-  ;; -- standard dired
-  "M-a"       #'dired-find-alternate-file
-  "M-d"       #'dired-flag-file-deletion
-  "M-e"       #'dired-find-file
-  "M-f"       #'dired-find-file
-  ;; "C-m"     #'dired-find-file
-  "M-g"       #'revert-buffer
-  "M-i"       #'dired-maybe-insert-subdir
-  "M-j"       #'dired-goto-file
-  "M-k"       #'dired-do-kill-lines
-  "M-l"       #'dired-do-redisplay
-  "M-m"       #'dired-mark
-  "M-n"       #'dired-next-line
-  "M-o"       #'dired-find-file-other-window
-  ;; "C-o"     #'dired-display-file
-  "M-p"       #'dired-previous-line
-  "M-s"       #'dired-sort-toggle-or-edit
-  "M-t"       #'dired-toggle-marks
-  "M-u"       #'dired-unmark
-  "C-M-v"       #'dired-view-file
-  "M-w"       #'dired-copy-filename-as-kill
-  "M-W"       #'browse-url-of-dired-file
-  "C-M-x"       #'dired-do-flagged-delete
-  "M-y"       #'dired-show-file-type
-  "M-+"       #'dired-create-directory
-  "M-A"       #'dired-do-find-regexp
-  "M-C"       #'dired-do-copy
-  "M-B"       #'dired-do-byte-compile
-  "M-D"       #'dired-do-delete
-  "M-G"       #'dired-do-chgrp
-  "M-H"       #'dired-do-hardlink
-  "M-I"       #'dired-do-info
-  "M-L"       #'dired-do-load
-  "M-M"       #'dired-do-chmod
-  "M-N"       #'dired-do-man
-  "C-M-O"       #'dired-do-chown ;; something special here
-  "M-P"       #'dired-do-print
-  "M-Q"       #'dired-do-find-regexp-and-replace
-  "M-R"       #'dired-do-rename
-  "M-S"       #'dired-do-symlink
-  "M-T"       #'dired-do-touch
-  "M-X"       #'dired-do-shell-command
-  "M-Y"       #'dired-do-relsymlink
-  "M-Z"       #'dired-do-compress
-  "M-c"       #'dired-do-compress-to
-  "M-U"       #'dired-unmark-all-marks
-  ;; "M-<"       #'dired-prev-dirline
-  ;; "M->"       #'dired-next-dirline
-  "M-^"       #'dired-up-directory
-  "M-SPC"     #'dired-next-line
-  "C-m" #'dired-find-file)
 
 
 (defun firstly-search--check-same (str1 str2 str3)

@@ -73,10 +73,10 @@
   "M-k"       #'dired-do-kill-lines
   "M-l"       #'dired-do-redisplay
   "M-m"       #'dired-mark
-  "M-n"       #'dired-next-line
+  ;; "M-n"       #'dired-next-line
   "M-o"       #'dired-find-file-other-window
   ;; "C-o"     #'dired-display-file
-  "M-p"       #'dired-previous-line
+  ;; "M-p"       #'dired-previous-line
   "M-s"       #'dired-sort-toggle-or-edit
   "M-t"       #'dired-toggle-marks
   "M-u"       #'dired-unmark

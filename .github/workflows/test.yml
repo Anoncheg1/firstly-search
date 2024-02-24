@@ -1,4 +1,4 @@
-name: CI
+name: ReleaseElpa
 
 on:
   release:
@@ -20,6 +20,7 @@ jobs:
           # - 27.2
           # - 28.2
           - 29.1
+          - 29.2
         experimental: [false]
         include:
         - os: ubuntu-latest
@@ -43,6 +44,6 @@ jobs:
       with:
         version: 'snapshot'
 
-    # - name: Run tests
-    #   run:
-    #     make ci
+    - name: Run tests
+      run:
+        make release
