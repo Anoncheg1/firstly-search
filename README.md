@@ -39,4 +39,4 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 
 # Notes
 
-dired-explorer.el package have same functionality for Dired mode.
+dired-explorer.el package have the same functionality for Dired mode.
