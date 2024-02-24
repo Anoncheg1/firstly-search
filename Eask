@@ -1,9 +1,9 @@
 (package "firstly-search"
          "0.0.7"
-         "Activation of search with any key. For Dired and Package modes.")
+         "Search with any key: Dired, Package modes")
 
 (website-url "https://github.com/Anoncheg1/firstly-search")
-(keywords "matching" "isearch" "navigation" "dired")
+(keywords "matching" "isearch" "navigation" "dired" "packagemenu")
 
 (package-file "firstly-search.el")
 

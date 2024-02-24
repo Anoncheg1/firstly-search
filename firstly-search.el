@@ -1,9 +1,9 @@
-;;; firstly-search.el --- Activation of search with any key. For Dired and Package modes.  -*- lexical-binding: t -*-
+;;; firstly-search.el --- Search with any key: Dired, Package modes  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 Anoncheg1
 
 ;; Author: Anoncheg1
-;; Keywords: matching, isearch, navigation, dired
+;; Keywords: matching, isearch, navigation, dired, packagemenu
 ;; URL: https://github.com/Anoncheg1/firstly-search
 ;; Version: 0.0.7
 ;; Package-Requires: ((emacs "29.1"))
@@ -69,7 +69,7 @@
 
 (defcustom firstly-search-with-custom-regex t
   "Non-nil means search from begining of the word by default.
-If non-nil `firstly-search-regex' used. "
+If non-nil `firstly-search-regex' used."
   :local t
   :type 'boolean
   :group 'firstly-search)
@@ -191,15 +191,13 @@ May be sub-minor-mode.")
       (setq isearch-success t isearch-adjusted 'toggle)
       ;; replace current command
       (setq this-command #'isearch-repeat-forward) ; do nothing
-      (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
-      )
+      (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t))
      ;; - clearn isearch for C-m
      ((and firstly-search--isearch-navigation-flag
            (equal "RET" key-char)) ; C-m also
       (setq isearch-string "")
       (setq isearch-message "")
-      (isearch-done)
-      )
+      (isearch-done))
      ;; - speed up navigation
      ((and firstly-search--isearch-navigation-flag
            (eq last-command #'isearch-repeat-backward)
@@ -216,7 +214,9 @@ Used for speed up navingation."
 
 
 (defun firstly-search--check-same (str1 str2 str3)
-  "Compare two string values both equal to 3 or not equal."
+  "Compare two string values both equal to 3 or not equal.
+Argument STR1 string for comparision with STR3.
+Argument STR2 string to comparision with STR3."
   (if (and (equal str1 str3) (equal str2 str3))
       t
     ;; else
@@ -242,8 +242,7 @@ Argument POS is (point) position."
     ;; else look for positive
     (if (not (equal (get-text-property pos prname) prvalue))
         (while (and (not (eq pos1 nil)) (not (equal (get-text-property pos1 prname) prvalue)))
-          (setq pos1 (next-single-property-change pos1 prname))
-          ))
+          (setq pos1 (next-single-property-change pos1 prname))))
     ;; (print (get-text-property pos1 prname))
     ;; (print pos1)
     pos1))
@@ -290,8 +289,7 @@ Argument POS is (point) position."
                       (not (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
             ;; (print (list "aa" (get-text-property pos2 prname) prvalue-cur prvalue (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
             (setq pos1 pos2)
-            (setq pos2 (previous-single-property-change pos1 prname)))
-        ))
+            (setq pos2 (previous-single-property-change pos1 prname)))))
       pos1)))
 
 
@@ -315,9 +313,8 @@ Closely bound with `search-within-boundaries' behaviour."
         ;; (let ((ol (make-overlay pos (1+ pos))))
         ;;   (overlay-put ol 'face '(:background "dark red")))
        (seq-some (lambda (property)
-                   ;; equal to value
-                   (equal (get-text-property pos (car property)) (cdr property) )
-                   ) ;; predicate for every property
+                   ;; equal to value. predicate for every property.
+                   (equal (get-text-property pos (car property)) (cdr property) ))
                  properties)))
    (lambda (pos) ; NEXT-FUN - search for the next property.
      (let ((pos-list (if isearch-forward
