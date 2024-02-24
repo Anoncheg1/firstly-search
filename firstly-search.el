@@ -101,7 +101,7 @@ Optional argument LAX not used."
    ((equal string "") "")
    (t  (concat firstly-search-regex string))))
 
-(defvar-local firstly-search--isearch-navigation-flag nil
+(defvar firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
 Allow to separate firstly-search navigation from isearch.
 May be sub-minor-mode.")
@@ -156,6 +156,7 @@ May be sub-minor-mode.")
   "Advice to add alphabet fast navigation."
   (let* ((key (this-single-command-keys))
          (key-char (key-description key)))
+    ;; (print (list "key-char" key-char))
     (cond
      ;; - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
@@ -191,9 +192,14 @@ May be sub-minor-mode.")
       ;; replace current command
       (setq this-command #'isearch-repeat-forward) ; do nothing
       (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t))
-     ;; - clearn isearch for C-m
+     ;; - clearn isearch for C-m, etc
      ((and firstly-search--isearch-navigation-flag
-           (equal "RET" key-char)) ; C-m also
+           (not
+           (or (memq this-command isearch-menu-bar-commands)
+               (commandp (lookup-key isearch-mode-map key nil))
+               (commandp
+                (lookup-key
+                 `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
       (setq isearch-string "")
       (setq isearch-message "")
       (isearch-done))
