@@ -104,7 +104,6 @@ Typing any printable character activate incremental search."
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn
-      ;; (remove-hook 'isearch-mode-end-hook #'firstly-search-package--isearch-mode-hook t)
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
 

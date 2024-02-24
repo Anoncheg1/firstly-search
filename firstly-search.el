@@ -126,7 +126,6 @@ May be sub-minor-mode.")
 
 (defun firstly-search--isearch-change-map ()
   "Speed up navigation by rebinding active isearch keys."
-  ;; (when firstly-search--isearch-navigation-flag
     ;; - fix that exit search and do other work
     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
     ;; -- copy isearch map to create our replacement
@@ -142,7 +141,6 @@ May be sub-minor-mode.")
   "Disable navigation."
   (when firstly-search--isearch-navigation-flag
     (setq firstly-search--isearch-navigation-flag nil) ;; called once
-    ;; (print "restore")
     ;; restore isearch options
     (setopt isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
@@ -157,9 +155,7 @@ May be sub-minor-mode.")
 (defun firstly-search--pre-command-hook-advice ()
   "Advice to add alphabet fast navigation."
   (let* ((key (this-single-command-keys))
-         ;; (command (lookup-key global-map key nil))
          (key-char (key-description key)))
-    ;; (print (list "key-char" key-char))
     (cond
      ;; - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
@@ -182,10 +178,7 @@ May be sub-minor-mode.")
       (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
       (setopt isearch-wrap-pause 'no)
       ;; dired variant of activation of isearch
-      ;; (funcall firstly-search--isearch-activation-function) ; (dired-isearch-filenames)
       (isearch-forward nil t)
-      ;; (setq-local dired-isearch-filenames t)
-      ;; (isearch-forward nil t)
       ;; from begining of word or not
       (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
       (setq isearch-regexp-function (if firstly-search-with-custom-regex
@@ -238,7 +231,6 @@ Argument PROPERTY is in form (property . value).
 Argument POS is (point) position."
   ;; TODO: require rewriting as `firstly-search--previous-single-property-change-by-value'
   ;; To test:
-  ;; (goto-char (firstly-search--previous-single-property-change-by-value '(tabulated-list-column-name . "Package" ) (point)))
   (let ((pos1 pos)
         (prname (car property))
         (prvalue (cdr property)))
@@ -249,8 +241,6 @@ Argument POS is (point) position."
     (if (not (equal (get-text-property pos prname) prvalue))
         (while (and (not (eq pos1 nil)) (not (equal (get-text-property pos1 prname) prvalue)))
           (setq pos1 (next-single-property-change pos1 prname))))
-    ;; (print (get-text-property pos1 prname))
-    ;; (print pos1)
     pos1))
 
 (defun firstly-search--previous-single-property-change-by-value (property pos)
@@ -273,27 +263,19 @@ Argument POS is (point) position."
         (prvalue-cur (get-text-property pos (car property))) ; (get-text-property pos prname)
         prvalue-pos1 ; previous - one step back - value
         at-the-middle-flag)
-    ;; (if (null pos1)
-    ;;     (print (list"wtf" pos)))
     (when (not (null pos1))
       (setq prvalue-pos1 (get-text-property pos1 prname))
       (setq at-the-middle-flag (firstly-search--check-same prvalue-cur prvalue-pos1 prvalue))
-      ;; (print (list prvalue-cur prvalue-pos1 prvalue))
-      ;; (print (list "at-the-middle-flag" at-the-middle-flag))
-      ;; (print (list "prvalue-pos1" prvalue-pos1))
       (if at-the-middle-flag
           (while (and (not (eq pos2 nil))
                       (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue))
             (setq pos1 pos2)
-            ;; (print pos1)
             (setq pos2 (previous-single-property-change pos1 prname)))
         ;; else at the edge
         (progn
           (setq pos2 pos1) ;; one step
-          ;; (print (list (get-text-property pos2 prname) prvalue-cur prvalue (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
           (while (and (not (eq pos2 nil))
                       (not (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
-            ;; (print (list "aa" (get-text-property pos2 prname) prvalue-cur prvalue (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
             (setq pos1 pos2)
             (setq pos2 (previous-single-property-change pos1 prname)))))
       pos1)))
@@ -308,16 +290,11 @@ the function to search text, and defaults to the value of
 `isearch-search-fun-default' when nil.
 Closely bound with `search-within-boundaries' behaviour."
   (setq properties (ensure-list properties))
-  ;; (setq lexical-binding nil)
-  ;; (seq-some (lambda (property) (print (car property))) properties)
   (apply-partially
    #'search-within-boundaries
    search-fun ; SEARCH-FUN
-   ;; #'check-properties-at
    (lambda (pos) ; GET-FUN - check if point is on property
      (let ((pos (if isearch-forward pos (max (1- pos) (point-min))))) ;; if backward pos = pos - 1
-        ;; (let ((ol (make-overlay pos (1+ pos))))
-        ;;   (overlay-put ol 'face '(:background "dark red")))
        (seq-some (lambda (property)
                    ;; equal to value. predicate for every property.
                    (equal (get-text-property pos (car property)) (cdr property) ))
@@ -340,9 +317,6 @@ Closely bound with `search-within-boundaries' behaviour."
        (when pos-list (if isearch-forward
                           (seq-min pos-list) ; smallest
                         (seq-max pos-list)))))))
-
-
-
 
 
 (provide 'firstly-search)

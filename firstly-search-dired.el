@@ -111,12 +111,6 @@
   "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line)
 
-;; (defun firstly-search-dired--dired-before-readin-hook ()
-;;   "Hook for `dired-before-readin-hook'.
-;; Clearn isearch for case when RET was pressed during isearch, we
-;; should close isearch appropriate."
-
-
 ;;;###autoload
 (define-minor-mode firstly-search-dired-mode
   "Instant search in file names.
@@ -129,12 +123,10 @@ Typing any printable character activate incremental search."
         (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
-        ;; (add-hook 'dired-before-readin-hook #'firstly-search-dired--dired-before-readin-hook)
         )
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
-      ;; (add-hook 'dired-before-readin-hook #'firstly-search-dired--dired-before-readin-hook)
       )))
 
 
