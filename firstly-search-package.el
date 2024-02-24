@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/firstly-search
-;; Version: 0.0.7
+;; Version: 0.0.8
 
 ;; This file is not part of GNU Emacs.
 
