@@ -98,8 +98,9 @@ Typing any printable character activate incremental search."
         (setq firstly-search-ignore-mode-map firstly-search-package-mode-map) ; ignore keys
         (setq firstly-search-isearch-prefix firstly-search-package-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-
-        (setq firstly-search--isearch-search-fun-function #'firstly-search-package--isearch-search-fun-function) ; dired-isearch-search-filenames
+        (setq firstly-search-regex firstly-search-package-regex)
+        ;; main isearch function to limit search to column, like dired-isearch-search-filenames
+        (setq firstly-search--isearch-search-fun-function #'firstly-search-package--isearch-search-fun-function)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn
