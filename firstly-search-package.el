@@ -84,7 +84,7 @@ Argument ORIG-FUN isearch internal function."
   "M-q"	#'quit-window
   "M-r"	#'revert-buffer
   "M-u"	#'package-menu-mark-unmark
-  "M-w"	#'package-browse-url
+  "C-M-w"	#'package-browse-url
   "C-M-x"	#'package-menu-execute)
 
 ;;;###autoload
