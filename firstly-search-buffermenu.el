@@ -25,9 +25,9 @@
 ;;; Commentary:
 ;; Minor mode for `Buffer-menu-mode'.
 ;;
-;; to activate, add lines to your Emacs configuration:
+;; to activate, add lines to your Emacs configuration (Init file):
 ;; (require 'firstly-search-buffermenu)
-;; (add-hook 'package-menu-mode-hook #'firstly-search-buffermenu-mode)
+;; (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
 
 (require 'firstly-search)
 (require 'firstly-search-tabulated-list)
@@ -114,10 +114,10 @@ Typing any printable character activate incremental search."
         ;; (setq firstly-search-regex nil)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search--isearch-search-fun-function #'firstly-search-buffermenu--isearch-search-fun-function)
-        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
+        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn
-      (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
+      (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
 
 

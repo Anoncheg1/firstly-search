@@ -58,15 +58,23 @@
 (require 'dired-aux)
 (require 'firstly-search)
 
-;; rebind dired-mode-map - totally optional and may be nil
+;; totally optional and may be nil
 (defvar-keymap firstly-search-dired-mode-map
+  :doc "Replacement for `dired-mode-map'.
+Totally optional and may be nil."
+  ;; special-mode-map
+  "M-?"	#'describe-mode
+  "M-h"	#'describe-mode
+  ;; ">" #'end-of-buffer
+  ;; "<" #'beginning-of-buffer
+  "M-g"	#'revert-buffer
   ;; -- standard dired
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
   "M-e"       #'dired-find-file
   "M-f"       #'dired-find-file
   "C-m"       #'dired-find-file
-  "M-g"       #'revert-buffer
+  ;; "M-g"       #'revert-buffer
   "M-i"       #'dired-maybe-insert-subdir
   "M-j"       #'dired-goto-file
   "M-k"       #'dired-do-kill-lines
@@ -121,11 +129,11 @@ Typing any printable character activate incremental search."
       (progn
         (setq firstly-search-ignore-mode-map firstly-search-dired-mode-map) ; ignore keys
         (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
-        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice nil t) ; fast actication
+        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
         )
     (progn
-      (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook-advice t)
+      (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
       )))
 

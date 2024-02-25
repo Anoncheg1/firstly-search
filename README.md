@@ -11,12 +11,14 @@ Typing any printable character moves cursor with incremental search. Now for two
 
 - For Package Menu - fast search in package names.
 
+- For Buffer Menu - fast selection of buffer by name.
+
 This is minor mode for Emacs text editor. No external dependencies required.
 
 Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. They may be rebinded manually.
 
 # Features
-- Support for two modes: Dired, Package Menu.
+- Support for modes: Dired, Package Menu, Buffer Menu.
 - **C-n** and **C-p** is used during searching as **C-s** isearch-forward and **C-r** isearch-backward commands.
 - any printable character activate isearch-navigation. Modifiers used for commands.
 - **C-m** or **RET** quit search and allow quickly select item.
@@ -32,6 +34,10 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 ;; Package menu
 (require 'firstly-search-package)
 (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
+;; Buffer Menu
+(require 'firstly-search-buffermenu)
+(add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
+
 ```
 
 # demo

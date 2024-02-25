@@ -33,11 +33,13 @@
 
 ;; Old dired-explorer.el package do the same.
 
-;; to activate, add lines to your Emacs configuration:
+;; to activate, add lines to your Emacs configuration (Init file):
 ;; (require 'firstly-search-dired)
 ;; (require 'firstly-search-package)
+;; (require 'firstly-search-buffermenu)
 ;; (add-hook 'dired-mode-hook #'firstly-search-dired-mode)
 ;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
+;; (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
 
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
@@ -47,16 +49,10 @@
 
 ;; How it works:
 
-;; `dired-mode' add `dired-isearch-filenames-setup' to
-;; `isearch-mode-hook', that activate `dired-isearch-filenames-mode'
-;; which add advice to isearch to search in filenames when isearch
-;; started with `dired-isearch-filenames' variable.  We replace
-;; `isearch-regexp-function' that search string in filename and just
-;; call isearch with `dired-isearch-filenames'.
-;; `isearch-search-fun-function' replaced with
-;; `dired-isearch-search-filenames' that wrap ? with
-;; `isearch-search-fun-in-text-property' that search in text wthat
-;; have properties `dired-filename' and `dired-symlink-filename'.
+;; We use `pre-command-hook' called for any key pressed, if key is
+;; simple we activate our variant of incremental search with modified
+;; `isearch-search-fun-function' that limit search to bounds in
+;; buffer.
 
 ;;; Code:
 
@@ -154,7 +150,7 @@ Optional argument LAX not used."
     (remove-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook t)))
 
 
-(defun firstly-search--pre-command-hook-advice ()
+(defun firstly-search--pre-command-hook ()
   "Advice to add alphabet fast navigation."
   (let* ((key (this-single-command-keys))
          (key-char (key-description key)))
@@ -180,7 +176,7 @@ Optional argument LAX not used."
 
       (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
       (setopt isearch-wrap-pause 'no)
-      ;; dired variant of activation of isearch
+      ;; required for activation of isearch
       (isearch-forward nil t)
       ;; from begining of word or not
       (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
