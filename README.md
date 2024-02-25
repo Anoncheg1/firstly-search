@@ -15,7 +15,7 @@ Typing any printable character moves cursor with incremental search. Now for two
 
 This is minor mode for Emacs text editor. No external dependencies required.
 
-Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. They may be rebinded manually.
+Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. You may rebind manually.
 
 # Features
 - Support for modes: Dired, Package Menu, Buffer Menu.
