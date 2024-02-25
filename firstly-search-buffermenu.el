@@ -67,25 +67,25 @@ Argument ORIG-FUN isearch internal function."
   (firstly-search-fun-match-text-property
    (funcall orig-fun) firstly-search-buffermenu-columns))
 
-(defvar-keymap firstly-search-buffermenu-mode-map
-  "-"		#'negative-argument
-  ;; "0 .. 9"	digit-argument
-  ;; ?		package-menu-describe-buffermenu
-  "M-H"	#'package-menu-hide-buffermenu
-  "M-S"	#'tabulated-list-sort
-  "M-U"	#'package-menu-mark-upgrades
-  "M-b"	#'package-report-bug
-  "M-d"	#'package-menu-mark-delete
-  "M-g"	#'revert-buffer
-  "M-h"	#'package-menu-quick-help
-  "M-i"	#'package-menu-mark-install
-  "M-n"	#'next-line
-  "M-p"	#'previous-line
-  "M-q"	#'quit-window
-  "M-r"	#'revert-buffer
-  "M-u"	#'package-menu-mark-unmark
-  "C-M-w"	#'package-browse-url
-  "C-M-x"	#'package-menu-execute)
+;; (defvar-keymap firstly-search-buffermenu-mode-map
+;;   "-"		#'negative-argument
+;;   ;; "0 .. 9"	digit-argument
+;;   ;; ?		package-menu-describe-buffermenu
+;;   "M-H"	#'package-menu-hide-buffermenu
+;;   "M-S"	#'tabulated-list-sort
+;;   "M-U"	#'package-menu-mark-upgrades
+;;   "M-b"	#'package-report-bug
+;;   "M-d"	#'package-menu-mark-delete
+;;   "M-g"	#'revert-buffer
+;;   "M-h"	#'package-menu-quick-help
+;;   "M-i"	#'package-menu-mark-install
+;;   "M-n"	#'next-line
+;;   "M-p"	#'previous-line
+;;   "M-q"	#'quit-window
+;;   "M-r"	#'revert-buffer
+;;   "M-u"	#'package-menu-mark-unmark
+;;   "C-M-w"	#'package-browse-url
+;;   "C-M-x"	#'package-menu-execute)
 
 ;;;###autoload
 (define-minor-mode firstly-search-buffermenu-mode

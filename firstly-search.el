@@ -131,7 +131,10 @@ Optional argument LAX not used."
 (defun firstly-search--isearch-change-map ()
   "Speed up navigation by rebinding active isearch keys."
     ;; - fix that exit search and do other work
+    ;; modify copy if `isearch-mode-map'
     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
+    (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
+    (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
     ;; -- copy isearch map to create our replacement
     (setq firstly-search--saved-isearch-mode-map isearch-mode-map)
     (setq isearch-mode-map firstly-search-nav-map))
