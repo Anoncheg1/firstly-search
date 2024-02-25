@@ -5,7 +5,7 @@ Tested with Emacs 29.1
 
 # firstly-search
 
-Typing any printable character moves cursor with incremental search. Now for two major modes:
+Typing any printable character moves cursor with incremental search. Supported modes:
 
 - For Dired File manager - Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
