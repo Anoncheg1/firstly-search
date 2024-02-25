@@ -23,16 +23,14 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Modern way of navigation.  Dired minor mode to move cursor by just
-;; pressing any printable characters of target filename or directory
-;; in current folder.  Are you still using arrays?
-;; Old dired-explorer.el package do the same.
+;; Minor mode for `Buffer-menu-mode'.
 ;;
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'firstly-search-buffermenu)
 ;; (add-hook 'package-menu-mode-hook #'firstly-search-buffermenu-mode)
 
 (require 'firstly-search)
+(require 'firstly-search-tabulated-list)
 
 ;;; Code:
 
@@ -67,25 +65,39 @@ Argument ORIG-FUN isearch internal function."
   (firstly-search-fun-match-text-property
    (funcall orig-fun) firstly-search-buffermenu-columns))
 
-;; (defvar-keymap firstly-search-buffermenu-mode-map
-;;   "-"		#'negative-argument
-;;   ;; "0 .. 9"	digit-argument
-;;   ;; ?		package-menu-describe-buffermenu
-;;   "M-H"	#'package-menu-hide-buffermenu
-;;   "M-S"	#'tabulated-list-sort
-;;   "M-U"	#'package-menu-mark-upgrades
-;;   "M-b"	#'package-report-bug
-;;   "M-d"	#'package-menu-mark-delete
-;;   "M-g"	#'revert-buffer
-;;   "M-h"	#'package-menu-quick-help
-;;   "M-i"	#'package-menu-mark-install
-;;   "M-n"	#'next-line
-;;   "M-p"	#'previous-line
-;;   "M-q"	#'quit-window
-;;   "M-r"	#'revert-buffer
-;;   "M-u"	#'package-menu-mark-unmark
-;;   "C-M-w"	#'package-browse-url
-;;   "C-M-x"	#'package-menu-execute)
+(defvar-keymap firstly-search-buffermenu-mode-map
+  :doc "Replacement for `Buffer-menu-mode-map'."
+  :parent firstly-search-tabulated-list-mode-map
+  "RET"	#'Buffer-menu-this-window
+  "M-0"	#'digit-argument
+  "M-1"	#'Buffer-menu-1-window
+  "M-2"	#'Buffer-menu-2-window
+  ;; "M-3 .. 9"	#'digit-argument
+  "M-?"	#'describe-mode
+  "M-O"	#'Buffer-menu-view-other-window
+  "M-S"	#'tabulated-list-sort
+  "M-T"	#'Buffer-menu-toggle-files-only
+  "M-U"	#'Buffer-menu-unmark-all
+  "M-V"	#'Buffer-menu-view
+  "M-b"	#'Buffer-menu-bury
+  "M-d"	#'Buffer-menu-delete
+  ;; "M-e .. f"	#'Buffer-menu-this-window
+  "M-g"	#'revert-buffer
+  "M-h"	#'describe-mode
+  "M-k"	#'Buffer-menu-delete
+  "M-m"	#'Buffer-menu-mark
+  "M-n"	#'next-line
+  "M-o"	#'Buffer-menu-other-window
+  "M-p"	#'previous-line
+  "M-q"	#'quit-window
+  "M-s"	#'Buffer-menu-save
+  "M-t"	#'Buffer-menu-visit-tags-table
+  "M-u"	#'Buffer-menu-unmark
+  "M-v"	#'Buffer-menu-select
+  "C-M-x"	#'Buffer-menu-execute
+  "M-{"	#'tabulated-list-narrow-current-column
+  "M-}"	#'tabulated-list-widen-current-column
+)
 
 ;;;###autoload
 (define-minor-mode firstly-search-buffermenu-mode

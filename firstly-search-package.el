@@ -23,16 +23,14 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Modern way of navigation.  Dired minor mode to move cursor by just
-;; pressing any printable characters of target filename or directory
-;; in current folder.  Are you still using arrays?
-;; Old dired-explorer.el package do the same.
+;; Minor mode for `package-menu-mode'.
 ;;
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'firstly-search-package)
 ;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
 
 (require 'firstly-search)
+(require 'firstly-search-tabulated-list)
 
 ;;; Code:
 
@@ -68,6 +66,8 @@ Argument ORIG-FUN isearch internal function."
    (funcall orig-fun) firstly-search-package-columns))
 
 (defvar-keymap firstly-search-package-mode-map
+  :doc "Replacement for `package-menu-mode-map'."
+  :parent firstly-search-tabulated-list-mode-map
   "-"		#'negative-argument
   ;; "0 .. 9"	digit-argument
   ;; ?		package-menu-describe-package

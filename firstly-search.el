@@ -127,13 +127,12 @@ Optional argument LAX not used."
       ;; "C-m" #'dired-find-file
       )
 
-
 (defun firstly-search--isearch-change-map ()
   "Speed up navigation by rebinding active isearch keys."
     ;; - fix that exit search and do other work
     ;; modify copy if `isearch-mode-map'
     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
-    (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
+    ;; (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
     (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
     ;; -- copy isearch map to create our replacement
     (setq firstly-search--saved-isearch-mode-map isearch-mode-map)
@@ -195,7 +194,7 @@ Optional argument LAX not used."
       ;; replace current command
       (setq this-command #'isearch-repeat-forward) ; do nothing
       (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t))
-     ;; - clearn isearch for C-m, etc
+     ;; - clearn isearch for C-m, etc - keys not in isearch-mode-map
      ((and firstly-search--isearch-navigation-flag
            (not
            (or (memq this-command isearch-menu-bar-commands)
