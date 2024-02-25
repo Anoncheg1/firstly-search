@@ -92,15 +92,6 @@
   :type 'string
   :group 'firstly-search)
 
-(defun firstly-search--isearch-regexp-function (string &optional lax)
-  "Replacement for `isearch-regexp-function' to search by file name.
-It looks for STRING from the begining of it.
-Optional argument LAX not used."
-  (setq lax lax) ; suppers Warning: Unused lexical argument `lax'
-  (cond
-   ((equal string "") "")
-   (t  (concat firstly-search-regex string))))
-
 (defvar firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
 Allow to separate firstly-search navigation from isearch.
@@ -114,6 +105,19 @@ May be sub-minor-mode.")
 
 (defvar firstly-search--saved-isearch-mode-map nil
   "Save place.")
+
+(defvar-local firstly-search-ignore-mode-map nil)
+
+(defvar-local firstly-search--isearch-search-fun-function nil)
+
+(defun firstly-search--isearch-regexp-function (string &optional lax)
+  "Replacement for `isearch-regexp-function' to search by file name.
+It looks for STRING from the begining of it.
+Optional argument LAX not used."
+  (setq lax lax) ; suppers Warning: Unused lexical argument `lax'
+  (cond
+   ((equal string "") "")
+   (t  (concat firstly-search-regex string))))
 
 ;; create copy of isearch-mode-map. Activates after typing.
 (defvar-keymap firstly-search-nav-map
@@ -132,10 +136,6 @@ May be sub-minor-mode.")
     (setq firstly-search--saved-isearch-mode-map isearch-mode-map)
     (setq isearch-mode-map firstly-search-nav-map))
 
-
-(defvar firstly-search-ignore-mode-map nil)
-
-(defvar firstly-search--isearch-search-fun-function nil)
 
 (defun firstly-search--isearch-mode-end-hook ()
   "Disable navigation."
