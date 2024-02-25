@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; Any key activate search. This is modern way of navigation.
-;; There is minor modes for major modes: Dired, Package Menu.
+;; There are minor modes for major modes: Dired, Package Menu.
 ;; Cursor is moved by just pressing any printable characters
 ;; of target filename or directory in current folder.  Do you still
 ;; use arrays?
