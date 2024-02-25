@@ -73,12 +73,12 @@
   :type '(string)
   :group 'firstly-search)
 
-(defcustom firstly-search-with-custom-regex t
-  "Non-nil means search from begining of the word by default.
-If non-nil `firstly-search-regex' used."
-  :local t
-  :type 'boolean
-  :group 'firstly-search)
+;; (defcustom firstly-search-with-custom-regex t
+;;   "Non-nil means search from begining of the word by default.
+;; If non-nil `firstly-search-regex' used."
+;;   :local t
+;;   :type 'boolean
+;;   :group 'firstly-search)
 
 (defcustom firstly-search-regex "\\_<" ; from begining or "\\(\\_<\\|-\\)"
   "Non-nil means search with this regex."
@@ -182,7 +182,7 @@ May be sub-minor-mode.")
       (isearch-forward nil t)
       ;; from begining of word or not
       (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
-      (setq isearch-regexp-function (if firstly-search-with-custom-regex
+      (setq isearch-regexp-function (if firstly-search-regex
                                         #'firstly-search--isearch-regexp-function
                                       #'word-search-regexp)) ; not from begining
       ;; activate isearch by file name
