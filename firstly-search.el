@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;; Keywords: matching, isearch, navigation, dired, packagemenu
 ;; URL: https://github.com/Anoncheg1/firstly-search
-;; Version: 0.0.9
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is not part of GNU Emacs.
