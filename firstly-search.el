@@ -243,7 +243,7 @@ Argument POS is (point) position."
     ;; if current value is positive we just get next one
     ;; else look for positive
     (if (not (equal (get-text-property pos prname) prvalue))
-        (while (and (not (eq pos1 nil)) (not (equal (get-text-property pos1 prname) prvalue)))
+        (while (and pos1 (not (equal (get-text-property pos1 prname) prvalue)))
           (setq pos1 (next-single-property-change pos1 prname))))
     pos1))
 
@@ -267,18 +267,18 @@ Argument POS is (point) position."
         (prvalue-cur (get-text-property pos (car property))) ; (get-text-property pos prname)
         prvalue-pos1 ; previous - one step back - value
         at-the-middle-flag)
-    (when (not (null pos1))
+    (when pos1
       (setq prvalue-pos1 (get-text-property pos1 prname))
       (setq at-the-middle-flag (firstly-search--check-same prvalue-cur prvalue-pos1 prvalue))
       (if at-the-middle-flag
-          (while (and (not (eq pos2 nil))
+          (while (and pos2
                       (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue))
             (setq pos1 pos2)
             (setq pos2 (previous-single-property-change pos1 prname)))
         ;; else at the edge
         (progn
           (setq pos2 pos1) ;; one step
-          (while (and (not (eq pos2 nil))
+          (while (and pos2
                       (not (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
             (setq pos1 pos2)
             (setq pos2 (previous-single-property-change pos1 prname)))))
