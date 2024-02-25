@@ -1,4 +1,4 @@
-;;; firstly-search.el --- Search with any key: Dired, Package modes  -*- lexical-binding: t -*-
+;;; firstly-search.el --- Search with any key: Dired, Package, Buffer menu modes  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 Anoncheg1
 

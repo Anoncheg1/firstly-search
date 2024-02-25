@@ -1,6 +1,6 @@
 (package "firstly-search"
          "0.1.0"
-         "Search with any key: Dired, Package modes")
+         "Search with any key: Dired, Package, Buffer menu modes")
 
 (website-url "https://github.com/Anoncheg1/firstly-search")
 (keywords "matching" "isearch" "navigation" "dired" "packagemenu")
