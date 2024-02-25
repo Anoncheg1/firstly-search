@@ -96,8 +96,7 @@ Argument ORIG-FUN isearch internal function."
   "M-v"	#'Buffer-menu-select
   "C-M-x"	#'Buffer-menu-execute
   "M-{"	#'tabulated-list-narrow-current-column
-  "M-}"	#'tabulated-list-widen-current-column
-)
+  "M-}"	#'tabulated-list-widen-current-column)
 
 ;;;###autoload
 (define-minor-mode firstly-search-buffermenu-mode

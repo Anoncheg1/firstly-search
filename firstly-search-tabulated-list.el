@@ -22,13 +22,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary (TODO):
+;;; Commentary:
+;; (TODO)
 ;; Minor mode for `tabulated-list-mode'.
 ;;
 ;; to activate, add lines to your Emacs configuration:
 ;; (require 'firstly-search-tabulated-list)
 ;; (add-hook 'tabulated-list-mode-hook #'firstly-search-tabulated-list-mode) ; todo
 
+;;; Code:
 
 (defvar-keymap firstly-search-tabulated-list-mode-map
   :doc "Replacement for `tabulated-list-mode-map'."
@@ -46,8 +48,7 @@
   "M-}"		#'tabulated-list-widen-current-column
   "M-{"		#'tabulated-list-narrow-current-column
   "<follow-link>"	'mouse-face
-  "<mouse-2>"		#'mouse-select-window
-)
+  "<mouse-2>"		#'mouse-select-window)
 
 
 (provide 'firstly-search-tabulated-list)

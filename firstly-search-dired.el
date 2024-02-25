@@ -134,10 +134,7 @@ Typing any printable character activate incremental search."
         )
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
-      )))
-
-
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
 
 
 (provide 'firstly-search-dired)
