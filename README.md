@@ -37,7 +37,15 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 ;; Buffer Menu
 (require 'firstly-search-buffermenu)
 (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
+```
 
+# Customization
+
+```lisp
+M-x customize-group RET firstly-search
+M-x customize-group RET firstly-search-buffermenu
+M-x customize-group RET firstly-search-package
+M-x customize-group RET firstly-search-dired
 ```
 
 # demo

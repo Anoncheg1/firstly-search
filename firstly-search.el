@@ -41,6 +41,13 @@
 ;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
 ;; (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
 
+;; Customization:
+
+;; M-x customize-group RET firstly-search
+;; M-x customize-group RET firstly-search-buffermenu
+;; M-x customize-group RET firstly-search-package
+;; M-x customize-group RET firstly-search-dired
+
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
 
