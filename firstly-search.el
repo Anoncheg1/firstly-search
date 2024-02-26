@@ -50,9 +50,17 @@
 ;; How it works:
 
 ;; We use `pre-command-hook' called for any key pressed, if key is
-;; simple we activate our variant of incremental search with modified
-;; `isearch-search-fun-function' that limit search to bounds in
-;; buffer.
+;; simple and not in "ignore-keys" we activate incremental search with
+;; modified `isearch-search-fun-function' that limit search to bounds
+;; in buffer and some other tweeks.
+
+;; For Dired we use `isearch-search-fun-in-text-property' that search
+;; only in text that have not nil specified "text properties".
+
+;; For modes based on tabulated-list (Buffer Menu, Package menu) we
+;; use `firstly-search-fun-match-text-property' is a variant of
+;; isearch-search-fun-in-text-property that search only in text that
+;; have not specified properties with specified values.
 
 ;;; Code:
 
