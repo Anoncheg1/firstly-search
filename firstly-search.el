@@ -61,13 +61,13 @@
 ;; modified `isearch-search-fun-function' that limit search to bounds
 ;; in buffer and some other tweeks.
 
-;; For Dired we use `isearch-search-fun-in-text-property' that search
-;; only in text that have not nil specified "text properties".
+;; For Dired `isearch-search-fun-in-text-property' is used that search
+;; only in text which have not nil specified "text properties".
 
-;; For modes based on tabulated-list (Buffer Menu, Package menu) we
-;; use `firstly-search-fun-match-text-property' is a variant of
-;; isearch-search-fun-in-text-property that search only in text that
-;; have not specified properties with specified values.
+;; For modes based on tabulated-list (Buffer Menu, Package menu)
+;; variant of of previous function:
+;; `firstly-search-fun-match-text-property', that search only in text
+;; which have specified properties with specified values.
 
 ;;; Code:
 
