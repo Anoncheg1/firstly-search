@@ -60,7 +60,7 @@
 (defvar-keymap firstly-search-buffermenu-mode-map
   :doc "Replacement for `Buffer-menu-mode-map'."
   :parent firstly-search-tabulated-list-mode-map
-  "RET"	#'bookmark-bmenu-this-window
+  "RET"	#'Buffer-menu-this-window
   "M-0"	#'digit-argument
   "M-1"	#'Buffer-menu-1-window
   "M-2"	#'Buffer-menu-2-window
