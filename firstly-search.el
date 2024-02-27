@@ -37,16 +37,19 @@
 ;; (require 'firstly-search-dired)
 ;; (require 'firstly-search-package)
 ;; (require 'firstly-search-buffermenu)
+;; (require 'firstly-search-bookmarks)
 ;; (add-hook 'dired-mode-hook #'firstly-search-dired-mode)
 ;; (add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
 ;; (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
+;; (add-hook 'bookmark-bmenu-mode-hook #'firstly-search-bookmarks-mode)
 
 ;; Customization:
 
 ;; M-x customize-group RET firstly-search
-;; M-x customize-group RET firstly-search-buffermenu
-;; M-x customize-group RET firstly-search-package
 ;; M-x customize-group RET firstly-search-dired
+;; M-x customize-group RET firstly-search-package
+;; M-x customize-group RET firstly-search-buffermenu
+;; M-x customize-group RET firstly-search-bookmarks
 
 ;; Note:
 ;; C-n and C-p used during searching as C-s and C-r
