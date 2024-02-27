@@ -51,24 +51,16 @@
   :type 'string
   :group 'firstly-search-buffermenu)
 
-
 (defcustom firstly-search-buffermenu-regex "\\(\\_<\\|*\\)"
   "Regex for word search in package names."
   :local t
   :type 'string
   :group 'firstly-search-buffermenu)
 
-(defun firstly-search-buffermenu--isearch-search-fun-function (orig-fun)
-  "Replacement for `isearch-search-fun-function'.
-This function limit search to desired columns.
-Argument ORIG-FUN isearch internal function."
-  (firstly-search-fun-match-text-property
-   (funcall orig-fun) firstly-search-buffermenu-columns))
-
 (defvar-keymap firstly-search-buffermenu-mode-map
   :doc "Replacement for `Buffer-menu-mode-map'."
   :parent firstly-search-tabulated-list-mode-map
-  "RET"	#'Buffer-menu-this-window
+  "RET"	#'bookmark-bmenu-this-window
   "M-0"	#'digit-argument
   "M-1"	#'Buffer-menu-1-window
   "M-2"	#'Buffer-menu-2-window
@@ -112,7 +104,8 @@ Typing any printable character activate incremental search."
         (setq firstly-search-regex firstly-search-buffermenu-regex)
         ;; (setq firstly-search-regex nil)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
-        (setq firstly-search--isearch-search-fun-function #'firstly-search-buffermenu--isearch-search-fun-function)
+        (setq firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
+        (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn

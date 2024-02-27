@@ -51,19 +51,11 @@
   :type 'string
   :group 'firstly-search-package)
 
-
 (defcustom firstly-search-package-regex "\\(\\_<\\|-\\)"
   "Regex for word search in package names."
   :local t
   :type 'string
   :group 'firstly-search-package)
-
-(defun firstly-search-package--isearch-search-fun-function (orig-fun)
-  "Replacement for `isearch-search-fun-function'.
-This function limit search to desired columns.
-Argument ORIG-FUN isearch internal function."
-  (firstly-search-fun-match-text-property
-   (funcall orig-fun) firstly-search-package-columns))
 
 (defvar-keymap firstly-search-package-mode-map
   :doc "Replacement for `package-menu-mode-map'."
@@ -100,7 +92,8 @@ Typing any printable character activate incremental search."
         ;; search from the begining of the word or after "-" character.
         (setq firstly-search-regex firstly-search-package-regex)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
-        (setq firstly-search--isearch-search-fun-function #'firstly-search-package--isearch-search-fun-function)
+        (setq firstly-search-tabulated-list-columns firstly-search-package-columns)
+        (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
     (progn

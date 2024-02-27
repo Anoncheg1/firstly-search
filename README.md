@@ -37,6 +37,9 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 ;; Buffer Menu
 (require 'firstly-search-buffermenu)
 (add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
+;; Bookmarks
+(require 'firstly-search-bookmarks)
+(add-hook 'bookmark-bmenu-mode-hook #'firstly-search-bookmarks-mode)
 ```
 
 # Customization

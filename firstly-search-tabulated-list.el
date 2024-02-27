@@ -50,6 +50,19 @@
   "<follow-link>"	'mouse-face
   "<mouse-2>"		#'mouse-select-window)
 
+(defcustom firstly-search-tabulated-list-columns '((tabulated-list-column-name . "Name" ))
+  "Non-nil means search in these columns."
+  :local t
+  :type 'sexp
+  :group 'firstly-search-tabulated-list)
+
+(defun firstly-search-tabulated-list--isearch-search-fun-function (orig-fun)
+  "Replacement for `isearch-search-fun-function'.
+This function limit search to desired columns.
+Argument ORIG-FUN isearch internal function."
+  (firstly-search-fun-match-text-property
+   (funcall orig-fun) firstly-search-tabulated-list-columns))
+
 
 (provide 'firstly-search-tabulated-list)
 ;;; firstly-search-tabulated-list.el ends here
