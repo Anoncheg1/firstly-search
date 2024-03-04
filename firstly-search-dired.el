@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;; Keywords: matching, dired, isearch
 ;; URL: https://github.com/Anoncheg1/firstly-search
-;; Version: 0.1.0
+;; Version: 0.1.1
 
 ;; This file is not part of GNU Emacs.
 
@@ -57,6 +57,10 @@
 
 (require 'dired-aux)
 (require 'firstly-search)
+
+(defvar-local firstly-search-dired-advice-flag nil) ; make advice buffer-local
+
+(declare firstly-search-dired-mode)
 
 ;; totally optional and may be nil
 (defvar-keymap firstly-search-dired-mode-map
@@ -119,7 +123,6 @@ Totally optional and may be nil."
   "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line)
 
-(defvar-local firstly-search-dired-advice-flag nil) ; make advice buffer-local
 
 (defun firstly-search-dired-mode-enable ()
   "Called when Dired exit Editable mode."

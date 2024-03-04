@@ -1,5 +1,5 @@
 (package "firstly-search"
-         "0.1.0"
+         "0.1.1"
          "Search with any key: Dired, Package, Buffer menu modes")
 
 (website-url "https://github.com/Anoncheg1/firstly-search")
