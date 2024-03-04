@@ -119,6 +119,21 @@ Totally optional and may be nil."
   "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line)
 
+(defvar-local firstly-search-dired-advice-flag nil) ; make advice buffer-local
+
+(defun firstly-search-dired-mode-enable ()
+  "Called when Dired exit Editable mode."
+  (when firstly-search-dired-advice-flag
+    (firstly-search-dired-mode 1)
+    (setq firstly-search-dired-advice-flag nil)))
+
+(defun firstly-search-dired-mode-disable ()
+  "Called when Dired in Editable mode."
+  (if firstly-search-dired-mode
+      (firstly-search-dired-mode -1))
+  (setq firstly-search-dired-advice-flag t)
+  (advice-add 'wdired-change-to-dired-mode :after #'firstly-search-dired-mode-enable))
+
 ;;;###autoload
 (define-minor-mode firstly-search-dired-mode
   "Instant search in file names.
@@ -131,10 +146,12 @@ Typing any printable character activate incremental search."
         (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
+        (add-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable nil t) ; allow in editable mode to edit text
         )
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
+      (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t))))
 
 
 (provide 'firstly-search-dired)
