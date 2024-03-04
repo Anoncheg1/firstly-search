@@ -60,7 +60,7 @@
 
 (defvar-local firstly-search-dired-advice-flag nil) ; make advice buffer-local
 
-(defvar-local firstly-search-dired-mode)
+(defvar-local firstly-search-dired-mode nil)
 
 ;; totally optional and may be nil
 (defvar-keymap firstly-search-dired-mode-map
