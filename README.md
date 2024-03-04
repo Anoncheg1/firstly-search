@@ -18,11 +18,11 @@ This is minor mode for Emacs text editor. No external dependencies required.
 Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. You may rebind manually.
 
 # Features
-- Support for modes: Dired, Package Menu, Buffer Menu.
+- support for modes: Dired, Package Menu, Buffer Menu.
 - **C-n** and **C-p** is used during searching as **C-s** isearch-forward and **C-r** isearch-backward commands.
 - any printable character activate isearch-navigation. Modifiers used for commands.
 - **C-m** or **RET** quit search and allow quickly select item.
-- allow Editable Dired mode (wdired-mode).
+- disable itself in Editable Dired mode (wdired-mode).
 
 # Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
