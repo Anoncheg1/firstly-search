@@ -92,7 +92,7 @@ Totally optional and may be nil."
   "M-t"       #'dired-toggle-marks
   "M-u"       #'dired-unmark
   "C-M-v"     #'dired-view-file
-  "M-w"       #'dired-copy-filename-as-kill
+  "C-M-w      #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
   "C-M-x"     #'dired-do-flagged-delete
   "M-y"       #'dired-show-file-type
