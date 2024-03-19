@@ -76,7 +76,7 @@ Totally optional and may be nil."
   "M-a"       #'dired-find-alternate-file
   "M-d"       #'dired-flag-file-deletion
   "M-e"       #'dired-find-file
-  "M-f"       #'dired-find-file
+  ;; "M-f"       #'dired-find-file
   "C-m"       #'dired-find-file
   ;; "M-g"       #'revert-buffer
   "M-i"       #'dired-maybe-insert-subdir
