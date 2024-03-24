@@ -85,7 +85,7 @@
   "M-s"	#'Buffer-menu-save
   "M-t"	#'Buffer-menu-visit-tags-table
   "M-u"	#'Buffer-menu-unmark
-  "M-v"	#'Buffer-menu-select
+  "C-M-v"	#'Buffer-menu-select
   "C-M-x"	#'Buffer-menu-execute
   "M-{"	#'tabulated-list-narrow-current-column
   "M-}"	#'tabulated-list-widen-current-column)

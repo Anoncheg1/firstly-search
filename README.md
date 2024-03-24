@@ -54,6 +54,12 @@ M-x customize-group RET firstly-search-dired
 # demo
 ![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)
 
-# Notes
+# Note
+I recommend to highlight current line.
+```lisp
+(add-hook 'dired-mode-hook #'hl-line-mode)
+```
+# Another implementation
 
-dired-explorer.el package have the same functionality for Dired mode.
+- dired-explorer.el package have the same functionality for Dired mode.
+- 2009 dired-lis https://github.com/weikent/emacs/blob/master/lisps/dired/dired-lis.el or http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el
