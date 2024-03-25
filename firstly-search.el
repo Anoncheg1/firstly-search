@@ -25,15 +25,18 @@
 
 ;;; Commentary:
 
-;; Any key activate search. This is modern way of navigation.
+;; Any key activate search. This is a modern way of navigation.
 ;; There are minor modes for major modes: Dired, Package Menu.
 ;; Cursor is moved by just pressing any printable characters
-;; of target filename or directory in current folder.  Do you still
-;; use arrays?
+;; of target filename or directory in current folder.
 
-;; Old dired-explorer.el package do the same.
+;; Activation:
+;; - for Dired:	M-x firstly-search-dired-mode RET
+;; - for Package Menu:	M-x firstly-search-package-mode RET
+;; - for Buffer Menu:	M-x firstly-search-buffermenu-mode RET
+;; - for Bookmarks:	M-x firstly-search-bookmarks-mode RET
 
-;; to activate, add lines to your Emacs configuration (Init file):
+;; in Emacs configuration (Init file):
 ;; (require 'firstly-search-dired)
 ;; (require 'firstly-search-package)
 ;; (require 'firstly-search-buffermenu)
@@ -52,10 +55,7 @@
 ;; M-x customize-group RET firstly-search-bookmarks
 
 ;; Note:
-;; C-n and C-p used during searching as C-s and C-r
-
-;; Many functions use text properties, to find properties use:
-;;   M-: (print (text-properties-at (point)))
+;; C-n and C-p is used during searching as C-s and C-r
 
 ;; How it works:
 
@@ -64,20 +64,29 @@
 ;; modified `isearch-search-fun-function' that limit search to bounds
 ;; in buffer and some other tweeks.
 
-;; For Dired `isearch-search-fun-in-text-property' is used that search
-;; only in text which have not nil specified "text properties".
+;; For Dired default `isearch-search-fun-in-text-property' function is
+;; used for search and only in text which have not nil specified "text
+;; properties".
 
-;; For modes based on tabulated-list (Buffer Menu, Package menu)
-;; variant of of previous function:
-;; `firstly-search-fun-match-text-property', that search only in text
-;; which have specified properties with specified values.
+;; For modes  based on tabulated-list  (Buffer Menu, Package  menu) we
+;; create  modified version,  `firstly-search-fun-match-text-property'
+;; function that search  only in text which  have specified properties
+;; with specified values.
+
+;; Many functions use text properties, to investigate them use:
+;;   M-: (print (text-properties-at (point)))
+;;
+;; Files:
+;; - first-search.el - common functionality for other files.
+;; - first-search-{dired,package,buffermenu,bookmarks}.el -
+;;   define user available minor modes for specific major modes.
 
 ;;; Code:
 
 (declare-function word-search-regexp "isearch")
 
 (defgroup firstly-search nil
-  "Name Matching."
+  "Search with any key."
   :group 'firstly-search
   :prefix "firstly-search-")
 
@@ -87,21 +96,17 @@
   :type '(string)
   :group 'firstly-search)
 
-;; (defcustom firstly-search-with-custom-regex t
-;;   "Non-nil means search from begining of the word by default.
-;; If non-nil `firstly-search-regex' used."
-;;   :local t
-;;   :type 'boolean
-;;   :group 'firstly-search)
-
-(defcustom firstly-search-regex "\\_<" ; from begining or "\\(\\_<\\|-\\)"
-  "Non-nil means search with this regex."
+(defcustom firstly-search-regex "\\_<"
+  "Non-nil means search with this regex.
+This value used to search from begining of every word separated
+by space. You may use \\(\\_<\\|-\\) for search in words
+separated by -."
   :local t
   :type 'string
   :group 'firstly-search)
 
 (defcustom firstly-search-isearch-prefix "filename "
-  "Non-nil means search name from begining of word."
+  "Non-nil means add string to isearch prompt."
   :local t
   :type 'string
   :group 'firstly-search)
@@ -112,13 +117,13 @@ Allow to separate firstly-search navigation from isearch.
 May be sub-minor-mode.")
 
 (defvar-local firstly-search--saved-isearch-regexp-function nil
-  "Save place.")
+  "Place for temporarely store isearch previous settings.")
 
 (defvar-local firstly-search--saved-isearch-wrap-pause nil
-  "Save place.")
+  "Place for temporarely store isearch previous settings.")
 
 (defvar firstly-search--saved-isearch-mode-map nil
-  "Save place.")
+  "Place for temporarely store isearch previous settings.")
 
 (defvar-local firstly-search-ignore-mode-map nil)
 
