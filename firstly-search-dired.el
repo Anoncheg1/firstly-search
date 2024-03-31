@@ -1,10 +1,10 @@
 ;;; firstly-search-dired.el --- Dired minor mode for fast navigation  -*- lexical-binding: t -*-
 
-;; Copyright (c) 2024 Anoncheg1
+;; Copyright (c) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
 
-;; Author: Anoncheg1
+;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; Keywords: matching, dired, isearch
-;; URL: https://github.com/Anoncheg1/firstly-search
+;; URL: https://codeberg.org/Anoncheg/firstly-search
 ;; Version: 0.1.1
 
 ;; This file is not part of GNU Emacs.
