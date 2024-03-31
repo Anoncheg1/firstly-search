@@ -1,6 +1,3 @@
-![Eask badge](https://github.com/Anoncheg1/dired-e/actions/workflows/test.yml/badge.svg?event=release)
-![melpazoid badge](https://github.com/Anoncheg1/dired-e/actions/workflows/melpazoid.yml/badge.svg)
-
 Tested with Emacs 29.1
 
 # firstly-search
@@ -52,7 +49,7 @@ M-x customize-group RET firstly-search-dired
 ```
 
 # demo
-![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-e.gif)
+![Demo](https://codeberg.org/Anoncheg/public-share/raw/branch/main/dired-e.gif)
 
 # Note
 I recommend to highlight current line.
