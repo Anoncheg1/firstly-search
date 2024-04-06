@@ -60,3 +60,6 @@ I recommend to highlight current line.
 
 - dired-explorer.el package have the same functionality for Dired mode.
 - 2009 dired-lis https://github.com/weikent/emacs/blob/master/lisps/dired/dired-lis.el or http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el
+
+# known bugs
+- in Buffer Menu C-g do not break search completely.

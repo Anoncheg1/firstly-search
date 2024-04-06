@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; Any key activate search. This is a modern way of navigation.
+;; Any key activate search.
 ;; There are minor modes for major modes: Dired, Package Menu.
 ;; Cursor is moved by just pressing any printable characters
 ;; of target filename or directory in current folder.
