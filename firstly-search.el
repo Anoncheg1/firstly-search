@@ -177,7 +177,6 @@ Optional argument LAX not used."
   "Advice to add alphabet fast navigation."
   (let* ((key (this-single-command-keys))
          (key-char (key-description key)))
-    ;; (print (list "key-char" key-char))
     (cond
      ;; - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
@@ -335,7 +334,8 @@ Closely bound with `search-within-boundaries' behaviour."
                        ;; else backard
                        (mapcar
                         (lambda (property) ; should behave like previous-single-property-change
-                          (firstly-search--previous-single-property-change-by-value property pos))
+                          (if pos
+                              (firstly-search--previous-single-property-change-by-value property pos)))
                         ;; (lambda (property)
                         ;;          (previous-single-property-change
                         ;;           pos (car property)))
