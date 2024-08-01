@@ -5,7 +5,7 @@
 ;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; Keywords: matching, isearch, navigation, dired, packagemenu
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This file is not part of GNU Emacs.
@@ -122,12 +122,16 @@ May be sub-minor-mode.")
 (defvar-local firstly-search--saved-isearch-wrap-pause nil
   "Place for temporarely store isearch previous settings.")
 
+(defvar-local firstly-search--saved-visible-bell nil
+  "Place for temporarely store isearch previous settings.")
+
 (defvar firstly-search--saved-isearch-mode-map nil
   "Place for temporarely store isearch previous settings.")
 
 (defvar-local firstly-search-ignore-mode-map nil)
 
 (defvar-local firstly-search--isearch-search-fun-function nil)
+
 
 (defun firstly-search--isearch-regexp-function (string &optional lax)
   "Replacement for `isearch-regexp-function' to search by file name.
@@ -163,7 +167,8 @@ Optional argument LAX not used."
   (when firstly-search--isearch-navigation-flag
     (setq firstly-search--isearch-navigation-flag nil) ;; called once
     ;; restore isearch options
-    (setopt isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
+    (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
+    (setq visible-bell firstly-search--saved-visible-bell)
     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
     ;; attempt to clear our keymap modifications of isearch
     (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
@@ -196,8 +201,11 @@ Optional argument LAX not used."
       (setq firstly-search--isearch-navigation-flag t) ; separate navigation and isearch - flag
       (firstly-search--isearch-change-map) ;; modify isearch keys
 
+      ;; save and change isearch options
       (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
-      (setopt isearch-wrap-pause 'no)
+      (setq isearch-wrap-pause 'no)
+      (setq firstly-search--saved-visible-bell visible-bell)
+      (setq visible-bell nil)
       ;; required for activation of isearch
       (isearch-forward nil t)
       ;; from begining of word or not
