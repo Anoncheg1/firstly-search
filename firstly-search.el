@@ -142,11 +142,25 @@ Optional argument LAX not used."
    ((equal string "") "")
    (t  (concat firstly-search-regex string))))
 
+(defun firstly-search--isearch-repeat-backward (&optional arg)
+  "Supress visible-bell on error when reaching bob.
+Begining of the buffer. This error is hard to fix other way."
+  (interactive "P")
+  (let ((visible-bell nil))
+    (isearch-repeat-backward arg)))
+
+(defun firstly-search--isearch-repeat-forward (&optional arg)
+  "Supress visible-bell on error when reaching eob.
+End of the buffer. This error is hard to fix other way."
+  (interactive "P")
+  (let ((visible-bell nil))
+    (isearch-repeat-forward arg)))
+
 ;; create copy of isearch-mode-map. Activates after typing.
 (defvar-keymap firstly-search-nav-map
       :parent isearch-mode-map
-      "C-p" #'isearch-repeat-backward
-      "C-n" #'isearch-repeat-forward
+      "C-p" #'firstly-search--isearch-repeat-backward
+      "C-n" #'firstly-search--isearch-repeat-forward
       ;; "C-m" #'dired-find-file
       )
 
@@ -168,7 +182,7 @@ Optional argument LAX not used."
     (setq firstly-search--isearch-navigation-flag nil) ;; called once
     ;; restore isearch options
     (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
-    (setq visible-bell firstly-search--saved-visible-bell)
+    ;; (setq visible-bell firstly-search--saved-visible-bell)
     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
     ;; attempt to clear our keymap modifications of isearch
     (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
@@ -204,8 +218,9 @@ Optional argument LAX not used."
       ;; save and change isearch options
       (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
       (setq isearch-wrap-pause 'no)
-      (setq firstly-search--saved-visible-bell visible-bell)
-      (setq visible-bell nil)
+
+      ;; (setq firstly-search--saved-visible-bell visible-bell)
+      ;; (setq visible-bell nil)
       ;; required for activation of isearch
       (isearch-forward nil t)
       ;; from begining of word or not
