@@ -122,9 +122,6 @@ May be sub-minor-mode.")
 (defvar-local firstly-search--saved-isearch-wrap-pause nil
   "Place for temporarely store isearch previous settings.")
 
-(defvar-local firstly-search--saved-visible-bell nil
-  "Place for temporarely store isearch previous settings.")
-
 (defvar firstly-search--saved-isearch-mode-map nil
   "Place for temporarely store isearch previous settings.")
 
@@ -182,7 +179,6 @@ End of the buffer. This error is hard to fix other way."
     (setq firstly-search--isearch-navigation-flag nil) ;; called once
     ;; restore isearch options
     (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
-    ;; (setq visible-bell firstly-search--saved-visible-bell)
     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
     ;; attempt to clear our keymap modifications of isearch
     (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
@@ -219,8 +215,6 @@ End of the buffer. This error is hard to fix other way."
       (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
       (setq isearch-wrap-pause 'no)
 
-      ;; (setq firstly-search--saved-visible-bell visible-bell)
-      ;; (setq visible-bell nil)
       ;; required for activation of isearch
       (isearch-forward nil t)
       ;; from begining of word or not
