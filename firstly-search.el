@@ -169,7 +169,8 @@ End of the buffer. This error is hard to fix other way."
     ;; (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
     (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
     ;; -- copy isearch map to create our replacement
-    (setq firstly-search--saved-isearch-mode-map isearch-mode-map)
+    (if (not firstly-search--saved-isearch-mode-map) ; if was saved don't rewrite
+        (setq firstly-search--saved-isearch-mode-map isearch-mode-map))
     (setq isearch-mode-map firstly-search-nav-map))
 
 
