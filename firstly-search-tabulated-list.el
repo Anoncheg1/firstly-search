@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(require 'firstly-search)
+
 (defvar-keymap firstly-search-tabulated-list-mode-map
   :doc "Replacement for `tabulated-list-mode-map'."
   "M-?"	#'describe-mode

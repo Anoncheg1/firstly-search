@@ -144,6 +144,7 @@ Optional argument LAX not used."
 
 (defun firstly-search--isearch-repeat-backward (&optional arg)
   "Supress `visible-bell' on error when reaching bob.
+With a numeric argument, repeat the search ARG times.
 Begining of the buffer. This error is hard to fix other way."
   (interactive "P")
   (let ((visible-bell nil))
