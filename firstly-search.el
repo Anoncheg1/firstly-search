@@ -143,14 +143,15 @@ Optional argument LAX not used."
    (t  (concat firstly-search-regex string))))
 
 (defun firstly-search--isearch-repeat-backward (&optional arg)
-  "Supress visible-bell on error when reaching bob.
+  "Supress `visible-bell' on error when reaching bob.
 Begining of the buffer. This error is hard to fix other way."
   (interactive "P")
   (let ((visible-bell nil))
     (isearch-repeat-backward arg)))
 
 (defun firstly-search--isearch-repeat-forward (&optional arg)
-  "Supress visible-bell on error when reaching eob.
+  "Supress `visible-bell' on error when reaching eob.
+With a numeric argument, repeat the search ARG times.
 End of the buffer. This error is hard to fix other way."
   (interactive "P")
   (let ((visible-bell nil))

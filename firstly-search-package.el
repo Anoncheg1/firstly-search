@@ -31,6 +31,7 @@
 
 (require 'firstly-search)
 (require 'firstly-search-tabulated-list)
+(require 'package)
 
 ;;; Code:
 
