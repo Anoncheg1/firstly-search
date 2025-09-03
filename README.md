@@ -1,4 +1,7 @@
-Tested with Emacs 29.1
+[![MELPA](https://melpa.org/packages/firstly-search-badge.svg)](https://melpa.org/#/firstly-search)
+[![MELPA Stable](https://stable.melpa.org/packages/firstly-search-badge.svg)](https://stable.melpa.org/#/firstly-search)
+
+Tested with Emacs 30.1
 
 # firstly-search
 

@@ -1,12 +1,15 @@
 ;;; firstly-search.el --- Search with any key: Dired, Package, Buffer menu modes  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
-
-;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
 ;; Keywords: matching, isearch, navigation, dired, packagemenu
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
+;; Created: 10 Sep 2024
 ;; Version: 0.1.4
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "29.1") (compat "30.1"))
+
+;;; License
 
 ;; This file is not part of GNU Emacs.
 
