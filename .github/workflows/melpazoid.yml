@@ -28,7 +28,7 @@ jobs:
         env:
           LOCAL_REPO: ${{ github.workspace }}
           # RECIPE is your recipe as written for MELPA:
-          RECIPE: (async1 :fetcher github :repo "Anoncheg1/firstly-search")
+          RECIPE: (firstly-search :fetcher github :repo "Anoncheg1/firstly-search")
           # set this to false (or remove it) if the package isn't on MELPA:
           EXIST_OK: true
         run: |
