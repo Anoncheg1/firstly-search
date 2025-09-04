@@ -84,6 +84,10 @@
 ;; - first-search-{dired,package,buffermenu,bookmarks}.el -
 ;;   define user available minor modes for specific major modes.
 
+;;; Donate crypto, sponsor author:
+;; BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
+;; USDT (Tether) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
+
 ;;; Code:
 
 (declare-function word-search-regexp "isearch")

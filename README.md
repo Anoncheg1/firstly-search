@@ -17,14 +17,14 @@ This is minor mode for Emacs text editor. No external dependencies required.
 
 Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. You may rebind manually.
 
-# Features
+## Features
 - support for modes: Dired, Package Menu, Buffer Menu.
 - **C-n** and **C-p** is used during searching as **C-s** isearch-forward and **C-r** isearch-backward commands.
 - any printable character activate isearch-navigation. Modifiers used for commands.
 - **C-m** or **RET** quit search and allow quickly select item.
 - disable itself in Editable Dired mode (wdired-mode).
 
-# Activation
+## Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
 
 ```lisp
@@ -42,7 +42,7 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 (add-hook 'bookmark-bmenu-mode-hook #'firstly-search-bookmarks-mode)
 ```
 
-# Customization
+## Customization
 
 ```lisp
 M-x customize-group RET firstly-search
@@ -51,18 +51,22 @@ M-x customize-group RET firstly-search-package
 M-x customize-group RET firstly-search-dired
 ```
 
-# demo
+## demo
 ![Demo](https://codeberg.org/Anoncheg/public-share/raw/branch/main/dired-e.gif)
 
-# Note
+## Note
 I recommend to highlight current line.
 ```lisp
 (add-hook 'dired-mode-hook #'hl-line-mode)
 ```
-# Another implementation
+## Another implementation
 
 - dired-explorer.el package have the same functionality for Dired mode.
 - 2009 dired-lis https://github.com/weikent/emacs/blob/master/lisps/dired/dired-lis.el or http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el
 
-# known bugs
+## known bugs
 - in Buffer Menu C-g do not break search completely.
+
+## Donate crypto, sponsor author:
+- BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
+- USDT (Tether) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
