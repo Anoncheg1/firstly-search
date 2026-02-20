@@ -69,12 +69,14 @@ I recommend to highlight current line.
 
 ## Other packages
 - Navigation in Dired, Packages, Buffers modes https://github.com/Anoncheg1/firstly-search
-- Search with Chinese	https://github.com/Anoncheg1/pinyin-isearch
-- Ediff fix		https://github.com/Anoncheg1/ediffnw
-- Dired history	https://github.com/Anoncheg1/dired-hist
+- Search with Chinese		https://github.com/Anoncheg1/pinyin-isearch
+- Ediff fix			https://github.com/Anoncheg1/ediffnw
+- Dired history		https://github.com/Anoncheg1/dired-hist
 - Selected window contrast	https://github.com/Anoncheg1/selected-window-contrast
 - Copy link to clipboard	https://github.com/Anoncheg1/org-links
 - Solution for "callback hell"	https://github.com/Anoncheg1/emacs-async1
+- Restore buffer state		https://github.com/Anoncheg1/emacs-unmodified-buffer1
+- outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
 - Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-oai
 
 ## Donate, sponsor author

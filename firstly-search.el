@@ -89,14 +89,16 @@
 
 ;;;; Other packages from author:
 
-;; - Navigation in Dired, Packages, Buffers modes https://github.com/Anoncheg1/firstly-search
+;; - Modern navigation in major modes https://github.com/Anoncheg1/firstly-search
 ;; - Search with Chinese	https://github.com/Anoncheg1/pinyin-isearch
-;; - Ediff fix		https://github.com/Anoncheg1/ediffnw
-;; - Dired history	https://github.com/Anoncheg1/dired-hist
+;; - Ediff no 3-th window	https://github.com/Anoncheg1/ediffnw
+;; - Dired history		https://github.com/Anoncheg1/dired-hist
 ;; - Selected window contrast	https://github.com/Anoncheg1/selected-window-contrast
-;; - Copy link to clipboard	https://github.com/Anoncheg1/org-links
+;; - Copy link to clipboard	https://github.com/Anoncheg1/emacs-org-links
 ;; - Solution for "callback hell"	https://github.com/Anoncheg1/emacs-async1
-;; - Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-oai
+;; - Restore buffer state	https://github.com/Anoncheg1/emacs-unmodified-buffer1
+;; - outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
+;; - ai_block for Org mode for chat. https://github.com/Anoncheg1/emacs-oai
 
 ;;;; Donate:
 
