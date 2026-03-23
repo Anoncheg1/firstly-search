@@ -107,7 +107,7 @@
 ;; TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
 
 ;;; Code:
-
+;; -= Variables
 (declare-function word-search-regexp "isearch")
 
 (defgroup firstly-search nil
@@ -154,6 +154,7 @@ May be sub-minor-mode.")
 
 (defvar-local firstly-search--isearch-search-fun-function nil)
 
+;; -= Functions
 
 (defun firstly-search--isearch-regexp-function (string &optional lax)
   "Replacement for `isearch-regexp-function' to search by file name.
@@ -180,6 +181,7 @@ End of the buffer. This error is hard to fix other way."
   (let ((visible-bell nil))
     (isearch-repeat-forward arg)))
 
+;; -= keys Map
 ;; create copy of isearch-mode-map. Activates after typing.
 (defvar-keymap firstly-search-nav-map
       :parent isearch-mode-map
@@ -189,7 +191,8 @@ End of the buffer. This error is hard to fix other way."
       )
 
 (defun firstly-search--isearch-change-map ()
-  "Speed up navigation by rebinding active isearch keys."
+  "Speed up navigation by rebinding active isearch keys.
+Activate keys map."
     ;; - fix that exit search and do other work
     ;; modify copy if `isearch-mode-map'
     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
@@ -202,7 +205,8 @@ End of the buffer. This error is hard to fix other way."
 
 
 (defun firstly-search--isearch-mode-end-hook ()
-  "Disable navigation."
+  "Disable navigation.
+Deactivate keys map, disable hooks."
   (when firstly-search--isearch-navigation-flag
     (setq firstly-search--isearch-navigation-flag nil) ;; called once
     ;; restore isearch options
@@ -215,6 +219,7 @@ End of the buffer. This error is hard to fix other way."
                      firstly-search--isearch-search-fun-function)
     (remove-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook t)))
 
+;; -= pre-command
 
 (defun firstly-search--pre-command-hook ()
   "Advice to add alphabet fast navigation."
@@ -272,9 +277,9 @@ End of the buffer. This error is hard to fix other way."
      ((and firstly-search--isearch-navigation-flag
            (eq last-command #'isearch-repeat-backward)
            (eq this-command 'isearch-repeat-forward))
-      (call-interactively #'isearch-repeat-forward)) ;
-     )))
+      (call-interactively #'isearch-repeat-forward)))))
 
+;; -= Functions
 
 (defun firstly-search--my-goto-match-beginning ()
   "Place cursor always at the end of search result.
