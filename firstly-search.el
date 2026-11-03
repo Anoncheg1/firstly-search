@@ -98,7 +98,13 @@
 ;; - Solution for "callback hell"	https://github.com/Anoncheg1/emacs-async1
 ;; - Restore buffer state	https://github.com/Anoncheg1/emacs-unmodified-buffer1
 ;; - outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
-;; - ai_block for Org mode for chat. https://github.com/Anoncheg1/emacs-oai
+;; - ai_block for Org mode for chat.  https://github.com/Anoncheg1/emacs-oai
+
+;;;; TODO:
+
+;; - instead of pre-command-hook make it
+;;   like [[file:/usr/share/emacs/30.2/lisp/isearch.el::571::(defvar isearch-mode-map]]
+;; - Add timeout to clear search unless Ctrl pressed
 
 ;;;; Donate:
 
@@ -107,7 +113,7 @@
 ;; TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
 
 ;;; Code:
-;; -= Variables
+;; -=-= Variables
 (declare-function word-search-regexp "isearch")
 
 (defgroup firstly-search nil
@@ -124,7 +130,7 @@
 (defcustom firstly-search-regex "\\_<"
   "Non-nil means search with this regex.
 This value used to search from begining of every word separated
-by space. You may use \\(\\_<\\|-\\) for search in words
+by space.  You may use \\(\\_<\\|-\\) for search in words
 separated by -."
   :local t
   :type 'string
@@ -136,7 +142,7 @@ separated by -."
   :type 'string
   :group 'firstly-search)
 
-(defvar firstly-search--isearch-navigation-flag nil
+(defvar-local firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
 Allow to separate firstly-search navigation from isearch.
 May be sub-minor-mode.")
@@ -147,14 +153,20 @@ May be sub-minor-mode.")
 (defvar-local firstly-search--saved-isearch-wrap-pause nil
   "Place for temporarely store isearch previous settings.")
 
-(defvar firstly-search--saved-isearch-mode-map nil
-  "Place for temporarely store isearch previous settings.")
+;; (defvar firstly-search--saved-isearch-mode-map nil
+;;   "Place for temporarely store isearch previous settings.")
+
+;; Snapshot the pristine isearch map at load time.  `isearch-mode-map'
+;; is a global; nothing in this package may permanently replace it.
+(defvar firstly-search--original-isearch-mode-map
+  (copy-keymap isearch-mode-map)
+  "Pristine copy of `isearch-mode-map' captured at load time.")
 
 (defvar-local firstly-search-ignore-mode-map nil)
 
 (defvar-local firstly-search--isearch-search-fun-function nil)
 
-;; -= Functions
+;; -=-= Functions
 
 (defun firstly-search--isearch-regexp-function (string &optional lax)
   "Replacement for `isearch-regexp-function' to search by file name.
@@ -168,7 +180,7 @@ Optional argument LAX not used."
 (defun firstly-search--isearch-repeat-backward (&optional arg)
   "Supress `visible-bell' on error when reaching bob.
 With a numeric argument, repeat the search ARG times.
-Begining of the buffer. This error is hard to fix other way."
+Begining of the buffer.  This error is hard to fix other way."
   (interactive "P")
   (let ((visible-bell nil))
     (isearch-repeat-backward arg)))
@@ -176,12 +188,12 @@ Begining of the buffer. This error is hard to fix other way."
 (defun firstly-search--isearch-repeat-forward (&optional arg)
   "Supress `visible-bell' on error when reaching eob.
 With a numeric argument, repeat the search ARG times.
-End of the buffer. This error is hard to fix other way."
+End of the buffer.  This error is hard to fix other way."
   (interactive "P")
   (let ((visible-bell nil))
     (isearch-repeat-forward arg)))
 
-;; -= keys Map
+;; -=-= keys Map
 ;; create copy of isearch-mode-map. Activates after typing.
 (defvar-keymap firstly-search-nav-map
       :parent isearch-mode-map
@@ -190,96 +202,133 @@ End of the buffer. This error is hard to fix other way."
       ;; "C-m" #'dired-find-file
       )
 
-(defun firstly-search--isearch-change-map ()
-  "Speed up navigation by rebinding active isearch keys.
-Activate keys map."
-    ;; - fix that exit search and do other work
-    ;; modify copy if `isearch-mode-map'
-    (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
-    ;; (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
-    (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
-    ;; -- copy isearch map to create our replacement
-    (if (not firstly-search--saved-isearch-mode-map) ; if was saved don't rewrite
-        (setq firstly-search--saved-isearch-mode-map isearch-mode-map))
-    (setq isearch-mode-map firstly-search-nav-map))
+;; (defun firstly-search--isearch-change-map ()
+;;   "Speed up navigation by rebinding active isearch keys.
+;; Activate keys map."
+;;     ;; - fix that exit search and do other work
+;;     ;; modify copy if `isearch-mode-map'
+;;     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
+;;     ;; (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
+;;     (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
+;;     ;; -- copy isearch map to create our replacement
+;;     (if (not firstly-search--saved-isearch-mode-map) ; if was saved don't rewrite
+;;         (setq firstly-search--saved-isearch-mode-map isearch-mode-map))
+;;     (setq isearch-mode-map firstly-search-nav-map))
 
+(defun firstly-search--isearch-change-map ()
+  "Install `firstly-search-nav-map' as `isearch-mode-map' for this session.
+The original map is kept in `firstly-search--original-isearch-mode-map'
+and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
+  ;; Always start from a clean copy so consecutive activations do not
+  ;; accumulate stale rebindings, and so a previously-aborted session
+  ;; cannot leak a swapped map into this one.
+  (let ((map (copy-keymap firstly-search--original-isearch-mode-map)))
+    (keymap-set map "C-p" #'firstly-search--isearch-repeat-backward)
+    (keymap-set map "C-n" #'firstly-search--isearch-repeat-forward)
+    (keymap-unset map "C-m")
+    (keymap-unset map "<return>") ; working?
+    (setq isearch-mode-map map)))
+
+;; (defun firstly-search--isearch-mode-end-hook ()
+;;   "Disable navigation.
+;; Deactivate keys map, disable hooks."
+;;   (when firstly-search--isearch-navigation-flag
+;;     (setq firstly-search--isearch-navigation-flag nil) ;; called once
+;;     ;; restore isearch options
+;;     (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
+;;     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
+;;     ;; attempt to clear our keymap modifications of isearch
+;;     (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
+;;     ;; remove isearch advice
+;;     (remove-function (local 'isearch-search-fun-function)
+;;                      firstly-search--isearch-search-fun-function)
+;;     (remove-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook t)))
 
 (defun firstly-search--isearch-mode-end-hook ()
-  "Disable navigation.
-Deactivate keys map, disable hooks."
+  "Disable navigation and restore global isearch state."
   (when firstly-search--isearch-navigation-flag
-    (setq firstly-search--isearch-navigation-flag nil) ;; called once
-    ;; restore isearch options
-    (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
+    (setq firstly-search--isearch-navigation-flag nil)
+
+    ;; restore global isearch options from the pristine snapshot
+    (setq isearch-mode-map firstly-search--original-isearch-mode-map)
+    (setq isearch-wrap-pause      firstly-search--saved-isearch-wrap-pause)
     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
-    ;; attempt to clear our keymap modifications of isearch
-    (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
-    ;; remove isearch advice
+
+    ;; drop our advice (idempotent)
     (remove-function (local 'isearch-search-fun-function)
-                     firstly-search--isearch-search-fun-function)
-    (remove-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook t)))
+                     #'firstly-search--isearch-search-fun-function)
 
-;; -= pre-command
+    (remove-hook 'isearch-mode-end-hook
+                 #'firstly-search--isearch-mode-end-hook t)))
 
+;; -=-= pre-command
 (defun firstly-search--pre-command-hook ()
-  "Advice to add alphabet fast navigation."
+  "Advice to add alphabet fast navigation.
+Added locally to buffers."
   (let* ((key (this-single-command-keys))
          (key-char (key-description key)))
     (cond
-     ;; - activate navigation if printable character key was pressed
+     ;; 1) - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
            (not firstly-search--isearch-navigation-flag)
-           (not (eq (string-match-p
-                     firstly-search-ignore-keys-re
-                     key-char) 0)) ; ignore some characters
+           (not (eq (string-match-p firstly-search-ignore-keys-re key-char) 0)) ; ignore some characters
            (eq (string-match-p "^[[:print:]]$" key-char) 0)
-           ;; no command exist in dired-fs-mode-map - additional ignore some characters
-           (not (commandp (lookup-key firstly-search-ignore-mode-map key nil))))
+           (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist in dired-fs-mode-map - additional ignore some characters
+      ;; 1. save isearch options
+      (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
+      (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
 
-      ;; isearch activation
+      ;; 2. install our options BEFORE isearch starts (#16)
+      (setq isearch-wrap-pause 'no)
+      ;; from begining of word or not
+      (setq isearch-regexp-function (if firstly-search-regex
+                                        #'firstly-search--isearch-regexp-function
+                                      #'word-search-regexp)) ; not from begining
+
+      ;; 3. install advice + keymap
       (add-function :around (local 'isearch-search-fun-function)
                     firstly-search--isearch-search-fun-function
                     ;; add "filename "
                     (list (cons 'isearch-message-prefix firstly-search-isearch-prefix)))
-      (setq firstly-search--isearch-navigation-flag t) ; separate navigation and isearch - flag
-      (firstly-search--isearch-change-map) ;; modify isearch keys
+      (firstly-search--isearch-change-map)
 
-      ;; save and change isearch options
-      (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
-      (setq isearch-wrap-pause 'no)
 
-      ;; required for activation of isearch
+      ;; 4. mark navigation active *before* entering isearch
+      (setq firstly-search--isearch-navigation-flag t)
+      (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
+
+      ;; 5. enter isearch (may run for a long time)
       (isearch-forward nil t)
-      ;; from begining of word or not
-      (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
-      (setq isearch-regexp-function (if firstly-search-regex
-                                        #'firstly-search--isearch-regexp-function
-                                      #'word-search-regexp)) ; not from begining
-      ;; activate isearch by file name
-      (setq isearch-string (key-description key))
-      (setq isearch-message (key-description key))
-      (setq isearch-success t isearch-adjusted 'toggle)
+
+      ;; 6. seed with the triggering key
+      (setq isearch-string (key-description key)
+            isearch-message (key-description key)
+            isearch-success t)
+            ;; isearch-adjusted nil)
+            ;; isearch-adjusted 'toggle)
       ;; replace current command
-      (setq this-command #'isearch-repeat-forward) ; do nothing
-      (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t))
-     ;; - clearn isearch for C-m, etc - keys not in isearch-mode-map
+      (setq this-command #'isearch-repeat-forward)) ; do nothing
+
+     ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
      ((and firstly-search--isearch-navigation-flag
-           (not
-           (or (memq this-command isearch-menu-bar-commands)
-               (commandp (lookup-key isearch-mode-map key nil))
-               (commandp
-                (lookup-key
-                 `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
+           (advice-member-p #'firstly-search--isearch-search-fun-function
+                            'isearch-search-fun-function) ; if it was removed by `isearch-done` or by a user's `C-g.
+           (not (or (memq this-command isearch-menu-bar-commands)
+                    (commandp (lookup-key isearch-mode-map key nil))
+                    (commandp
+                     (lookup-key
+                      `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
       (setq isearch-string "")
       (setq isearch-message "")
       (isearch-done))
-     ;; - speed up navigation
+
+     ;; 3) - speed up navigation
      ((and firstly-search--isearch-navigation-flag
            (eq last-command #'isearch-repeat-backward)
-           (eq this-command 'isearch-repeat-forward))
+           (eq this-command #'isearch-repeat-forward))
       (call-interactively #'isearch-repeat-forward)))))
 
-;; -= Functions
+;; -=-= Functions
 
 (defun firstly-search--my-goto-match-beginning ()
   "Place cursor always at the end of search result.
@@ -318,6 +367,7 @@ Argument POS is (point) position."
         (while (and pos1 (not (equal (get-text-property pos1 prname) prvalue)))
           (setq pos1 (next-single-property-change pos1 prname))))
     pos1))
+
 
 (defun firstly-search--previous-single-property-change-by-value (property pos)
   "Return the position of next PROPERTY change by value.
@@ -395,6 +445,6 @@ Closely bound with `search-within-boundaries' behaviour."
                           (seq-min pos-list) ; smallest
                         (seq-max pos-list)))))))
 
-
+
 (provide 'firstly-search)
 ;;; firstly-search.el ends here

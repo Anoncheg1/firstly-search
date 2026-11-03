@@ -1,15 +1,11 @@
 ((emacs-lisp-mode
   . (
-     (outline-regexp . "^;;; \\|^;; -=")
+     (outline-regexp . "^;;; \\|^;; -=-=\\|^;;;; ")
      (outline-it-heading-alist .
                                '((";;; " . 1)
-                                 (";; -=" . 2)))
-     ;; (eval . (outline-minor-mode 1))
-     (eval . (progn (keymap-local-set "C-c k" #'outline-previous-heading)
-                    (keymap-local-set "C-c n" #'outline-next-heading)
-                    (keymap-local-set "C-c C-e" #'outline-it-hide-others)
-                    (keymap-local-set "<backtab>" #'outline-cycle-buffer)
-                    (keymap-local-set "C-<tab>" #'outline-toggle-children)
-                    (outline-hide-body)
-                    ))
-     )))
+                                 (";; -=-=" . 2)
+                                 (";;;; " . 3)))
+     (eval . (when (fboundp 'my/outline-small-init)
+               (my/outline-small-init)
+               (outline-hide-body)
+               )))))
