@@ -147,15 +147,6 @@ separated by -."
 Allow to separate firstly-search navigation from isearch.
 May be sub-minor-mode.")
 
-(defvar-local firstly-search--saved-isearch-regexp-function nil
-  "Place for temporarely store isearch previous settings.")
-
-(defvar-local firstly-search--saved-isearch-wrap-pause nil
-  "Place for temporarely store isearch previous settings.")
-
-;; (defvar firstly-search--saved-isearch-mode-map nil
-;;   "Place for temporarely store isearch previous settings.")
-
 ;; Snapshot the pristine isearch map at load time.  `isearch-mode-map'
 ;; is a global; nothing in this package may permanently replace it.
 (defvar firstly-search--original-isearch-mode-map
@@ -168,14 +159,23 @@ May be sub-minor-mode.")
 
 ;; -=-= Functions
 
-(defun firstly-search--isearch-regexp-function (string &optional lax)
-  "Replacement for `isearch-regexp-function' to search by file name.
-It looks for STRING from the begining of it.
-Optional argument LAX not used."
-  (setq lax lax) ; suppers Warning: Unused lexical argument `lax'
+(defun firstly-search--isearch-regexp-function (string &optional _lax)
+  "Build a regexp that anchors the user's input at a word start.
+In literal mode, quote STRING so metacharacters match themselves.
+In regexp mode, use STRING as the user's regexp body — do not
+re-quote — but still prepend `firstly-search-regex' so the match
+starts at the same anchor.
+
+Optional argument LAX is accepted for compatibility with
+`isearch-regexp-function' and ignored."
   (cond
-   ((equal string "") "")
-   (t  (concat firstly-search-regex string))))
+   ((string-empty-p string) "")
+   (isearch-regexp
+    ;; user is typing a regexp; honour it verbatim after the anchor
+    (concat firstly-search-regex string))
+   (t
+    ;; literal search; protect metacharacters in filenames etc.
+    (concat firstly-search-regex (regexp-quote string)))))
 
 (defun firstly-search--isearch-repeat-backward (&optional arg)
   "Supress `visible-bell' on error when reaching bob.
@@ -202,18 +202,6 @@ End of the buffer.  This error is hard to fix other way."
       ;; "C-m" #'dired-find-file
       )
 
-;; (defun firstly-search--isearch-change-map ()
-;;   "Speed up navigation by rebinding active isearch keys.
-;; Activate keys map."
-;;     ;; - fix that exit search and do other work
-;;     ;; modify copy if `isearch-mode-map'
-;;     (keymap-unset firstly-search-nav-map "C-m") ;; this do not modify original in fact
-;;     ;; (keymap-unset firstly-search-nav-map "RET") ;; this do not modify original in fact
-;;     (keymap-unset firstly-search-nav-map "<return>") ;; this do not modify original in fact
-;;     ;; -- copy isearch map to create our replacement
-;;     (if (not firstly-search--saved-isearch-mode-map) ; if was saved don't rewrite
-;;         (setq firstly-search--saved-isearch-mode-map isearch-mode-map))
-;;     (setq isearch-mode-map firstly-search-nav-map))
 
 (defun firstly-search--isearch-change-map ()
   "Install `firstly-search-nav-map' as `isearch-mode-map' for this session.
@@ -229,21 +217,6 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
     (keymap-unset map "<return>") ; working?
     (setq isearch-mode-map map)))
 
-;; (defun firstly-search--isearch-mode-end-hook ()
-;;   "Disable navigation.
-;; Deactivate keys map, disable hooks."
-;;   (when firstly-search--isearch-navigation-flag
-;;     (setq firstly-search--isearch-navigation-flag nil) ;; called once
-;;     ;; restore isearch options
-;;     (setq isearch-wrap-pause firstly-search--saved-isearch-wrap-pause)
-;;     (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
-;;     ;; attempt to clear our keymap modifications of isearch
-;;     (setq isearch-mode-map firstly-search--saved-isearch-mode-map)
-;;     ;; remove isearch advice
-;;     (remove-function (local 'isearch-search-fun-function)
-;;                      firstly-search--isearch-search-fun-function)
-;;     (remove-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook t)))
-
 (defun firstly-search--isearch-mode-end-hook ()
   "Disable navigation and restore global isearch state."
   (when firstly-search--isearch-navigation-flag
@@ -251,8 +224,8 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
 
     ;; restore global isearch options from the pristine snapshot
     (setq isearch-mode-map firstly-search--original-isearch-mode-map)
-    (setq isearch-wrap-pause      firstly-search--saved-isearch-wrap-pause)
-    (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
+    ;; (setq isearch-wrap-pause      firstly-search--saved-isearch-wrap-pause)
+    ;; (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
 
     ;; drop our advice (idempotent)
     (remove-function (local 'isearch-search-fun-function)
@@ -274,18 +247,8 @@ Added locally to buffers."
            (not (eq (string-match-p firstly-search-ignore-keys-re key-char) 0)) ; ignore some characters
            (eq (string-match-p "^[[:print:]]$" key-char) 0)
            (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist in dired-fs-mode-map - additional ignore some characters
-      ;; 1. save isearch options
-      (setq firstly-search--saved-isearch-wrap-pause isearch-wrap-pause)
-      (setq firstly-search--saved-isearch-regexp-function isearch-regexp-function)
 
-      ;; 2. install our options BEFORE isearch starts (#16)
-      (setq isearch-wrap-pause 'no)
-      ;; from begining of word or not
-      (setq isearch-regexp-function (if firstly-search-regex
-                                        #'firstly-search--isearch-regexp-function
-                                      #'word-search-regexp)) ; not from begining
-
-      ;; 3. install advice + keymap
+      ;; 1. install advice + keymap
       (add-function :around (local 'isearch-search-fun-function)
                     firstly-search--isearch-search-fun-function
                     ;; add "filename "
@@ -293,21 +256,29 @@ Added locally to buffers."
       (firstly-search--isearch-change-map)
 
 
-      ;; 4. mark navigation active *before* entering isearch
+      ;; 2. mark navigation active *before* entering isearch
       (setq firstly-search--isearch-navigation-flag t)
       (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
 
-      ;; 5. enter isearch (may run for a long time)
-      (isearch-forward nil t)
 
-      ;; 6. seed with the triggering key
-      (setq isearch-string (key-description key)
-            isearch-message (key-description key)
-            isearch-success t)
-            ;; isearch-adjusted nil)
-            ;; isearch-adjusted 'toggle)
-      ;; replace current command
-      (setq this-command #'isearch-repeat-forward)) ; do nothing
+      ;; 3. install our options BEFORE isearch starts (#16)
+      (let ((isearch-wrap-pause 'no) ; if the end-hook never runs (error, `C-g` at an awkward point, an unrelated isearch replacing ours) the value is clobbered for all buffers.
+            (isearch-regexp-function
+             ;; from begining of word or not
+             (if firstly-search-regex
+                 #'firstly-search--isearch-regexp-function
+               #'word-search-regexp))) ; not from begining
+        ;; 4. enter isearch (may run for a long time)
+        (isearch-forward nil t)
+
+        ;; 5. seed with the triggering key - inside the let so the search loop sees our bindings
+        (setq isearch-string (key-description key)
+              isearch-message (key-description key)
+              isearch-success t)
+        ;; isearch-adjusted nil)
+        ;; isearch-adjusted 'toggle)
+        ;; replace current command
+        (setq this-command #'isearch-repeat-forward))) ; do nothing
 
      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
      ((and firstly-search--isearch-navigation-flag
@@ -337,19 +308,6 @@ Used for speed up navingation."
     (goto-char isearch-other-end)))
 
 
-(defun firstly-search--check-same (str1 str2 str3)
-  "Compare two string values both equal to 3 or not equal.
-Argument STR1 string for comparision with STR3.
-Argument STR2 string to comparision with STR3."
-  (if (and (equal str1 str3) (equal str2 str3))
-      t
-    ;; else
-    (if (and (not (equal str1 str3)) (not (equal str2 str3)))
-          t
-      ;; else
-      nil)))
-
-
 (defun firstly-search--next-single-property-change-by-value (property pos)
   "Return the position of next PROPERTY change by value.
 Argument PROPERTY is in form (property . value).
@@ -370,41 +328,33 @@ Argument POS is (point) position."
 
 
 (defun firstly-search--previous-single-property-change-by-value (property pos)
-  "Return the position of next PROPERTY change by value.
-Should behave like
-Argument PROPERTY is in form (property . value).
-Argument POS is (point) position."
-  ;; case1: at the middle of text with property equal. we should go to the first char of text with property equal. (same)
-  ;; case2: at the middle of text without property equal. we should go to the first char of text without property equal. (same)
-  ;; case3: at the begining of text with property equal. we should go to the first char of text without property equal. (other)
-  ;; case3: at the begining of text without property equal. we should go to the first char of text with property equal. (other)
-  ;; To test:
-  ;; (goto-char (previous-single-property-change (point) 'tabulated-list-column-name ))
-  ;; (goto-char (firstly-search--previous-single-property-change-by-value '(tabulated-list-column-name . "Package" ) (point)))
-  ;; (equal (get-text-property (point) 'tabulated-list-column-name) "Package")
-  (let ((pos2 pos)
-        (pos1 (previous-single-property-change pos (car property))) ; previous position
-        (prname (car property))
-        (prvalue (cdr property))
-        (prvalue-cur (get-text-property pos (car property))) ; (get-text-property pos prname)
-        prvalue-pos1 ; previous - one step back - value
-        at-the-middle-flag)
-    (when pos1
-      (setq prvalue-pos1 (get-text-property pos1 prname))
-      (setq at-the-middle-flag (firstly-search--check-same prvalue-cur prvalue-pos1 prvalue))
-      (if at-the-middle-flag
-          (while (and pos2
-                      (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue))
-            (setq pos1 pos2)
-            (setq pos2 (previous-single-property-change pos1 prname)))
-        ;; else at the edge
-        (progn
-          (setq pos2 pos1) ;; one step
-          (while (and pos2
-                      (not (firstly-search--check-same (get-text-property pos2 prname) prvalue-cur prvalue)))
-            (setq pos1 pos2)
-            (setq pos2 (previous-single-property-change pos1 prname)))))
-      pos1)))
+  "Return the start of the previous run of PROPERTY whose value matches.
+PROPERTY is (NAME . VALUE).  POS is the starting position.
+
+Symmetric with `firstly-search--next-single-property-change-by-value'.
+Returns nil when no earlier matching run exists."
+  (let* ((prname  (car property))
+         (prvalue (cdr property))
+         (prev    (previous-single-property-change pos prname)))
+    (cond
+     ;; POS is inside a matching run: the boundary just before it
+     ;; already satisfies the caller's contract.
+     ((equal (get-text-property pos prname) prvalue) prev)
+     ;; POS is inside a non-matching run: PREV is its start; the run
+     ;; *before* PREV is the one we want, and its value is read at
+     ;; (1- PREV).
+     ((and prev (> prev (point-min))
+           (equal (get-text-property (1- prev) prname) prvalue))
+      prev)
+     ;; No adjacent match: keep stepping back until we find one.
+     ;; (Kept only for the rare “gap” case where the adjacent run is
+     ;; a different non-matching value; in practice this is one step.)
+     (t
+      (while (and prev
+                  (not (equal (get-text-property (1- prev) prname) prvalue))
+                  (> prev (point-min)))
+        (setq prev (previous-single-property-change prev prname)))
+      prev))))
 
 
 (defun firstly-search-fun-match-text-property (search-fun properties)

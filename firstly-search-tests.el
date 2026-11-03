@@ -43,16 +43,6 @@
        (kill-buffer buf))))
 
 ;;; ------------------------------------------------------------------
-;;; --check-same
-;;; ------------------------------------------------------------------
-
-(ert-deftest firstly-search-test-check-same ()
-  (should     (firstly-search--check-same "x" "x" "x"))
-  (should     (firstly-search--check-same "a" "b" "x"))
-  (should-not (firstly-search--check-same "x" "a" "x"))
-  (should-not (firstly-search--check-same "a" "x" "x")))
-
-;;; ------------------------------------------------------------------
 ;;; next-single-property-change-by-value  (CURRENT behaviour)
 ;;; ------------------------------------------------------------------
 ;; KNOWN BUG #7: when `pos' is already inside a target run, the forward
