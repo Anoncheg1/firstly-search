@@ -1,14 +1,33 @@
 ;;; firstly-search-recentf.el --- Basename isearch for `recentf-dialog-mode'  -*- lexical-binding: t -*-
 
-;; Copyright (c) 2024 github.com/Anoncheg1
+;; Copyright (c) 2024-2026 github.com/Anoncheg1
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
+;;; License
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 ;;; Commentary:
+;
 ;; Activates `firstly-search' in the `*Open Recent*' buffer produced by
 ;; `recentf-open-files': typing any printable character that is not
 ;; already bound to a command in `recentf-dialog-mode-map' starts an
 ;; incremental search restricted to the *basename* of each recent file.
-;;
+
 ;; Unlike the Dired and Bookmark integrations, search by properties
 ;; `isearch-search-fun-in-text-property' and
 ;; `firstly-search-fun-match-text-property' cannot be used here.
@@ -17,8 +36,8 @@
 ;; `firstly-search-recentf--bounded-isearch' here.
 ;; We place boundaris at part of paths with basename to search on them
 ;; only.
-;;
-;; Activation:
+
+;;;; Activation:
 ;;   (with-eval-after-load 'recentf
 ;;     (add-hook 'recentf-dialog-mode-hook #'firstly-search-recentf-mode))
 
@@ -79,8 +98,9 @@ We add first / character before basename boundary to allow search from
     (goto-char (point-min))
     (let (bounds)
       (while (not (eobp))
-        (when-let ((hit (firstly-search-recentf--basename)))
-          (let ((beg (line-beginning-position)))
+        (let ((hit (firstly-search-recentf--basename))
+              (beg (line-beginning-position)))
+          (when hit
             (push (cons (+ beg (1- (cdr hit)))
                         (+ beg (1- (cdr hit)) (1+ (length (car hit)))))
                   bounds)))
@@ -95,8 +115,9 @@ Suitable as BOUNDS for `isearch-search-fun-in-noncontiguous-region'."
     (goto-char (point-min))
     (let (bounds)
       (while (not (eobp))
-        (when-let ((hit (firstly-search-recentf--basename)))
-          (let ((beg (line-beginning-position)))
+        (let ((hit (firstly-search-recentf--basename))
+              (beg (line-beginning-position)))
+          (when hit
             (push (cons (+ beg (cdr hit))
                         (+ beg (cdr hit) (length (car hit))))
                   bounds)))

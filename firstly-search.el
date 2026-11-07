@@ -84,12 +84,11 @@
 
 ;;;; Files:
 ;; - first-search.el - common functionality for other files.
-;; - first-search-{dired,package,buffermenu,bookmarks}.el -
+;; - first-search-{dired,package,buffermenu,bookmarks,recentf}.el -
 ;;   define user available minor modes for specific major modes.
 
 ;;;; Other packages from author:
 
-;; - Modern navigation in major modes https://github.com/Anoncheg1/firstly-search
 ;; - Search with Chinese	https://github.com/Anoncheg1/pinyin-isearch
 ;; - Ediff no 3-th window	https://github.com/Anoncheg1/ediffnw
 ;; - Dired history		https://github.com/Anoncheg1/dired-hist
@@ -99,6 +98,13 @@
 ;; - Restore buffer state	https://github.com/Anoncheg1/emacs-unmodified-buffer1
 ;; - outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
 ;; - ai_block for Org mode for chat.  https://github.com/Anoncheg1/emacs-oai
+;; - TAB key reimplementation	https://github.com/Anoncheg1/emacs-indent
+
+;;;; Donate:
+
+;; - BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
+;; - USDT (Tether) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
+;; - TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
 
 ;;;; TODO:
 
@@ -107,13 +113,9 @@
 ;; - Add timeout to clear search unless Ctrl pressed
 ;; - at failed search we should cancel search completely.
 
-;;;; Donate:
-
-;; BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
-;; USDT (Tether TRX-TRON) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
-;; TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
 
 ;;; Code:
+
 ;; -=-= Variables
 (declare-function word-search-regexp "isearch")
 
@@ -181,9 +183,10 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
 
 (defun firstly-search--isearch-restore-vars ()
   "Restore isearch variables saved by `firstly-search--isearch-save-vars'."
-  (when-let ((saved (pop firstly-search--isearch-saved-vars-stack)))
-    (dolist (pair saved)
-      (set (car pair) (cdr pair)))))
+  (let ((saved (pop firstly-search--isearch-saved-vars-stack)))
+    (when saved
+      (dolist (pair saved)
+        (set (car pair) (cdr pair))))))
 
 ;; -=-= Functions
 

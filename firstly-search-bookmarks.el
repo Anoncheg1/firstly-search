@@ -2,10 +2,13 @@
 
 ;; Copyright (c) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
 
-;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
+;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
 ;; Keywords: matching, dired, isearch
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
 ;; Version: 0.1.4
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;;; License
 
 ;; This file is not part of GNU Emacs.
 
