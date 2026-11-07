@@ -5,24 +5,31 @@ Tested with Emacs 30.1
 
 # firstly-search
 
-Typing any printable character moves cursor with incremental search. Supported modes:
+Pressing normal keys activates quick isearch navigation. Typing any printable character moves the cursor with incremental search.
 
-- For Dired File manager - Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
+Supported modes:
 
-- For Package Menu - fast search in package names.
+- For Dired File manager — Modern navigation like in Thunar, Delphin, Windows and MacOS file managers.
 
-- For Buffer Menu - fast selection of buffer by name.
+- For Package Menu — fast search in package names.
+
+- For Buffer Menu — fast selection of buffer by name.
+
+- For Recentf Menu — fast search in basename of paths.
 
 This is minor mode for Emacs text editor. No external dependencies required.
 
 Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. You may rebind manually.
 
+
 ## Features
 - support for modes: Dired, Package Menu, Buffer Menu.
 - **C-n** and **C-p** is used during searching as **C-s** isearch-forward and **C-r** isearch-backward commands.
+- fast switching direction of moving
 - any printable character activate isearch-navigation. Modifiers used for commands.
 - **C-m** or **RET** quit search and allow quickly select item.
 - disable itself in Editable Dired mode (wdired-mode).
+
 
 ## Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
@@ -40,6 +47,9 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 ;; Bookmarks
 (require 'firstly-search-bookmarks)
 (add-hook 'bookmark-bmenu-mode-hook #'firstly-search-bookmarks-mode)
+;; Recentf
+(require 'firstly-search-recentf)
+(add-hook 'recentf-dialog-mode-hook	#'firstly-search-recentf-mode)
 ```
 
 ## Customization
@@ -49,6 +59,7 @@ M-x customize-group RET firstly-search
 M-x customize-group RET firstly-search-buffermenu
 M-x customize-group RET firstly-search-package
 M-x customize-group RET firstly-search-dired
+M-x customize-group RET firstly-search-recentf
 ```
 
 ## demo

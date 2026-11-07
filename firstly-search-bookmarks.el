@@ -104,16 +104,17 @@ Typing any printable character activate incremental search."
         ;; (setq firstly-search-ignore-mode-map firstly-search-bookmarks-mode-map) ; ignore keys
         (setq firstly-search-isearch-prefix firstly-search-bookmarks-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-regex firstly-search-bookmarks-regex)
-        ;; (setq firstly-search-regex nil)
+        (setq firstly-search-string-prefix firstly-search-bookmarks-regex)
+        ;; (setq firstly-search-string-prefix nil)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-bookmarks-columns)
         (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
-        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
-        (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t)) ; speed tweek
+        (setq-local isearch-repeat-on-direction-change t) ; for speed
+        (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
+        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t))))
 
 
 (provide 'firstly-search-bookmarks)

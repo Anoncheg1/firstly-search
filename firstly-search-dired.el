@@ -137,6 +137,15 @@ Totally optional and may be nil."
   (setq firstly-search-dired-advice-flag t)
   (advice-add 'wdired-change-to-dired-mode :after #'firstly-search-dired-mode-enable))
 
+;; Own implementation:
+;; (defun firstly-search--dired-isearch-search-filenames (orig-fun)
+;;   "Return the function that searches inside file names.
+;; The returned function narrows the search to match the search string
+;; only as part of a file name enclosed by the text property `dired-filename'.
+;; It's intended to override the default search function."
+;;   (firstly-search-fun-match-text-property
+;;    (funcall orig-fun) '((dired-filename . t) (dired-symlink-filename . t))))
+
 ;;;###autoload
 (define-minor-mode firstly-search-dired-mode
   "Instant search in file names.
@@ -145,15 +154,17 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search
   (if firstly-search-dired-mode
       (progn
-        (setq firstly-search-ignore-mode-map firstly-search-dired-mode-map) ; ignore keys
-        (setq firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
+        (setq-local firstly-search-ignore-mode-map firstly-search-dired-mode-map) ; ignore keys
+        (setq-local firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
+        ;; (setq firstly-search--isearch-search-fun-function #'firstly-search--dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
-        (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning nil t) ; speed tweek
+        (setq-local isearch-repeat-on-direction-change t) ; speed jumping
+        (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable nil t) ; allow in editable mode to edit text
         )
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning t)
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t) ; for speed
       (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t))))
 
 

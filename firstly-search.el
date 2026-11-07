@@ -28,10 +28,10 @@
 
 ;;; Commentary:
 
-;; Any key activate search.
+;; Any key activate navigation by tuned search.
 ;; There are minor modes for major modes: Dired, Package Menu.
-;; Cursor is moved by just pressing any printable characters
-;; of target filename or directory in current folder.
+;; Pressing any printable character moves the cursor, allowing
+;; search-based navigation to major elements.
 
 ;;;; Activation:
 
@@ -105,6 +105,7 @@
 ;; - instead of pre-command-hook make it
 ;;   like [[file:/usr/share/emacs/30.2/lisp/isearch.el::571::(defvar isearch-mode-map]]
 ;; - Add timeout to clear search unless Ctrl pressed
+;; - at failed search we should cancel search completely.
 
 ;;;; Donate:
 
@@ -127,8 +128,10 @@
   :type '(string)
   :group 'firstly-search)
 
-(defcustom firstly-search-regex "\\_<"
-  "Non-nil means search with this regex.
+(defcustom firstly-search-string-prefix "\\_<"
+  "Non-nil means add this as regex prefix to search string.
+For empty string `word-search-regexp' is set to
+ `isearch-regexp-function'.
 This value used to search from begining of every word separated
 by space.  You may use \\(\\_<\\|-\\) for search in words
 separated by -."
@@ -153,18 +156,23 @@ May be sub-minor-mode.")
   (copy-keymap isearch-mode-map)
   "Pristine copy of `isearch-mode-map' captured at load time.")
 
-(defvar-local firstly-search-ignore-mode-map nil)
+(defvar-local firstly-search-ignore-mode-map nil
+  "Optional.")
 
-(defvar-local firstly-search--isearch-search-fun-function nil)
+(defvar-local firstly-search--isearch-search-fun-function nil
+  "Used for advicing `isearch-search-fun-function' function.
+This function should return funcation that call function
+ `isearch-forward' with appropriate regex.")
 
 ;; -=-= Functions
 
 (defun firstly-search--isearch-regexp-function (string &optional _lax)
   "Build a regexp that anchors the user's input at a word start.
 In literal mode, quote STRING so metacharacters match themselves.
-In regexp mode, use STRING as the user's regexp body — do not
-re-quote — but still prepend `firstly-search-regex' so the match
-starts at the same anchor.
+
+In regexp mode, use STRING as the user's regexp body — do not re-quote —
+ but still prepend `firstly-search-string-prefix' so the match starts at
+ the same anchor.
 
 Optional argument LAX is accepted for compatibility with
 `isearch-regexp-function' and ignored."
@@ -172,10 +180,10 @@ Optional argument LAX is accepted for compatibility with
    ((string-empty-p string) "")
    (isearch-regexp
     ;; user is typing a regexp; honour it verbatim after the anchor
-    (concat firstly-search-regex string))
+    (concat firstly-search-string-prefix string))
    (t
     ;; literal search; protect metacharacters in filenames etc.
-    (concat firstly-search-regex (regexp-quote string)))))
+    (concat firstly-search-string-prefix (regexp-quote string)))))
 
 (defun firstly-search--isearch-repeat-backward (&optional arg)
   "Supress `visible-bell' on error when reaching bob.
@@ -194,14 +202,6 @@ End of the buffer.  This error is hard to fix other way."
     (isearch-repeat-forward arg)))
 
 ;; -=-= keys Map
-;; create copy of isearch-mode-map. Activates after typing.
-(defvar-keymap firstly-search-nav-map
-      :parent isearch-mode-map
-      "C-p" #'firstly-search--isearch-repeat-backward
-      "C-n" #'firstly-search--isearch-repeat-forward
-      ;; "C-m" #'dired-find-file
-      )
-
 
 (defun firstly-search--isearch-change-map ()
   "Install `firstly-search-nav-map' as `isearch-mode-map' for this session.
@@ -224,8 +224,6 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
 
     ;; restore global isearch options from the pristine snapshot
     (setq isearch-mode-map firstly-search--original-isearch-mode-map)
-    ;; (setq isearch-wrap-pause      firstly-search--saved-isearch-wrap-pause)
-    ;; (setq isearch-regexp-function firstly-search--saved-isearch-regexp-function)
 
     ;; drop our advice (idempotent)
     (remove-function (local 'isearch-search-fun-function)
@@ -234,51 +232,68 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
     (remove-hook 'isearch-mode-end-hook
                  #'firstly-search--isearch-mode-end-hook t)))
 
-;; -=-= pre-command
+;; -=-= hooks
+(defun firstly-search--my-goto-match-beginning-hook ()
+  "Place cursor always at the end of search result.
+Used for speed up navingation."
+  (when (and (not isearch-forward) isearch-other-end)
+    (goto-char isearch-other-end)))
+
+
+(defun firstly-search--do-isearch (str)
+  "Also used for testing with STR."
+  ;; 1. install advice + keymap
+  (when firstly-search--isearch-search-fun-function
+    (add-function :around (local 'isearch-search-fun-function)
+                  firstly-search--isearch-search-fun-function
+                  ;; add "filename "
+                  (list (cons 'isearch-message-prefix firstly-search-isearch-prefix))))
+  (firstly-search--isearch-change-map)
+
+
+  ;; 2. mark navigation active *before* entering isearch
+  (setq firstly-search--isearch-navigation-flag t)
+  (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
+
+
+
+  ;; 4. enter isearch (may run for a long time)
+  (isearch-forward nil t)
+  ;; 3. install our options (works only after run search)
+  (setq isearch-regexp-function (if (stringp firstly-search-string-prefix)
+                                    #'firstly-search--isearch-regexp-function
+                                  ;; else for ""
+                                  (when (string-empty-p firstly-search-string-prefix)
+                                    #'word-search-regexp)
+                                  ;; else = nil
+                                  ))
+  (setq isearch-wrap-pause 'no)
+
+  ;; 5. seed with the triggering key - inside the let so the search loop sees our bindings
+  (setq isearch-string str
+        isearch-message str
+        isearch-success t)
+  ;; (setq isearch-adjusted nil)
+  ;; (setq isearch-adjusted 'toggle)
+  ;; replace current command
+  (setq this-command #'isearch-repeat-forward))
+
+
 (defun firstly-search--pre-command-hook ()
   "Advice to add alphabet fast navigation.
 Added locally to buffers."
   (let* ((key (this-single-command-keys))
-         (key-char (key-description key)))
+         (key-char (key-description key))
+         (key-des (key-description key)))
     (cond
      ;; 1) - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
            (not firstly-search--isearch-navigation-flag)
            (not (eq (string-match-p firstly-search-ignore-keys-re key-char) 0)) ; ignore some characters
            (eq (string-match-p "^[[:print:]]$" key-char) 0)
-           (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist in dired-fs-mode-map - additional ignore some characters
+           (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist map - additional ignore some characters
 
-      ;; 1. install advice + keymap
-      (add-function :around (local 'isearch-search-fun-function)
-                    firstly-search--isearch-search-fun-function
-                    ;; add "filename "
-                    (list (cons 'isearch-message-prefix firstly-search-isearch-prefix)))
-      (firstly-search--isearch-change-map)
-
-
-      ;; 2. mark navigation active *before* entering isearch
-      (setq firstly-search--isearch-navigation-flag t)
-      (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
-
-
-      ;; 3. install our options BEFORE isearch starts (#16)
-      (let ((isearch-wrap-pause 'no) ; if the end-hook never runs (error, `C-g` at an awkward point, an unrelated isearch replacing ours) the value is clobbered for all buffers.
-            (isearch-regexp-function
-             ;; from begining of word or not
-             (if firstly-search-regex
-                 #'firstly-search--isearch-regexp-function
-               #'word-search-regexp))) ; not from begining
-        ;; 4. enter isearch (may run for a long time)
-        (isearch-forward nil t)
-
-        ;; 5. seed with the triggering key - inside the let so the search loop sees our bindings
-        (setq isearch-string (key-description key)
-              isearch-message (key-description key)
-              isearch-success t)
-        ;; isearch-adjusted nil)
-        ;; isearch-adjusted 'toggle)
-        ;; replace current command
-        (setq this-command #'isearch-repeat-forward))) ; do nothing
+      (firstly-search--do-isearch key-des))
 
      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
      ((and firstly-search--isearch-navigation-flag
@@ -291,21 +306,9 @@ Added locally to buffers."
                       `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
       (setq isearch-string "")
       (setq isearch-message "")
-      (isearch-done))
-
-     ;; 3) - speed up navigation
-     ((and firstly-search--isearch-navigation-flag
-           (eq last-command #'isearch-repeat-backward)
-           (eq this-command #'isearch-repeat-forward))
-      (call-interactively #'isearch-repeat-forward)))))
+      (isearch-done)))))
 
 ;; -=-= Functions
-
-(defun firstly-search--my-goto-match-beginning ()
-  "Place cursor always at the end of search result.
-Used for speed up navingation."
-  (when (and isearch-forward isearch-other-end)
-    (goto-char isearch-other-end)))
 
 
 (defun firstly-search--next-single-property-change-by-value (property pos)

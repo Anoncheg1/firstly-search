@@ -132,13 +132,13 @@
 ;;; ------------------------------------------------------------------
 
 (ert-deftest firstly-search-test-regexp-fn ()
-  (let ((firstly-search-regex "\\_<"))
+  (let ((firstly-search-string-prefix "\\_<"))
     (should (equal (firstly-search--isearch-regexp-function "") ""))
     (should (equal (firstly-search--isearch-regexp-function "abc")
                    "\\_<abc"))
     (should (equal (firstly-search--isearch-regexp-function "x" t)
                    "\\_<x")))
-  (let ((firstly-search-regex ""))
+  (let ((firstly-search-string-prefix ""))
     (should (equal (firstly-search--isearch-regexp-function "abc")
                    "abc"))))
 
@@ -198,9 +198,7 @@
 (ert-deftest firstly-search-test-original-map-snapshot ()
   (skip-unless (boundp 'firstly-search--original-isearch-mode-map))
   (should-not (eq firstly-search--original-isearch-mode-map
-                  isearch-mode-map))
-  (should-not (eq firstly-search--original-isearch-mode-map
-                  firstly-search-nav-map)))
+                  isearch-mode-map)))
 
 (ert-deftest firstly-search-test-flag-buffer-local ()
   (skip-unless (local-variable-if-set-p
@@ -213,14 +211,14 @@
     (should-not firstly-search--isearch-navigation-flag)))
 
 ;;; ------------------------------------------------------------------
-;;; Nav map bindings
+;;; Nav map bindings (old)
 ;;; ------------------------------------------------------------------
 
-(ert-deftest firstly-search-test-nav-map ()
-  (should (eq (lookup-key firstly-search-nav-map (kbd "C-n"))
-              #'firstly-search--isearch-repeat-forward))
-  (should (eq (lookup-key firstly-search-nav-map (kbd "C-p"))
-              #'firstly-search--isearch-repeat-backward)))
+;; (ert-deftest firstly-search-test-nav-map ()
+;;   (should (eq (lookup-key firstly-search-nav-map (kbd "C-n"))
+;;               #'firstly-search--isearch-repeat-forward))
+;;   (should (eq (lookup-key firstly-search-nav-map (kbd "C-p"))
+;;               #'firstly-search--isearch-repeat-backward)))
 
 
 (provide 'firstly-search-tests)
