@@ -164,6 +164,31 @@ May be sub-minor-mode.")
 This function should return funcation that call function
  `isearch-forward' with appropriate regex.")
 
+(defvar firstly-search-navigation-map
+  (let ((map (make-keymap)))
+    ;; Every multibyte printable char starts navigation by default.
+    (set-char-table-range (nth 1 map) (cons #x100 (max-char))
+                          #'firstly-search--do-isearch)
+    ;; Single-byte printable chars start navigation by default.
+    (let ((i ?\s))
+      (while (< i 256)
+        (define-key map (vector i) #'firstly-search--do-isearch)
+        (setq i (1+ i))))
+    ;; Meta prefix: give it its own sparse map so local M-… bindings
+    ;; still resolve through the global/local maps (mirrors isearch).
+    (let ((meta-map (make-sparse-keymap)))
+      (define-key map (char-to-string meta-prefix-char) meta-map))
+    ;; Explicit ignores: anything you previously listed in
+    ;; `firstly-search-ignore-keys-re` or `firstly-search-ignore-mode-map`
+    ;; goes here as an explicit nil binding. Examples:
+    ;; (define-key map (kbd "SPC") nil)
+    ;; (define-key map (kbd "DEL") nil)
+    map)
+  "Keymap deciding which keys start `firstly-search' navigation.
+Any key bound to `firstly-search--do-isearch' starts navigation;
+any key explicitly bound to nil is ignored; anything else falls
+through to the normal command loop.")
+
 ;; -=-= saving isearch
 
 (defvar-local firstly-search--isearch-saved-vars-stack nil
@@ -313,8 +338,6 @@ Used for speed up navingation."
   (setq isearch-string str
         isearch-message str
         isearch-success t)
-  ;; (setq isearch-adjusted nil)
-  ;; (setq isearch-adjusted 'toggle)
   ;; replace current command
   (setq this-command #'isearch-repeat-forward))
 
@@ -323,16 +346,13 @@ Used for speed up navingation."
   "Advice to add alphabet fast navigation.
 Added locally to buffers."
   (let* ((key (this-single-command-keys))
-         (key-char (key-description key))
          (key-des (key-description key)))
     (cond
      ;; 1) - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
            (not firstly-search--isearch-navigation-flag)
-           (not (eq (string-match-p firstly-search-ignore-keys-re key-char) 0)) ; ignore some characters
-           (eq (string-match-p "^[[:print:]]$" key-char) 0)
-           (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist map - additional ignore some characters
-
+           (eq (lookup-key firstly-search-navigation-map key t)
+               #'firstly-search--do-isearch))
 
       (firstly-search--do-isearch key-des))
 
