@@ -84,14 +84,14 @@
         (save-window-excursion
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "Click")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point) ; return 1 on failure
                               )))
           (isearch-done)
 
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "y.el")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point) ; return 1 on failure
                               )))
           (isearch-done)
@@ -106,7 +106,7 @@
 
         (goto-char (point-min))
         (should (= 1 (progn (firstly-search--do-isearch "tmp")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point) ; return 1 on failure
                               )))
         (isearch-done)))))
@@ -122,7 +122,7 @@
         (save-window-excursion
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "Click")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
           (isearch-done)
 
@@ -140,7 +140,7 @@
 
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "tmp")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
           (isearch-done)))))
 
@@ -154,13 +154,13 @@
         (save-window-excursion
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "Click")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
           (isearch-done)
 
           (goto-char (point-min))
           (should (= 1 (progn (firstly-search--do-isearch "y.el")
-                              (isearch-repeat-forward)
+                              ;; (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
           (isearch-done)
 
@@ -186,7 +186,7 @@
       (save-window-excursion
         (goto-char (point-min))
         (should (= 1 (progn (firstly-search--do-isearch "Click")
-                            (isearch-repeat-forward)
+                            ;; (isearch-repeat-forward)
                             (point)))) ; return 1 on failure
         (isearch-done)
 

@@ -111,8 +111,6 @@
 ;; - instead of pre-command-hook make it
 ;;   like [[file:/usr/share/emacs/30.2/lisp/isearch.el::571::(defvar isearch-mode-map]]
 ;; - Add timeout to clear search unless Ctrl pressed
-;; - at failed search we should cancel search completely.
-
 
 ;;; Code:
 
@@ -178,7 +176,9 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
   "Snapshot isearch variables mutated by `firstly-search--do-isearch'."
   (push (list (cons 'isearch-regexp-function           isearch-regexp-function)
               (cons 'isearch-wrap-pause                 isearch-wrap-pause)
-              (cons 'isearch-repeat-on-direction-change isearch-repeat-on-direction-change))
+              (cons 'isearch-repeat-on-direction-change isearch-repeat-on-direction-change)
+              (cons 'isearch-message isearch-message)
+              (cons 'isearch-string isearch-string))
         firstly-search--isearch-saved-vars-stack))
 
 (defun firstly-search--isearch-restore-vars ()
@@ -242,7 +242,8 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
     (setq isearch-mode-map map)))
 
 (defun firstly-search--isearch-mode-end-hook ()
-  "Disable navigation and restore global isearch state."
+  "Disable navigation and restore global isearch state.
+Called by `isearch-done' function."
   (when firstly-search--isearch-navigation-flag
     (firstly-search--isearch-restore-vars)
 
@@ -255,6 +256,8 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
 
     (remove-hook 'isearch-mode-end-hook
                  #'firstly-search--isearch-mode-end-hook t)
+
+    (advice-remove 'isearch-repeat #'firstly-search--abort-on-failed-repeat)
 
     (setq firstly-search--isearch-navigation-flag nil)))
 
@@ -279,6 +282,9 @@ Used for speed up navingation."
                   firstly-search--isearch-search-fun-function
                   ;; add "filename "
                   (list (cons 'isearch-message-prefix firstly-search-isearch-prefix))))
+
+  (advice-add 'isearch-repeat :after #'firstly-search--abort-on-failed-repeat)
+
   (firstly-search--isearch-change-map)
 
 
@@ -325,6 +331,7 @@ Added locally to buffers."
            (eq (string-match-p "^[[:print:]]$" key-char) 0)
            (not (commandp (lookup-key firstly-search-ignore-mode-map key nil)))) ; no command exist map - additional ignore some characters
 
+
       (firstly-search--do-isearch key-des))
 
      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
@@ -336,9 +343,15 @@ Added locally to buffers."
                     (commandp
                      (lookup-key
                       `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
-      (setq isearch-string "")
-      (setq isearch-message "")
       (isearch-done)))))
+
+(defun firstly-search--abort-on-failed-repeat (&rest _)
+  "Do at failed search cancel search completely."
+  (when (and isearch-mode
+             (not isearch-success)
+             firstly-search--isearch-navigation-flag)
+    (isearch-cancel) ; call `isearch-done' and signal
+    ))
 
 ;; -=-= Functions
 
