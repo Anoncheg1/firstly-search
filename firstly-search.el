@@ -1,6 +1,6 @@
 ;;; firstly-search.el --- Search with any key: Dired, Package, Buffer menu modes  -*- lexical-binding: t -*-
 
-;; Copyright (c) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
+;; Copyright (c) 2024-2026 github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
 ;; Keywords: matching, isearch, navigation, dired, packagemenu
@@ -164,6 +164,27 @@ May be sub-minor-mode.")
 This function should return funcation that call function
  `isearch-forward' with appropriate regex.")
 
+;; -=-= saving isearch
+
+(defvar-local firstly-search--isearch-saved-vars-stack nil
+  "Alist of (SYMBOL . VALUE) saved by `firstly-search--do-isearch'.
+
+Consumed by `firstly-search--isearch-mode-end-hook' to restore
+isearch state that `firstly-search--do-isearch' mutates globally.")
+
+(defun firstly-search--isearch-save-vars ()
+  "Snapshot isearch variables mutated by `firstly-search--do-isearch'."
+  (push (list (cons 'isearch-regexp-function           isearch-regexp-function)
+              (cons 'isearch-wrap-pause                 isearch-wrap-pause)
+              (cons 'isearch-repeat-on-direction-change isearch-repeat-on-direction-change))
+        firstly-search--isearch-saved-vars-stack))
+
+(defun firstly-search--isearch-restore-vars ()
+  "Restore isearch variables saved by `firstly-search--isearch-save-vars'."
+  (when-let ((saved (pop firstly-search--isearch-saved-vars-stack)))
+    (dolist (pair saved)
+      (set (car pair) (cdr pair)))))
+
 ;; -=-= Functions
 
 (defun firstly-search--isearch-regexp-function (string &optional _lax)
@@ -220,7 +241,7 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
 (defun firstly-search--isearch-mode-end-hook ()
   "Disable navigation and restore global isearch state."
   (when firstly-search--isearch-navigation-flag
-    (setq firstly-search--isearch-navigation-flag nil)
+    (firstly-search--isearch-restore-vars)
 
     ;; restore global isearch options from the pristine snapshot
     (setq isearch-mode-map firstly-search--original-isearch-mode-map)
@@ -230,18 +251,25 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
                      #'firstly-search--isearch-search-fun-function)
 
     (remove-hook 'isearch-mode-end-hook
-                 #'firstly-search--isearch-mode-end-hook t)))
+                 #'firstly-search--isearch-mode-end-hook t)
+
+    (setq firstly-search--isearch-navigation-flag nil)))
 
 ;; -=-= hooks
 (defun firstly-search--my-goto-match-beginning-hook ()
   "Place cursor always at the end of search result.
 Used for speed up navingation."
-  (when (and (not isearch-forward) isearch-other-end)
+  (when (and (not isearch-forward)
+             isearch-other-end
+             firstly-search--isearch-navigation-flag)
     (goto-char isearch-other-end)))
 
 
 (defun firstly-search--do-isearch (str)
   "Also used for testing with STR."
+  ;; 0. snapshot the isearch vars we are about to clobber
+  (firstly-search--isearch-save-vars)
+
   ;; 1. install advice + keymap
   (when firstly-search--isearch-search-fun-function
     (add-function :around (local 'isearch-search-fun-function)
@@ -268,6 +296,7 @@ Used for speed up navingation."
                                   ;; else = nil
                                   ))
   (setq isearch-wrap-pause 'no)
+  (setq isearch-repeat-on-direction-change t)
 
   ;; 5. seed with the triggering key - inside the let so the search loop sees our bindings
   (setq isearch-string str

@@ -14,7 +14,7 @@
 ;; `firstly-search-fun-match-text-property' cannot be used here.
 ;; We search by boundaries with
 ;; `isearch-search-fun-in-noncontiguous-region' and
-;; `firstly-search-recentf--basename-isearch' here.
+;; `firstly-search-recentf--bounded-isearch' here.
 ;; We place boundaris at part of paths with basename to search on them
 ;; only.
 ;;
@@ -32,33 +32,21 @@
   :type 'string
   :group 'firstly-search-recentf)
 
-;; (defvar firstly-search-recentf-debug t
-;;   "When non-nil, log every call to the basename search function.")
-
-;; (defun firstly-search-recentf--dbg (fmt &rest args)
-;;   (when firstly-search-recentf-debug
-;;     (let ((line (apply #'format fmt args)))
-;;       (with-current-buffer (get-buffer-create "*firstly-debug*")
-;;         (goto-char (point-max))
-;;         (insert line "\n"))
-;;       (message "FS-RECENTF: %s" line))))
-
-(defcustom firstly-search-recentf-basename-flag nil
+(defcustom firstly-search-recentf-basename-flag t
   "Non-nil means search will limited to basenames of paths.
 Used in `isearch-regexp-function'."
-  :type 'string
+  :type 'boolean
   :group 'firstly-search-recentf)
 
 (defcustom firstly-search-recentf-from-start-flag t
   "Non-nil means search will be from begining after path separator.
 Used in `isearch-regexp-function'."
-  :type 'string
+  :type 'boolean
   :group 'firstly-search-recentf)
 
-(defvar firstly-search-recentf--string-prefix-slash (if (memq system-type '(ms-dos windows-nt))
-                                                        "\\"
-                                                      "/")
-  "It set at loading to linux /or windows slash.
+(defvar firstly-search-recentf--path-separators
+  (if (memq system-type '(ms-dos windows-nt cygwin)) "\\" "/")
+  "Characters that may separate directories in a recentf path.
 Used in `isearch-regexp-function'.")
 
 
@@ -115,18 +103,32 @@ Suitable as BOUNDS for `isearch-search-fun-in-noncontiguous-region'."
         (forward-line 1))
       (nreverse bounds))))
 
+(defun firstly-search-recentf--bounds-full ()
+  "Return (START . END) ranges with just one for whole recentf buffer.
+Suitable as BOUNDS for `isearch-search-fun-in-noncontiguous-region'."
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 3)
+    (list (cons (point)
+                (progn (goto-char (point-max))
+                       (forward-line -1)
+                       (point))))))
 
-(defun firstly-search-recentf--basename-isearch (orig-fun)
+
+(defun firstly-search-recentf--bounded-isearch (orig-fun)
   "Return the function that searches inside basenames in recentf buffer.
 The returned function narrows the search in basenames bounds in form of
  list of (START . END).
 Replacement for `isearch-search-fun-function'.
 Argument ORIG-FUN isearch internal function."
   ;; (print "wat")
-  (let ((bounds (if firstly-search-recentf-from-start-flag
-                    (firstly-search-recentf--bounds-with-slash)
+  (let ((bounds (if firstly-search-recentf-basename-flag
+                    (if firstly-search-recentf-from-start-flag
+                        (firstly-search-recentf--bounds-with-slash)
+                      ;; else
+                      (firstly-search-recentf--bounds-normal))
                   ;; else
-                  (firstly-search-recentf--bounds-normal))))
+                  (firstly-search-recentf--bounds-full))))
     (isearch-search-fun-in-noncontiguous-region (funcall orig-fun) bounds)))
 
 (defvar firstly-search-recentf-ignore-map
@@ -151,12 +153,10 @@ handled by the dialog keymap.")
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
         (setq-local firstly-search-string-prefix (when firstly-search-recentf-from-start-flag
-                                                   firstly-search-recentf--string-prefix-slash)) ; nil by default
+                                                   firstly-search-recentf--path-separators)) ; nil by default
         (setq-local firstly-search-ignore-mode-map firstly-search-recentf-ignore-map)
         (setq-local firstly-search--isearch-search-fun-function
-                    (when firstly-search-recentf-basename-flag
-                      #'firstly-search-recentf--basename-isearch))
-        (setq-local isearch-repeat-on-direction-change t) ; for speed
+                    #'firstly-search-recentf--bounded-isearch)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
     (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)

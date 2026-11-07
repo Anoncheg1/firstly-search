@@ -81,36 +81,35 @@
 
 
       (fsr--with-buffer ("/tmp/only.el")
-        (goto-char (point-min))
-        (should (= 1 (progn (firstly-search--do-isearch "Click")
-                            (isearch-repeat-forward)
-                            (point) ; return 1 on failure
-                            )))
-        (isearch-done))
-
-      (fsr--with-buffer ("/tmp/only.el")
-        (goto-char (point-min))
-        (should (= 1 (progn (firstly-search--do-isearch "y.el")
-                            (isearch-repeat-forward)
-                            (point) ; return 1 on failure
-                            )))
-        (isearch-done))
-
-      (fsr--with-buffer ("/tmp/only.el")
-        (goto-char (point-min))
-        (should (= 115 (progn (firstly-search--do-isearch "only")
+        (save-window-excursion
+          (goto-char (point-min))
+          (should (= 1 (progn (firstly-search--do-isearch "Click")
                               (isearch-repeat-forward)
                               (point) ; return 1 on failure
                               )))
-        (isearch-done))
+          (isearch-done)
 
-      (fsr--with-buffer ("/tmp/only.el")
+          (goto-char (point-min))
+          (should (= 1 (progn (firstly-search--do-isearch "y.el")
+                              (isearch-repeat-forward)
+                              (point) ; return 1 on failure
+                              )))
+          (isearch-done)
+
+
+        (goto-char (point-min))
+        (should (= 120 (progn (firstly-search--do-isearch "only")
+                              (isearch-repeat-forward)
+                              (point) ; return 1 on failure
+                              )))
+        (isearch-done)
+
         (goto-char (point-min))
         (should (= 1 (progn (firstly-search--do-isearch "tmp")
                               (isearch-repeat-forward)
                               (point) ; return 1 on failure
                               )))
-        (isearch-done))))
+        (isearch-done)))))
 
 (ert-deftest fsr-basename-from-start-t-nil ()
     (let ( ; (isearch-forward t)
@@ -121,29 +120,29 @@
 
       (fsr--with-buffer ("/tmp/only.el")
         (save-window-excursion
-        (goto-char (point-min))
-        (should (= 1 (progn (firstly-search--do-isearch "Click")
-                            (isearch-repeat-forward)
-                            (point)))) ; return 1 on failure
-        (isearch-done)
-
-        (goto-char (point-min))
-        (should (= 119 (progn (firstly-search--do-isearch "y.el")
-                            (isearch-repeat-forward)
-                            (point)))) ; return 1 on failure
-        (isearch-done)
-
-        (goto-char (point-min))
-        (should (= 116 (progn (firstly-search--do-isearch "only")
+          (goto-char (point-min))
+          (should (= 1 (progn (firstly-search--do-isearch "Click")
                               (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
-        (isearch-done)
+          (isearch-done)
 
-        (goto-char (point-min))
-        (should (= 1 (progn (firstly-search--do-isearch "tmp")
+          (goto-char (point-min))
+          (should (= 123 (progn (firstly-search--do-isearch "y.el")
+                                (isearch-repeat-forward)
+                                (point)))) ; return 1 on failure
+          (isearch-done)
+
+          (goto-char (point-min))
+          (should (= 120 (progn (firstly-search--do-isearch "only")
+                                (isearch-repeat-forward)
+                                (point)))) ; return 1 on failure
+          (isearch-done)
+
+          (goto-char (point-min))
+          (should (= 1 (progn (firstly-search--do-isearch "tmp")
                               (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
-        (isearch-done)))))
+          (isearch-done)))))
 
 (ert-deftest fsr-basename-from-start-nil-t ()
     (let ( ; (isearch-forward t)
@@ -166,13 +165,13 @@
           (isearch-done)
 
           (goto-char (point-min))
-          (should (= 115 (progn (firstly-search--do-isearch "only")
+          (should (= 120 (progn (firstly-search--do-isearch "only")
                                 (isearch-repeat-forward)
                                 (point)))) ; return 1 on failure
           (isearch-done)
 
           (goto-char (point-min))
-          (should (= 111 (progn (firstly-search--do-isearch "tmp")
+          (should (= 115 (progn (firstly-search--do-isearch "tmp")
                                 (isearch-repeat-forward)
                                 (point)))) ; return 1 on failure
           (isearch-done)))))
@@ -192,20 +191,20 @@
         (isearch-done)
 
         (goto-char (point-min))
-        (should (= 119 (progn (firstly-search--do-isearch "y.el")
+        (should (= 123 (progn (firstly-search--do-isearch "y.el")
                               (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
         (isearch-done)
 
 
         (goto-char (point-min))
-        (should (= 116 (progn (firstly-search--do-isearch "only")
+        (should (= 120 (progn (firstly-search--do-isearch "only")
                               (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
         (isearch-done)
 
         (goto-char (point-min))
-        (should (= 112 (progn (firstly-search--do-isearch "tmp")
+        (should (= 115 (progn (firstly-search--do-isearch "tmp")
                               (isearch-repeat-forward)
                               (point)))) ; return 1 on failure
         (isearch-done)))))

@@ -106,7 +106,6 @@ Typing any printable character activate incremental search."
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
         (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
-        (setq-local isearch-repeat-on-direction-change t) ; for speed
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; fast actication
     (progn
