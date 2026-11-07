@@ -165,29 +165,19 @@ This function should return funcation that call function
  `isearch-forward' with appropriate regex.")
 
 (defvar firstly-search-navigation-map
-  (let ((map (make-keymap)))
-    ;; Every multibyte printable char starts navigation by default.
+  (let ((map (make-keymap)))            ; full keymap: char-table at (nth 1 map)
     (set-char-table-range (nth 1 map) (cons #x100 (max-char))
                           #'firstly-search--do-isearch)
-    ;; Single-byte printable chars start navigation by default.
     (let ((i ?\s))
       (while (< i 256)
         (define-key map (vector i) #'firstly-search--do-isearch)
         (setq i (1+ i))))
-    ;; Meta prefix: give it its own sparse map so local M-… bindings
-    ;; still resolve through the global/local maps (mirrors isearch).
-    (let ((meta-map (make-sparse-keymap)))
-      (define-key map (char-to-string meta-prefix-char) meta-map))
-    ;; Explicit ignores: anything you previously listed in
-    ;; `firstly-search-ignore-keys-re` or `firstly-search-ignore-mode-map`
-    ;; goes here as an explicit nil binding. Examples:
+    ;; ignores: explicit nil bindings, replacing the old regex + ignore-map
     ;; (define-key map (kbd "SPC") nil)
-    ;; (define-key map (kbd "DEL") nil)
     map)
-  "Keymap deciding which keys start `firstly-search' navigation.
-Any key bound to `firstly-search--do-isearch' starts navigation;
-any key explicitly bound to nil is ignored; anything else falls
-through to the normal command loop.")
+  "Keys that start `firstly-search' navigation.
+Bound to `firstly-search--do-isearch' = start; explicit nil = ignore;
+unbound = fall through to the normal command loop.")
 
 ;; -=-= saving isearch
 
