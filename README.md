@@ -75,9 +75,6 @@ I recommend to highlight current line.
 - dired-explorer.el package have the same functionality for Dired mode.
 - 2009 dired-lis https://github.com/weikent/emacs/blob/master/lisps/dired/dired-lis.el or http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el
 
-## known bugs
-- in Buffer Menu C-g do not break search completely.
-
 ## Other packages
 - Navigation in Dired, Packages, Buffers modes https://github.com/Anoncheg1/firstly-search
 - Search with Chinese		https://github.com/Anoncheg1/pinyin-isearch
@@ -88,17 +85,17 @@ I recommend to highlight current line.
 - Solution for "callback hell"	https://github.com/Anoncheg1/emacs-async1
 - Restore buffer state		https://github.com/Anoncheg1/emacs-unmodified-buffer1
 - outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
-- Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-oai
+- Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-cui
+- TAB key reimplementation	https://github.com/Anoncheg1/emacs-indent
 
 ## Donate, sponsor author
-You can sponsor author directly with crypto currencies:
+You can sponsor author crypto money directly with crypto currencies:
+*BTC (Bitcoin) address:* ~1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25~
 
-- BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
+[[https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/BTC-1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25.png]]
 
-![BTC](https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/BTC-1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25.png)
+*USDT (Tether on TRX-TRON) address:* ~TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN~
 
-- USDT (Tether TRX-TRON) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
+[[https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/USDT-TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN.png]]
 
-![BTC](https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/USDT-TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN.png)
-
-- TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
+*TON (Telegram Open Network) address:* ~UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D~

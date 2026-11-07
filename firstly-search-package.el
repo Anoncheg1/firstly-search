@@ -5,7 +5,7 @@
 ;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
 ;; Keywords: matching, dired, isearch
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
-;; Version: 0.1.4
+;; Version: 0.2
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;;; License

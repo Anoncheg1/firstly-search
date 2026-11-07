@@ -6,8 +6,8 @@
 ;; Keywords: matching, isearch, navigation, dired, packagemenu
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
 ;; Created: 10 Sep 2024
-;; Version: 0.1.4
-;; Package-Requires: ((emacs "29.1") (compat "30.1"))
+;; Version: 0.2
+;; Package-Requires: ((emacs "29.1") (compat "31.1"))
 
 ;;; License
 
@@ -83,6 +83,7 @@
 ;;
 
 ;;;; Files:
+
 ;; - first-search.el - common functionality for other files.
 ;; - first-search-{dired,package,buffermenu,bookmarks,recentf}.el -
 ;;   define user available minor modes for specific major modes.
@@ -97,7 +98,7 @@
 ;; - Solution for "callback hell"	https://github.com/Anoncheg1/emacs-async1
 ;; - Restore buffer state	https://github.com/Anoncheg1/emacs-unmodified-buffer1
 ;; - outline.el usage		https://github.com/Anoncheg1/emacs-outline-it
-;; - ai_block for Org mode for chat.  https://github.com/Anoncheg1/emacs-oai
+;; - ai_block for Org mode for chat.  https://github.com/Anoncheg1/emacs-cui
 ;; - TAB key reimplementation	https://github.com/Anoncheg1/emacs-indent
 
 ;;;; Donate:
@@ -109,6 +110,8 @@
 ;;;; TODO:
 
 ;;; Code:
+
+;; Touch: We are on the grass I want to see you stripped.
 
 ;; -=-= Variables
 (declare-function word-search-regexp "isearch")
