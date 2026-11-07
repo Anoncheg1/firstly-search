@@ -251,8 +251,10 @@ Called by `isearch-done' function."
     (setq isearch-mode-map firstly-search--original-isearch-mode-map)
 
     ;; drop our advice (idempotent)
-    (remove-function (local 'isearch-search-fun-function)
-                     #'firstly-search--isearch-search-fun-function)
+    (when (advice-member-p #'firstly-search--isearch-search-fun-function
+                           'isearch-search-fun-function)
+      (remove-function (local 'isearch-search-fun-function)
+                       #'firstly-search--isearch-search-fun-function))
 
     (remove-hook 'isearch-mode-end-hook
                  #'firstly-search--isearch-mode-end-hook t)
