@@ -108,10 +108,6 @@
 
 ;;;; TODO:
 
-;; - instead of pre-command-hook make it
-;;   like [[file:/usr/share/emacs/30.2/lisp/isearch.el::571::(defvar isearch-mode-map]]
-;; - Add timeout to clear search unless Ctrl pressed
-
 ;;; Code:
 
 ;; -=-= Variables
@@ -202,6 +198,35 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
     (when saved
       (dolist (pair saved)
         (set (car pair) (cdr pair))))))
+
+;; -=-= Timer
+
+(defvar firstly-search--renew-timer nil
+  "Idle timer renewing while firstly-search navigation is active.")
+
+(defcustom firstly-search--renew-idle-seconds 3
+  "Idle delay (seconds) before the renewal timer re-checks isearch state.
+Small enough to feel immediate after a pause; large enough not to churn
+while the user is actively typing."
+  :type 'number
+  :group 'firstly-search)
+
+(defun firstly-search--renew-timer-callback (&optional by-time)
+  "Re-arm while isearch runs; on termination cancel and call the abort.
+Depending on `isearch-success' renew or stop timer.
+Optional argument BY-TIME used to detect call from timer, to indicate
+ expiration of time."
+  (when (timerp firstly-search--renew-timer)
+    (cancel-timer firstly-search--renew-timer))
+
+  (if (and isearch-mode isearch-success (not by-time))
+      (setq firstly-search--renew-timer
+            (run-with-idle-timer firstly-search--renew-idle-seconds
+                                 nil #'firstly-search--renew-timer-callback t))
+    ;; else isearch-success is nil
+    (setq firstly-search--renew-timer nil)
+    (firstly-search--abort)))
+
 
 ;; -=-= Functions
 
@@ -304,12 +329,9 @@ Used for speed up navingation."
 
   (firstly-search--isearch-change-map)
 
-
   ;; 2. mark navigation active *before* entering isearch
   (setq firstly-search--isearch-navigation-flag t)
   (add-hook 'isearch-mode-end-hook #'firstly-search--isearch-mode-end-hook nil t)
-
-
 
   ;; 4. enter isearch (may run for a long time)
   (isearch-forward nil t)
@@ -357,13 +379,22 @@ Added locally to buffers."
                       `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
       (isearch-done)))))
 
+
+(defun firstly-search--abort ()
+  "Full isearch forced stop."
+  (isearch-done)
+  ;; `isearch-cancel` without moving cursor back.
+  (isearch-clean-overlays)
+  (signal 'quit nil))
+
 (defun firstly-search--abort-on-failed-repeat (&rest _)
-  "Do at failed search cancel search completely."
+  "Do at failed search cancel search completely.
+Used in `isearch-repeat', stop isearch on failure."
   (when (and isearch-mode
-             (not isearch-success)
              firstly-search--isearch-navigation-flag)
-    (isearch-cancel) ; call `isearch-done' and signal
-    ))
+    (firstly-search--renew-timer-callback)
+    (when (not isearch-success)
+      (firstly-search--abort))))
 
 ;; -=-= Functions
 
