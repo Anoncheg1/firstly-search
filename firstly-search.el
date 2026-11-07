@@ -80,7 +80,10 @@
 
 ;; Many functions use text properties, to investigate them use:
 ;;   M-: (print (text-properties-at (point)))
-;;
+
+;; To reduce  speed we use `isearch-repeat-on-direction-change' and
+;; `isearch-wrap-pause' variables.
+
 
 ;;;; Files:
 
@@ -298,7 +301,7 @@ Called by `isearch-done' function."
     (setq isearch-mode-map firstly-search--original-isearch-mode-map)
 
     ;; drop our advice (idempotent)
-    (when (advice-member-p #'firstly-search--isearch-search-fun-function
+    (when (advice-member-p firstly-search--isearch-search-fun-function
                            'isearch-search-fun-function)
       (remove-function (local 'isearch-search-fun-function)
                        #'firstly-search--isearch-search-fun-function))
@@ -350,7 +353,7 @@ Used for speed up navingation."
                                     #'word-search-regexp)
                                   ;; else = nil
                                   ))
-  (setq isearch-wrap-pause 'no)
+  (setq isearch-wrap-pause 'no-ding)
   (setq isearch-repeat-on-direction-change t)
 
   ;; 5. seed with the triggering key - inside the let so the search loop sees our bindings
@@ -377,7 +380,7 @@ Added locally to buffers."
 
      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
      ((and firstly-search--isearch-navigation-flag
-           (advice-member-p #'firstly-search--isearch-search-fun-function
+           (advice-member-p firstly-search--isearch-search-fun-function
                             'isearch-search-fun-function) ; if it was removed by `isearch-done` or by a user's `C-g.
            (not (or (memq this-command isearch-menu-bar-commands)
                     (commandp (lookup-key isearch-mode-map key nil))
