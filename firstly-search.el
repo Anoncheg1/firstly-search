@@ -207,8 +207,11 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
 (defcustom firstly-search--renew-idle-seconds 3
   "Idle delay (seconds) before the renewal timer re-checks isearch state.
 Small enough to feel immediate after a pause; large enough not to churn
-while the user is actively typing."
-  :type 'number
+while the user is actively typing.
+
+To disable set to nil."
+  :type '(choice (const :tag "Disabled" nil)
+                 number)
   :group 'firstly-search)
 
 (defun firstly-search--renew-timer-callback (&optional by-time)
@@ -216,16 +219,17 @@ while the user is actively typing."
 Depending on `isearch-success' renew or stop timer.
 Optional argument BY-TIME used to detect call from timer, to indicate
  expiration of time."
-  (when (timerp firstly-search--renew-timer)
-    (cancel-timer firstly-search--renew-timer))
+  (when firstly-search--renew-idle-seconds ; if delete
+    (when (timerp firstly-search--renew-timer)
+      (cancel-timer firstly-search--renew-timer))
 
-  (if (and isearch-mode isearch-success (not by-time))
-      (setq firstly-search--renew-timer
-            (run-with-idle-timer firstly-search--renew-idle-seconds
-                                 nil #'firstly-search--renew-timer-callback t))
-    ;; else isearch-success is nil
-    (setq firstly-search--renew-timer nil)
-    (firstly-search--abort)))
+    (if (and isearch-mode isearch-success (not by-time))
+        (setq firstly-search--renew-timer
+              (run-with-idle-timer firstly-search--renew-idle-seconds
+                                   nil #'firstly-search--renew-timer-callback t))
+      ;; else isearch-success is nil
+      (setq firstly-search--renew-timer nil)
+      (firstly-search--abort))))
 
 
 ;; -=-= Functions
