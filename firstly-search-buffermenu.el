@@ -40,24 +40,20 @@
 
 (defgroup firstly-search-buffermenu nil
   "For major mode `Buffer-menu-mode'."
-  :group 'firstly-search-buffermenu
-  :prefix "firstly-search-buffermenu-")
+  :group 'firstly-search-buffermenu)
 
 (defcustom firstly-search-buffermenu-columns '((tabulated-list-column-name . "Buffer" ))
   "Non-nil means search in these columns."
-  :local t
   :type 'sexp
   :group 'firstly-search-buffermenu)
 
 (defcustom firstly-search-buffermenu-isearch-prefix "Buffer "
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-buffermenu)
 
-(defcustom firstly-search-buffermenu-regex "\\(\\_<\\|*\\)"
+(defcustom firstly-search-buffermenu-prefix "\\(\\_<\\|*\\)"
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-buffermenu)
 
@@ -102,11 +98,10 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-buffermenu
   (if firstly-search-buffermenu-mode
       (progn
-        ;; (setq firstly-search-ignore-mode-map firstly-search-buffermenu-mode-map) ; ignore keys
-        (setq firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
+        (setq firstly-search-isearch-prefix firstly-search-buffermenu-prefix)
         ;; search from the begining of the word or after "-" character.
         (setq firstly-search-string-prefix firstly-search-buffermenu-regex)
-        ;; (setq firstly-search-string-prefix nil)
+        (firstly-search--change-map firstly-search-buffermenu-mode-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
         (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
@@ -114,7 +109,8 @@ Typing any printable character activate incremental search."
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; fast actication
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)
+      (firstly-search--restore-map))))
 
 
 (provide 'firstly-search-buffermenu)

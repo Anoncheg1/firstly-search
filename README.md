@@ -17,6 +17,8 @@ Supported modes:
 
 - For Recentf Menu — fast search in basename of paths.
 
+- For Ibuffer — fast search.
+
 This is minor mode for Emacs text editor. No external dependencies required.
 
 Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** and **C-M-** prefix, by default. You may rebind manually.
@@ -50,6 +52,9 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 ;; Recentf
 (require 'firstly-search-recentf)
 (add-hook 'recentf-dialog-mode-hook	#'firstly-search-recentf-mode)
+;; IBuffer
+(require 'firstly-search-ibuffer)
+(add-hook 'ibuffer-mode-hook	#'firstly-search-ibuffer-mode)
 ```
 
 ## Customization
@@ -60,6 +65,7 @@ M-x customize-group RET firstly-search-buffermenu
 M-x customize-group RET firstly-search-package
 M-x customize-group RET firstly-search-dired
 M-x customize-group RET firstly-search-recentf
+M-x customize-group RET firstly-search-ibuffer
 ```
 
 ## demo

@@ -40,24 +40,21 @@
 
 (defgroup firstly-search-package nil
   "For major mode `package-menu-mode'."
-  :group 'firstly-search-package
-  :prefix "firstly-search-package-")
+  :tag "Fast Package menu"
+  :group 'firstly-search-package)
 
 (defcustom firstly-search-package-columns '((tabulated-list-column-name . "Package" ))
   "Non-nil means search in these columns."
-  :local t
   :type 'sexp
   :group 'firstly-search-package)
 
 (defcustom firstly-search-package-isearch-prefix "Package "
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-package)
 
-(defcustom firstly-search-package-regex "\\(\\_<\\|-\\)"
+(defcustom firstly-search-package-prefix "\\(\\_<\\|-\\)"
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-package)
 
@@ -91,18 +88,19 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-package
   (if firstly-search-package-mode
       (progn
-        (setq-local firstly-search-ignore-mode-map firstly-search-package-mode-map) ; ignore keys
         (setq-local firstly-search-isearch-prefix firstly-search-package-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq-local firstly-search-string-prefix firstly-search-package-regex)
+        (setq-local firstly-search-string-prefix firstly-search-package-prefix)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-package-columns)
         (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
+        (firstly-search--change-map firstly-search-package-mode-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; speed jumping
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)
+      (firstly-search--restore-map))))
 
 
 (provide 'firstly-search-package)

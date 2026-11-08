@@ -38,6 +38,7 @@
 (require 'firstly-search)
 
 (defvar-keymap firstly-search-tabulated-list-mode-map
+  :parent tabulated-list-mode-map
   :doc "Replacement for `tabulated-list-mode-map'."
   "M-?"	#'describe-mode
   "M-h"	#'describe-mode
@@ -47,13 +48,9 @@
   ;; `tabulated-list-mode-map':
   "C-n"		#'next-line
   "C-p"		#'previous-line
-  "M-<left>"		#'tabulated-list-previous-column
-  "M-<right>"		#'tabulated-list-next-column
   "M-S"		#'tabulated-list-sort
   "M-}"		#'tabulated-list-widen-current-column
-  "M-{"		#'tabulated-list-narrow-current-column
-  "<follow-link>"	'mouse-face
-  "<mouse-2>"		#'mouse-select-window)
+  "M-{"		#'tabulated-list-narrow-current-column)
 
 (defcustom firstly-search-tabulated-list-columns '((tabulated-list-column-name . "Name" ))
   "Non-nil means search in these columns."

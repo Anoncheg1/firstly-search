@@ -40,25 +40,21 @@
 
 (defgroup firstly-search-bookmarks nil
   "For major mode `bookmark-bmenu-mode' or `list-bookmarks'."
-  :group 'firstly-search-bookmarks
-  :prefix "firstly-search-bookmarks-")
+  :tag "Fast Bookmarks"
+  :group 'firstly-search-bookmarks)
 
 (defcustom firstly-search-bookmarks-columns '((tabulated-list-column-name . "Bookmark Name" ))
   "Non-nil means search in these columns."
-  :local t
   :type 'sexp
   :group 'firstly-search-bookmarks)
 
 (defcustom firstly-search-bookmarks-isearch-prefix "B-Name "
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-bookmarks)
 
-
-(defcustom firstly-search-bookmarks-regex "\\_<"
+(defcustom firstly-search-bookmarks-prefix "\\_<"
   "Regex for word search in package names."
-  :local t
   :type 'string
   :group 'firstly-search-bookmarks)
 
@@ -104,11 +100,9 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-bookmarks
   (if firstly-search-bookmarks-mode
       (progn
-        ;; (setq firstly-search-ignore-mode-map firstly-search-bookmarks-mode-map) ; ignore keys
         (setq firstly-search-isearch-prefix firstly-search-bookmarks-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-string-prefix firstly-search-bookmarks-regex)
-        ;; (setq firstly-search-string-prefix nil)
+        (setq firstly-search-string-prefix firstly-search-bookmarks-prefix)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-bookmarks-columns)
         (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
@@ -116,7 +110,8 @@ Typing any printable character activate incremental search."
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t))))
+      (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)
+      (firstly-search--restore-map))))
 
 
 (provide 'firstly-search-bookmarks)

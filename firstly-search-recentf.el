@@ -45,9 +45,12 @@
 (require 'firstly-search)
 (require 'recentf)
 
+(defgroup firstly-search-recentf nil
+  "For major mode `recentf-mode'."
+  :group 'firstly-search-recentf)
+
 (defcustom firstly-search-recentf-isearch-prefix "Basename "
   "Hint showed in isearch."
-  :local t
   :type 'string
   :group 'firstly-search-recentf)
 
@@ -142,7 +145,6 @@ The returned function narrows the search in basenames bounds in form of
  list of (START . END).
 Replacement for `isearch-search-fun-function'.
 Argument ORIG-FUN isearch internal function."
-  ;; (print "wat")
   (let ((bounds (if firstly-search-recentf-basename-flag
                     (if firstly-search-recentf-from-start-flag
                         (firstly-search-recentf--bounds-with-slash)

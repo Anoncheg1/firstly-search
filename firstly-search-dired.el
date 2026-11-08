@@ -67,8 +67,9 @@
 
 ;; totally optional and may be nil
 (defvar-keymap firstly-search-dired-mode-map
+  :parent dired-mode-map
   :doc "Replacement for `dired-mode-map'.
-Totally optional and may be nil."
+  Totally optional and may be nil."
   ;; special-mode-map
   "M-?"	#'describe-mode
   "M-h"	#'describe-mode
@@ -157,17 +158,18 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search
   (if firstly-search-dired-mode
       (progn
-        (setq-local firstly-search-ignore-mode-map firstly-search-dired-mode-map) ; ignore keys
         (setq-local firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
+        (firstly-search--change-map firstly-search-dired-mode-map)
         ;; (setq firstly-search--isearch-search-fun-function #'firstly-search--dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
-        (add-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable nil t) ; allow in editable mode to edit text
-        )
+        (add-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable nil t)) ; allow in editable mode to edit text
+
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t) ; for speed
-      (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t))))
+      (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t)
+      (firstly-search--restore-map))))
 
 
 (provide 'firstly-search-dired)

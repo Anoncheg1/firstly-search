@@ -154,12 +154,14 @@ May be sub-minor-mode.")
 
 ;; Snapshot the pristine isearch map at load time.  `isearch-mode-map'
 ;; is a global; nothing in this package may permanently replace it.
-(defvar firstly-search--original-isearch-mode-map
-  (copy-keymap isearch-mode-map)
+(defvar-local firstly-search--original-isearch-mode-map nil
   "Pristine copy of `isearch-mode-map' captured at load time.")
 
-(defvar-local firstly-search-ignore-mode-map nil
-  "Optional.")
+(defvar-local firstly-search-major-mode-map nil
+  "Saved major-mode-map.")
+
+;; (defvar-local firstly-search-ignore-mode-map nil
+;;   "Replacement for major-mode-map.")
 
 (defvar-local firstly-search--isearch-search-fun-function nil
   "Used for advicing `isearch-search-fun-function' function.
@@ -284,12 +286,34 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
   ;; Always start from a clean copy so consecutive activations do not
   ;; accumulate stale rebindings, and so a previously-aborted session
   ;; cannot leak a swapped map into this one.
-  (let ((map (copy-keymap firstly-search--original-isearch-mode-map)))
+  (unless firstly-search--original-isearch-mode-map
+    (setq-local firstly-search--original-isearch-mode-map (copy-keymap isearch-mode-map)))
+  ;; replace isearch map
+  (let ((map (define-keymap :parent firstly-search--original-isearch-mode-map)))
     (keymap-set map "C-p" #'firstly-search--isearch-repeat-backward)
     (keymap-set map "C-n" #'firstly-search--isearch-repeat-forward)
     (keymap-unset map "C-m")
     (keymap-unset map "<return>") ; working?
     (setq isearch-mode-map map)))
+
+(defun firstly-search--change-map (map)
+  "Replace major mode map to MAP.
+If MAP is nil, dont change major mode map.
+Called at initialization of firstly-search.
+Inbind all printable characters from MAP and set as major mode."
+  (unless firstly-search-major-mode-map
+    (setq-local firstly-search-major-mode-map
+                (copy-keymap (symbol-value (intern (concat (symbol-name major-mode) "-map"))))))
+  (when map
+    (let ((i 32))
+      (while (<= i 126)
+        (define-key map (vector i) nil)
+        (setq i (1+ i))))
+    (use-local-map map)))
+
+
+(defun firstly-search--restore-map ()
+  (use-local-map firstly-search-major-mode-map))
 
 (defun firstly-search--isearch-mode-end-hook ()
   "Disable navigation and restore global isearch state.
@@ -328,6 +352,7 @@ Used for speed up navingation."
   ;; 0. snapshot the isearch vars we are about to clobber
   (firstly-search--isearch-save-vars)
 
+
   ;; 1. install advice + keymap
   (when firstly-search--isearch-search-fun-function
     (add-function :around (local 'isearch-search-fun-function)
@@ -336,7 +361,6 @@ Used for speed up navingation."
                   (list (cons 'isearch-message-prefix firstly-search-isearch-prefix))))
 
   (advice-add 'isearch-repeat :after #'firstly-search--abort-on-failed-repeat)
-
   (firstly-search--isearch-change-map)
 
   ;; 2. mark navigation active *before* entering isearch
