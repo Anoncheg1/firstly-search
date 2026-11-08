@@ -328,7 +328,7 @@ Called by `isearch-done' function."
     (when (advice-member-p firstly-search--isearch-search-fun-function
                            'isearch-search-fun-function)
       (remove-function (local 'isearch-search-fun-function)
-                       #'firstly-search--isearch-search-fun-function))
+                       firstly-search--isearch-search-fun-function))
 
     (remove-hook 'isearch-mode-end-hook
                  #'firstly-search--isearch-mode-end-hook t)

@@ -44,14 +44,39 @@
 
 
 (defvar-keymap firstly-search-ibuffer-map
-  :doc "Keymap derived from `ibuffer-mode-map' with the `s …' sort prefix re-homed under `M-s …'."
+  :doc "Rebinding of keys that interfere with firstly search."
   :parent ibuffer-mode-map
   "M-s a"	#'ibuffer-do-sort-by-alphabetic
   "M-s f"	#'ibuffer-do-sort-by-filename/process
   "M-s i"	#'ibuffer-invert-sorting
   "M-s m"	#'ibuffer-do-sort-by-major-mode
   "M-s s"	#'ibuffer-do-sort-by-size
-  "M-s v"	#'ibuffer-do-sort-by-recency)
+  "M-s v"	#'ibuffer-do-sort-by-recency
+
+  "M-`"	#'ibuffer-switch-format
+  "M-b"	#'ibuffer-bury-buffer
+  "M-d"	#'ibuffer-mark-for-delete
+  "M-e"	#'ibuffer-visit-buffer
+  "M-f"	#'ibuffer-visit-buffer
+  ;; "M-e .. f"	#'ibuffer-visit-buffer
+  "M-g"	#'ibuffer-update
+  "M-h"	#'describe-mode
+  "M-j"	#'ibuffer-jump-to-buffer
+  "M-k"	#'ibuffer-do-kill-lines
+  "M-l"	#'ibuffer-redisplay
+  "M-m"	#'ibuffer-mark-forward
+  "M-n"	#'ibuffer-forward-line
+  "M-o"	#'ibuffer-visit-buffer-other-window
+  "M-p"	#'ibuffer-backward-line
+  "M-q"	#'quit-window
+  "M-r"	#'ibuffer-do-replace-regexp
+  "M-t"	#'ibuffer-toggle-marks
+  "M-u"	#'ibuffer-unmark-forward
+  "M-v"	#'ibuffer-do-view
+  "M-w"	#'ibuffer-copy-filename-as-kill
+  "M-x"	#'ibuffer-do-kill-on-deletion-marks
+  "M-|"	#'ibuffer-do-shell-command-pipe
+  "M-~"	#'ibuffer-do-toggle-modified)
 
 ;;;###autoload
 (define-minor-mode firstly-search-ibuffer-mode
