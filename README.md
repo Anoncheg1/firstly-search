@@ -94,7 +94,7 @@ I recommend to highlight current line.
 - Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-cui
 - TAB key reimplementation	https://github.com/Anoncheg1/emacs-indent
 
-## You can sponsor author directly with crypto currencies
+## You may sponsor the author directly with cryptocurrencies
 
 - BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
 
