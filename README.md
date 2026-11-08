@@ -94,14 +94,14 @@ I recommend to highlight current line.
 - Call LLMs and AI agents from Org-mode ai block. https://github.com/Anoncheg1/emacs-cui
 - TAB key reimplementation	https://github.com/Anoncheg1/emacs-indent
 
-## Donate, sponsor author
-You can sponsor author crypto money directly with crypto currencies:
-*BTC (Bitcoin) address:* ~1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25~
+## You can sponsor author directly with crypto currencies
 
-[[https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/BTC-1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25.png]]
+- BTC (Bitcoin) address: 1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25
 
-*USDT (Tether on TRX-TRON) address:* ~TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN~
+![BTC](https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/BTC-1CcDWSQ2vgqv5LxZuWaHGW52B9fkT5io25.png)
 
-[[https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/USDT-TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN.png]]
+- USDT (Tether TRX-TRON) address: TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN
 
-*TON (Telegram Open Network) address:* ~UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D~
+![BTC](https://raw.githubusercontent.com/Anoncheg1/public-share/refs/heads/main/USDT-TVoXfYMkVYLnQZV3mGZ6GvmumuBfGsZzsN.png)
+
+- TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
