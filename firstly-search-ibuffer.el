@@ -37,7 +37,7 @@
   :type 'string
   :group 'firstly-search-ibuffer)
 
-(defcustom firstly-search-ibuffer-string-prefix firstly-search-string-prefix
+(defcustom firstly-search-ibuffer-string-prefix "\\(\\_<\\|*\\)" ; "\\b"
   "Add this as regex prefix to search string."
   :type 'string
   :group 'firstly-search-package)
