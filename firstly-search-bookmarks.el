@@ -102,7 +102,7 @@ Typing any printable character activate incremental search."
       (progn
         (setq firstly-search-isearch-prefix firstly-search-bookmarks-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-string-prefix firstly-search-bookmarks-prefix)
+        (setq firstly-search-regex-prefix firstly-search-bookmarks-prefix)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-bookmarks-columns)
         (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)

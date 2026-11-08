@@ -90,7 +90,7 @@ Typing any printable character activate incremental search."
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-package-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq-local firstly-search-string-prefix firstly-search-package-prefix)
+        (setq-local firstly-search-regex-prefix firstly-search-package-prefix)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-package-columns)
         (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)

@@ -87,7 +87,7 @@
   (if firstly-search-ibuffer-mode
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-ibuffer-isearch-prefix)
-        (setq-local firstly-search-string-prefix firstly-search-ibuffer-string-prefix)
+        (setq-local firstly-search-regex-prefix firstly-search-ibuffer-string-prefix)
         (firstly-search--change-map firstly-search-ibuffer-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))

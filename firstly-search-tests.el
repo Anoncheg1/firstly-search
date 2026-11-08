@@ -132,13 +132,13 @@
 ;;; ------------------------------------------------------------------
 
 (ert-deftest firstly-search-test-regexp-fn ()
-  (let ((firstly-search-string-prefix "\\_<"))
+  (let ((firstly-search-regex-prefix "\\_<"))
     (should (equal (firstly-search--isearch-regexp-function "") ""))
     (should (equal (firstly-search--isearch-regexp-function "abc")
                    "\\_<abc"))
     (should (equal (firstly-search--isearch-regexp-function "x" t)
                    "\\_<x")))
-  (let ((firstly-search-string-prefix ""))
+  (let ((firstly-search-regex-prefix ""))
     (should (equal (firstly-search--isearch-regexp-function "abc")
                    "abc"))))
 

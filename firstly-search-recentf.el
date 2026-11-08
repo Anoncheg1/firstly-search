@@ -96,7 +96,7 @@ OFFSET is the 0-based index of BASENAME within the line's raw text."
 Suitable as BOUNDS for `isearch-search-fun-in-noncontiguous-region'.
 
 We add first / character before basename boundary to allow search from
- begin of basename with help of `firstly-search-string-prefix'."
+ begin of basename with help of `firstly-search-regex-prefix'."
   (save-excursion
     (goto-char (point-min))
     (let (bounds)
@@ -175,7 +175,7 @@ handled by the dialog keymap.")
   (if firstly-search-recentf-mode
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
-        (setq-local firstly-search-string-prefix (when firstly-search-recentf-from-start-flag
+        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-start-flag
                                                    firstly-search-recentf--path-separators)) ; nil by default
         (setq-local firstly-search-ignore-mode-map firstly-search-recentf-ignore-map)
         (setq-local firstly-search--isearch-search-fun-function

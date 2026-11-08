@@ -130,7 +130,7 @@
   :type '(string)
   :group 'firstly-search)
 
-(defcustom firstly-search-string-prefix "\\_<"
+(defcustom firstly-search-regex-prefix "\\_<"
   "Non-nil means add this as regex prefix to search string.
 For empty string `word-search-regexp' is set to
  `isearch-regexp-function'.
@@ -247,7 +247,7 @@ Optional argument BY-TIME used to detect call from timer, to indicate
 In literal mode, quote STRING so metacharacters match themselves.
 
 In regexp mode, use STRING as the user's regexp body — do not re-quote —
- but still prepend `firstly-search-string-prefix' so the match starts at
+ but still prepend `firstly-search-regex-prefix' so the match starts at
  the same anchor.
 
 Optional argument LAX is accepted for compatibility with
@@ -256,10 +256,10 @@ Optional argument LAX is accepted for compatibility with
    ((string-empty-p string) "")
    (isearch-regexp
     ;; user is typing a regexp; honour it verbatim after the anchor
-    (concat firstly-search-string-prefix string))
+    (concat firstly-search-regex-prefix string))
    (t
     ;; literal search; protect metacharacters in filenames etc.
-    (concat firstly-search-string-prefix (regexp-quote string)))))
+    (concat firstly-search-regex-prefix (regexp-quote string)))))
 
 (defun firstly-search--isearch-repeat-backward (&optional arg)
   "Supress `visible-bell' on error when reaching bob.
@@ -371,10 +371,10 @@ Used for speed up navingation."
   ;; 4. enter isearch (may run for a long time)
   (isearch-forward nil t)
   ;; 3. install our options (works only after run search)
-  (setq isearch-regexp-function (if (stringp firstly-search-string-prefix)
+  (setq isearch-regexp-function (if (stringp firstly-search-regex-prefix)
                                     #'firstly-search--isearch-regexp-function
                                   ;; else for ""
-                                  (when (string-empty-p firstly-search-string-prefix)
+                                  (when (string-empty-p firstly-search-regex-prefix)
                                     #'word-search-regexp)
                                   ;; else = nil
                                   ))

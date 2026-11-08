@@ -52,7 +52,7 @@
   :type 'string
   :group 'firstly-search-buffermenu)
 
-(defcustom firstly-search-buffermenu-prefix "\\(\\_<\\|*\\)"
+(defcustom firstly-search-buffermenu-regex-prefix "\\(\\_<\\|*\\)"
   "Regex for word search in package names."
   :type 'string
   :group 'firstly-search-buffermenu)
@@ -98,9 +98,9 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-buffermenu
   (if firstly-search-buffermenu-mode
       (progn
-        (setq firstly-search-isearch-prefix firstly-search-buffermenu-prefix)
+        (setq firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-string-prefix firstly-search-buffermenu-regex)
+        (setq firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
         (firstly-search--change-map firstly-search-buffermenu-mode-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
