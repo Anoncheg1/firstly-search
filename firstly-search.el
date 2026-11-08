@@ -147,6 +147,16 @@ separated by -."
   :type 'string
   :group 'firstly-search)
 
+(defcustom firstly-search--renew-idle-seconds 3
+  "Idle delay (seconds) before the renewal timer re-checks isearch state.
+Small enough to feel immediate after a pause; large enough not to churn
+while the user is actively typing.
+
+To disable set to nil."
+  :type '(choice (const :tag "Disabled" nil)
+                 number)
+  :group 'firstly-search)
+
 (defvar-local firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
 Allow to separate firstly-search navigation from isearch.
@@ -211,16 +221,6 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
 
 (defvar firstly-search--renew-timer nil
   "Idle timer renewing while firstly-search navigation is active.")
-
-(defcustom firstly-search--renew-idle-seconds 3
-  "Idle delay (seconds) before the renewal timer re-checks isearch state.
-Small enough to feel immediate after a pause; large enough not to churn
-while the user is actively typing.
-
-To disable set to nil."
-  :type '(choice (const :tag "Disabled" nil)
-                 number)
-  :group 'firstly-search)
 
 (defun firstly-search--renew-timer-callback (&optional by-time)
   "Re-arm while isearch runs; on termination cancel and call the abort.
@@ -313,6 +313,7 @@ Inbind all printable characters from MAP and set as major mode."
 
 
 (defun firstly-search--restore-map ()
+  "Restore major mode keys, saved at activation of firstly-search."
   (use-local-map firstly-search-major-mode-map))
 
 (defun firstly-search--isearch-mode-end-hook ()
