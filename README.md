@@ -57,6 +57,15 @@ Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/in
 (add-hook 'ibuffer-mode-hook	#'firstly-search-ibuffer-mode)
 ```
 
+Note, recommendet way to open recentf:
+```lisp
+(defun my/recentf-open-files ()
+  (interactive)
+  (recentf-load-list)
+  (recentf-open-files))
+(global-set-key (kbd "M-r") #'my/recentf-open-files)
+```
+
 ## Customization
 
 ```lisp

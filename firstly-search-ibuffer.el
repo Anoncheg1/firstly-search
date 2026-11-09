@@ -22,7 +22,11 @@
 
 
 ;;; Commentary:
-;
+
+;; Ibuffer doesn't make it easy to determine column positions: there
+;;  are no text properties for columns, and text positions are
+;;  recalculated according to the "format" to fit a resizing window.
+
 ;;;; Activation:
 ;;   (require 'firstly-search-ibuffer)
 ;;   (with-eval-after-load 'ibuffer
@@ -74,9 +78,26 @@
   "M-u"	#'ibuffer-unmark-forward
   "M-v"	#'ibuffer-do-view
   "M-w"	#'ibuffer-copy-filename-as-kill
-  "M-x"	#'ibuffer-do-kill-on-deletion-marks
+  "C-M-x"	#'ibuffer-do-kill-on-deletion-marks
   "M-|"	#'ibuffer-do-shell-command-pipe
   "M-~"	#'ibuffer-do-toggle-modified)
+
+(defun firstly-search-ibuffer--filter-header (beg end)
+  "Return non-nil if text between BEG and END is not header and footer.
+This function is intended to be used as `isearch-filter-predicate'."
+  (let ((after-header (save-excursion
+                             (goto-char (point-min))
+                             (forward-line 3)
+                             (point)))
+        (footer (save-excursion
+                  (end-of-buffer)
+                  (line-beginning-position))))
+  (and (not (text-property-not-all beg end 'inhibit-isearch nil))
+       (or (eq search-invisible t)
+           (not (isearch-range-invisible beg end)))
+
+       (>= beg after-header)
+       (<= end footer))))
 
 ;;;###autoload
 (define-minor-mode firstly-search-ibuffer-mode
@@ -90,10 +111,14 @@
         (setq-local firstly-search-regex-prefix firstly-search-ibuffer-string-prefix)
         (firstly-search--change-map firstly-search-ibuffer-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
-        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
+        (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)
+        (setq-local isearch-filter-predicate #'firstly-search-ibuffer--filter-header)) ; skip header
+
     (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
     (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)
-    (firstly-search--restore-map)))
+    (firstly-search--restore-map)
+    (kill-local-variable 'isearch-filter-predicate)) ; skip header
+  )
 
 (provide 'firstly-search-ibuffer)
 ;;; firstly-search-ibuffer.el ends here

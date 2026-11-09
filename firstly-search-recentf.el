@@ -36,6 +36,10 @@
 ;; `firstly-search-recentf--bounded-isearch' here.
 ;; We place boundaris at part of paths with basename to search on them
 ;; only.
+;;
+;; Personally, I load recentf with commands:
+;; (recentf-load-list)
+;; (recentf-open-files)
 
 ;;;; Activation:
 ;;   (with-eval-after-load 'recentf
@@ -154,17 +158,20 @@ Argument ORIG-FUN isearch internal function."
                   (firstly-search-recentf--bounds-full))))
     (isearch-search-fun-in-noncontiguous-region (funcall orig-fun) bounds)))
 
-(defvar firstly-search-recentf-ignore-map
-  (let ((map (copy-keymap recentf-dialog-mode-map)))
-    (define-key map (kbd "n") nil)
-    (define-key map (kbd "p") nil)
-    map)
-  "Copy of `recentf-dialog-mode-map' without the n, p, q keys.
-
-Used by `firstly-search-recentf-mode' as `firstly-search-ignore-mode-map'
-so that those keys fall through to the search machinery instead of being
-handled by the dialog keymap.")
-
+(defvar-keymap firstly-search-recentf-map
+  :doc "Rebinding of keys that interfere with firstly search."
+  :parent recentf-dialog-mode-map
+  "M-q"	#'recentf-cancel-dialog
+  "M-0"	#'recentf-open-most-recent-file-0
+  "M-1"	#'recentf-open-most-recent-file-1
+  "M-2"	#'recentf-open-most-recent-file-2
+  "M-3"	#'recentf-open-most-recent-file-3
+  "M-4"	#'recentf-open-most-recent-file-4
+  "M-5"	#'recentf-open-most-recent-file-5
+  "M-6"	#'recentf-open-most-recent-file-6
+  "M-7"	#'recentf-open-most-recent-file-7
+  "M-8"	#'recentf-open-most-recent-file-8
+  "M-9"	#'recentf-open-most-recent-file-9)
 
 ;;;###autoload
 (define-minor-mode firstly-search-recentf-mode
@@ -177,13 +184,14 @@ handled by the dialog keymap.")
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
         (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-start-flag
                                                    firstly-search-recentf--path-separators)) ; nil by default
-        (setq-local firstly-search-ignore-mode-map firstly-search-recentf-ignore-map)
         (setq-local firstly-search--isearch-search-fun-function
                     #'firstly-search-recentf--bounded-isearch)
+        (firstly-search--change-map firstly-search-recentf-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
     (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
-    (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)))
+    (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t)
+    (firstly-search--restore-map)))
 
 (provide 'firstly-search-recentf)
 ;;; firstly-search-recentf.el ends here
