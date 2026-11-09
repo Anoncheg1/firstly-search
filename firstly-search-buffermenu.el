@@ -98,13 +98,13 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-buffermenu
   (if firstly-search-buffermenu-mode
       (progn
-        (setq firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
+        (setq-local firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
+        (setq-local firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
         (firstly-search--change-map firstly-search-buffermenu-mode-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
-        (setq firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
-        (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
+        (setq-local firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
+        (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; fast actication
     (progn

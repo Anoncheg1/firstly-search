@@ -86,18 +86,18 @@
   "Return non-nil if text between BEG and END is not header and footer.
 This function is intended to be used as `isearch-filter-predicate'."
   (let ((after-header (save-excursion
-                             (goto-char (point-min))
-                             (forward-line 3)
-                             (point)))
+                        (goto-char (point-min))
+                        (forward-line 3)
+                        (point)))
         (footer (save-excursion
                   (goto-char (point-max))
                   (line-beginning-position))))
-  (and (not (text-property-not-all beg end 'inhibit-isearch nil))
-       (or (eq search-invisible t)
-           (not (isearch-range-invisible beg end)))
+    (and (not (text-property-not-all beg end 'inhibit-isearch nil))
+         (or (eq search-invisible t)
+             (not (isearch-range-invisible beg end)))
 
-       (>= beg after-header)
-       (<= end footer))))
+         (>= beg after-header)
+         (<= end footer))))
 
 ;;;###autoload
 (define-minor-mode firstly-search-ibuffer-mode

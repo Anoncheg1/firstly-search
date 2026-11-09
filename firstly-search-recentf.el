@@ -66,6 +66,7 @@ Used in `isearch-regexp-function'."
 
 (defcustom firstly-search-recentf-from-start-flag t
   "Non-nil means search will be from begining after path separator.
+Works only if `firstly-search-recentf-basename-flag` is true.
 Used in `isearch-regexp-function'."
   :type 'boolean
   :group 'firstly-search-recentf)
@@ -75,6 +76,12 @@ Used in `isearch-regexp-function'."
   "Characters that may separate directories in a recentf path.
 Used in `isearch-regexp-function'.")
 
+(defcustom firstly-search-recentf-regex-prefix (concat "\\(?:[_\."
+                                                       firstly-search-recentf--path-separators
+                                                       "-]\\)")
+  "Regex for word search in package names."
+  :type 'string
+  :group 'firstly-search-recentf)
 
 (defun firstly-search-recentf--basename ()
   "Return (BASENAME . OFFSET) for the path on the current line, or nil.
@@ -182,8 +189,9 @@ Argument ORIG-FUN isearch internal function."
   (if firstly-search-recentf-mode
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
+        (setq-local firstly-search-regex-prefix firstly-search-recentf-regex-prefix)
         (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-start-flag
-                                                   firstly-search-recentf--path-separators)) ; nil by default
+                                                   firstly-search-recentf-regex-prefix))
         (setq-local firstly-search--isearch-search-fun-function
                     #'firstly-search-recentf--bounded-isearch)
         (firstly-search--change-map firstly-search-recentf-map)
