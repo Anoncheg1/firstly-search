@@ -168,7 +168,8 @@ Typing any printable character activate incremental search."
     (progn
       (remove-hook 'pre-command-hook #'firstly-search--pre-command-hook t)
       (remove-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook t) ; for speed
-      (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t)
+      ;; (remove-hook 'wdired-mode-hook #'firstly-search-dired-mode-disable t)
+      (advice-remove 'wdired-change-to-dired-mode  #'firstly-search-dired-mode-enable)
       (firstly-search--restore-map))))
 
 
