@@ -90,7 +90,7 @@ This function is intended to be used as `isearch-filter-predicate'."
                              (forward-line 3)
                              (point)))
         (footer (save-excursion
-                  (end-of-buffer)
+                  (goto-char (point-max))
                   (line-beginning-position))))
   (and (not (text-property-not-all beg end 'inhibit-isearch nil))
        (or (eq search-invisible t)
