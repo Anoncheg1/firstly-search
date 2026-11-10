@@ -58,12 +58,16 @@
   :type 'string
   :group 'firstly-search-package)
 
-(defvar-keymap firstly-search-package-mode-map
-  :doc "Replacement for `package-menu-mode-map'."
+(defvar-keymap firstly-search-package-map
+  :doc "Rebinding of keys that interfere with firstly search.
+Replacement for `package-menu-mode-map'.
+Optional, may be nil.
+It have bindings for commands that unset `firstly-search--change-map'.
+When it have name `{major-mode}-map` it is visible and applied in
+ parallel, that is why we use other name."
   :parent firstly-search-tabulated-list-mode-map
-  "-"		#'negative-argument
-  ;; "0 .. 9"	digit-argument
-  ;; ?		package-menu-describe-package
+  ;; "-"	#'negative-argument
+  ;; "0 .. 9"	#'digit-argument
   "M-H"	#'package-menu-hide-package
   "M-S"	#'tabulated-list-sort
   "M-U"	#'package-menu-mark-upgrades
@@ -94,7 +98,7 @@ Typing any printable character activate incremental search."
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-package-columns)
         (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
-        (firstly-search--change-map firstly-search-package-mode-map)
+        (firstly-search--change-map firstly-search-package-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; speed jumping
     (progn

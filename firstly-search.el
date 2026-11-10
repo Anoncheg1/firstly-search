@@ -124,8 +124,10 @@
   :group 'firstly-search
   :prefix "firstly-search-")
 
-(defcustom firstly-search-ignore-keys-re "^[*%:.~#&=!]$"
-  "Non-nil means apply ignore this keys, for mode specific commands."
+(defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_=+;,."
+  "Keys for search.
+Those keys unset in `firstly-search--change-map' where major mode map
+ replaced by our copy of t."
   :local t
   :type '(string)
   :group 'firstly-search)
@@ -137,9 +139,9 @@ For empty string `word-search-regexp' is set to
 This value used to search from begining of every word separated
 by space.  You may use \\(\\_<\\|-\\) for search in words
 separated by -."
-  :local t
   :type 'string
   :group 'firstly-search)
+
 
 (defcustom firstly-search-isearch-prefix "filename "
   "Non-nil means add string to isearch prompt."
@@ -165,7 +167,7 @@ May be sub-minor-mode.")
 (defvar-local firstly-search--original-isearch-mode-map nil
   "Pristine copy of `isearch-mode-map' captured at load time.")
 
-(defvar-local firstly-search-major-mode-map nil
+(defvar-local firstly-search--major-mode-saved-map nil
   "Saved major-mode-map.")
 
 ;; (defvar-local firstly-search-ignore-mode-map nil
@@ -295,24 +297,22 @@ and restored unconditionally by `firstly-search--isearch-mode-end-hook'."
     (setq isearch-mode-map map)))
 
 (defun firstly-search--change-map (map)
-  "Replace major mode map to MAP.
-If MAP is nil, dont change major mode map.
-Called at initialization of firstly-search.
-Inbind all printable characters from MAP and set as major mode."
-  (unless firstly-search-major-mode-map
-    (setq-local firstly-search-major-mode-map
+  "Save the current major mode's keymap, then install MAP as local map.
+If MAP is non-nil, unbind
+all keys in `firstly-search-keys' from MAP and replace major mode with it.
+If MAP is nil, only the save happens."
+  (unless firstly-search--major-mode-saved-map ; save
+    (setq-local firstly-search--major-mode-saved-map
                 (copy-keymap (symbol-value (intern (concat (symbol-name major-mode) "-map"))))))
   (when map
-    (let ((i 32))
-      (while (<= i 126)
-        (define-key map (vector i) nil)
-        (setq i (1+ i))))
+    (dolist (c (string-to-list firstly-search-keys))
+        (define-key map (vector c) nil))
     (use-local-map map)))
 
 
 (defun firstly-search--restore-map ()
   "Restore major mode keys, saved at activation of firstly-search."
-  (use-local-map firstly-search-major-mode-map))
+  (use-local-map firstly-search--major-mode-saved-map))
 
 (defun firstly-search--isearch-mode-end-hook ()
   "Disable navigation and restore global isearch state.

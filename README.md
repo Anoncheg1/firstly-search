@@ -64,6 +64,7 @@ Note, recommendet way to open recentf:
   (recentf-load-list)
   (recentf-open-files))
 (global-set-key (kbd "M-r") #'my/recentf-open-files)
+(setopt recentf-max-saved-items 50)
 ```
 
 ## Customization

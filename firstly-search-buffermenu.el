@@ -57,8 +57,13 @@
   :type 'string
   :group 'firstly-search-buffermenu)
 
-(defvar-keymap firstly-search-buffermenu-mode-map
-  :doc "Replacement for `Buffer-menu-mode-map'."
+(defvar-keymap firstly-search-buffermenu-map
+  :doc "Rebinding of keys that interfere with firstly search.
+Replacement for `Buffer-menu-mode-map'.
+Optional, may be nil.
+It have bindings for commands that unset `firstly-search--change-map'.
+When it have name `{major-mode}-map` it is visible and applied in
+ parallel, that is why we use other name."
   :parent firstly-search-tabulated-list-mode-map
   "RET"	#'Buffer-menu-this-window
   "M-0"	#'digit-argument
@@ -101,7 +106,7 @@ Typing any printable character activate incremental search."
         (setq-local firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
         (setq-local firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
-        (firstly-search--change-map firstly-search-buffermenu-mode-map)
+        (firstly-search--change-map firstly-search-buffermenu-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
         (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)

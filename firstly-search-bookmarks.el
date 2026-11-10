@@ -59,8 +59,13 @@
   :group 'firstly-search-bookmarks)
 
 
-(defvar-keymap firstly-search-bookmarks-mode-map
-  :doc "Replacement for `Buffer-menu-mode-map'."
+(defvar-keymap firstly-search-bookmarks-map
+  :doc "Rebinding of keys that interfere with firstly search.
+Replacement for `Buffer-menu-mode-map'.
+Optional, may be nil.
+It have bindings for commands that unset `firstly-search--change-map'.
+When it have name `{major-mode}-map` it is visible and applied in
+ parallel, that is why we use other name."
   :parent firstly-search-tabulated-list-mode-map
   "RET" #'bookmark-bmenu-this-window
   "M-v" #'bookmark-bmenu-select
@@ -100,12 +105,13 @@ Typing any printable character activate incremental search."
   :global nil :group 'firstly-search-bookmarks
   (if firstly-search-bookmarks-mode
       (progn
-        (setq firstly-search-isearch-prefix firstly-search-bookmarks-isearch-prefix)
+        (setq-local firstly-search-isearch-prefix firstly-search-bookmarks-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
-        (setq firstly-search-regex-prefix firstly-search-bookmarks-prefix)
+        (setq-local firstly-search-regex-prefix firstly-search-bookmarks-prefix)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
-        (setq firstly-search-tabulated-list-columns firstly-search-bookmarks-columns)
-        (setq firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
+        (setq-local firstly-search-tabulated-list-columns firstly-search-bookmarks-columns)
+        (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
+        (firstly-search--change-map firstly-search-bookmarks-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
     (progn

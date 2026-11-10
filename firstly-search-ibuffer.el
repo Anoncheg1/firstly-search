@@ -47,8 +47,13 @@
   :group 'firstly-search-package)
 
 
-(defvar-keymap firstly-search-ibuffer-map
-  :doc "Rebinding of keys that interfere with firstly search."
+(defvar-keymap firstly-search-ibuffer-map-replacement
+  :doc "Rebinding of keys that interfere with firstly search.
+Replacement for `ibuffer-mode-map'.
+Optional, may be nil.
+It have bindings for commands that unset `firstly-search--change-map'.
+When it have name `{major-mode}-map` it is visible and applied in
+ parallel, that is why we use other name."
   :parent ibuffer-mode-map
   "M-s a"	#'ibuffer-do-sort-by-alphabetic
   "M-s f"	#'ibuffer-do-sort-by-filename/process
@@ -109,7 +114,7 @@ This function is intended to be used as `isearch-filter-predicate'."
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-ibuffer-isearch-prefix)
         (setq-local firstly-search-regex-prefix firstly-search-ibuffer-string-prefix)
-        (firstly-search--change-map firstly-search-ibuffer-map)
+        (firstly-search--change-map firstly-search-ibuffer-map-replacement)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)
         (setq-local isearch-filter-predicate #'firstly-search-ibuffer--filter-header)) ; skip header

@@ -166,7 +166,12 @@ Argument ORIG-FUN isearch internal function."
     (isearch-search-fun-in-noncontiguous-region (funcall orig-fun) bounds)))
 
 (defvar-keymap firstly-search-recentf-map
-  :doc "Rebinding of keys that interfere with firstly search."
+  :doc "Rebinding of keys that interfere with firstly search.
+Replacement for `recentf-dialog-mode-map'.
+Optional, may be nil.
+It have bindings for commands that unset `firstly-search--change-map'.
+When it have name `{major-mode}-map` it is visible and applied in
+ parallel, that is why we use other name."
   :parent recentf-dialog-mode-map
   "M-q"	#'recentf-cancel-dialog
   "M-0"	#'recentf-open-most-recent-file-0
