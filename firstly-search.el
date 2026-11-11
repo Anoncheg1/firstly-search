@@ -235,9 +235,10 @@ Optional argument BY-TIME used to detect call from timer, to indicate
         (setq firstly-search--renew-timer
               (run-with-idle-timer firstly-search-renew-idle-seconds
                                    nil #'firstly-search--renew-timer-callback t))
-      ;; else isearch-success is nil
+      ;; else: by-time - isearch-success is nil
       (setq firstly-search--renew-timer nil)
-      (firstly-search--abort))))
+      (when firstly-search--isearch-navigation-flag
+        (firstly-search--abort)))))
 
 
 ;; -=-= Functions
@@ -389,36 +390,52 @@ Used for speed up navingation."
 
 (defun firstly-search--pre-command-hook ()
   "Advice to add alphabet fast navigation.
-Added locally to buffers."
+Added locally to buffers.
+
+If search mode is not active and key in `firstly-search-keys' we
+ activate navigation.
+If
+"
   (let* ((key (this-single-command-keys))
          (key-des (key-description key)))
     (cond
      ;; 1) - activate navigation if printable character key was pressed
      ((and (not isearch-mode)
            (not firstly-search--isearch-navigation-flag)
-           (eq (lookup-key firstly-search-navigation-map key t)
-               #'firstly-search--do-isearch))
+           (and (integerp (aref key 0))
+                (memq (aref key 0) (string-to-list firstly-search-keys)))
+
+           ;; (eq (lookup-key firstly-search-navigation-map key t)
+           ;;     #'firstly-search--do-isearch)
+           )
 
       (firstly-search--do-isearch key-des))
 
      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
-     ((and firstly-search--isearch-navigation-flag
-           (advice-member-p firstly-search--isearch-search-fun-function
-                            'isearch-search-fun-function) ; if it was removed by `isearch-done` or by a user's `C-g.
-           (not (or (memq this-command isearch-menu-bar-commands)
-                    (commandp (lookup-key isearch-mode-map key nil))
-                    (commandp
-                     (lookup-key
-                      `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key)))))
-      (isearch-done)))))
+     ;; ((and firstly-search--isearch-navigation-flag
+     ;;       (advice-member-p firstly-search--isearch-search-fun-function
+     ;;                        'isearch-search-fun-function) ; if it was removed by `isearch-done` or by a user's `C-g.
+     ;;       (not (or (memq this-command isearch-menu-bar-commands)
+     ;;                ;; (commandp (lookup-key isearch-mode-map key nil))
+     ;;                (keymapp (key-binding key t)) ; is prefix
+     ;;                (commandp (key-binding key t)) ; whatever keymaps are currently active through all *active* keymaps (local, global, and it unwraps `menu-item`, `tool-bar`, `menu-bar`, etc.)
+     ;;                (commandp (keymap-lookup isearch-tool-bar-map key nil))
+     ;;                ;; (commandp
+     ;;                ;;  (lookup-key
+     ;;                ;;   `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key))
+     ;;                )))
+     ;;  (isearch-done))
+     )))
 
 
 (defun firstly-search--abort ()
   "Full isearch forced stop."
-  (isearch-done)
+  (isearch-done) ; call `isearch-mode-end-hook' that call `firstly-search--isearch-mode-end-hook' that restire isearch options.
   ;; `isearch-cancel` without moving cursor back.
   (isearch-clean-overlays)
-  (signal 'quit nil))
+  ;; (when isearch-mode
+  ;;   (signal 'quit nil))
+  )
 
 (defun firstly-search--abort-on-failed-repeat (&rest _)
   "Do at failed search cancel search completely.
