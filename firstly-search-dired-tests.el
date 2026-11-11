@@ -51,7 +51,7 @@ cannot un-latch them."
 
                     ;; Feed exactly one key; the idle timer aborts isearch.
                     (setq unread-command-events (list ?a))
-                    (execute-kbd-macro (string-to-vector "a") nil)
+                    (execute-kbd-macro (kbd "a"))
 
                     ;; In case the timer did not fire, exit cleanly.
                     (when isearch-mode (isearch-done))
@@ -85,7 +85,7 @@ cannot un-latch them."
           (let ((buf (current-buffer)))
             (unwind-protect
                 (with-current-buffer buf
-                  (setq-local firstly-search-renew-idle-seconds 0.05)
+                  ;; (setq-local firstly-search-renew-idle-seconds 0.05)
                   (setq-local firstly-search--isearch-navigation-flag nil)
                   (setq-local isearch-mode nil)
                   (when (timerp firstly-search--renew-timer)
@@ -117,7 +117,7 @@ cannot un-latch them."
 
                     ;; Feed exactly one key; the idle timer aborts isearch.
                     ;; (setq unread-command-events (list ?a))
-                    (push ?# unread-command-events)
+                    ;; (push ?# unread-command-events)
                     (execute-kbd-macro (kbd "#"))
                     ;; (execute-kbd-macro (string-to-vector "a") nil)
 
@@ -128,7 +128,11 @@ cannot un-latch them."
                     (should-not saw-isearch)
                     (should-not saw-flag)
 
-                    (push ?a unread-command-events)
+
+                    ;; (print (list firstly-search-dired-mode
+                    ;;              firstly-search--isearch-navigation-flag
+                    ;;              isearch-mode)))))))))
+;; ))))))))
                     (execute-kbd-macro (kbd "a"))
 
                     (when isearch-mode (isearch-done))
@@ -208,8 +212,8 @@ cannot un-latch them."
                             nil t)
 
 
-                  (setq unread-command-events (list ?a))
-                  (execute-kbd-macro (string-to-vector "a") nil)
+                  ;; (setq unread-command-events (list ?a))
+                  (execute-kbd-macro (kbd "a"))
                   (when isearch-mode (isearch-done))
 
                   ;; --- AFTER ---

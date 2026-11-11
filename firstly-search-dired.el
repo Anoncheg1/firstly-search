@@ -65,10 +65,6 @@
 
 (defvar-local firstly-search-dired-mode nil)
 
-;; Optional and may be nil.
-
-;;
-;;
 (defvar-keymap firstly-search-dired--map-replacement
   :parent dired-mode-map
   :doc "Rebinding of keys that interfere with firstly search.
@@ -76,9 +72,10 @@ Replacement for `dired-mode-map'.
   Optional, may be nil.
 It have bindings for commands that unset `firstly-search--change-map'.
 When it have `{minr-mode}-map` it is visible and applied in parallel."
-  ;; special-mode-map
+
+;; special-mode-map
   ;; "M-?"	#'describe-mode
-  "M-h"	#'describe-mode
+  ;; "M-h"	#'describe-mode
   ;; ">" #'end-of-buffer
   ;; "<" #'beginning-of-buffer
   "M-g"	#'revert-buffer

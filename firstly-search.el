@@ -401,10 +401,13 @@ If search mode is not active and key in `firstly-search-keys' we
 Used in `isearch-repeat', stop isearch on failure."
   (when (and isearch-mode
              firstly-search--isearch-navigation-flag)
-    (firstly-search--renew-timer-callback)
+
     (when (not isearch-success)
-      (firstly-search--abort)
-      (signal 'quit nil))))
+        (run-with-idle-timer
+         0 nil
+         (lambda () ; replace (signal 'quit nil)
+           (firstly-search--renew-timer-callback t)))))) ; calls   (firstly-search--abort)
+
 
 ;; -=-= Functions
 
