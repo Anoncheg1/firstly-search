@@ -114,7 +114,7 @@
 
 ;;; Code:
 
-;; Touch: We are on the grass I want to see you stripped.
+;; Touch: Let me see you stripped.
 
 ;; -=-= Variables
 (declare-function word-search-regexp "isearch")
@@ -124,8 +124,8 @@
   :group 'firstly-search
   :prefix "firstly-search-")
 
-(defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_=+;,."
-  "Keys for search.
+(defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_=+,."
+  "Keys that activate navigation.
 Those keys unset in `firstly-search--change-map' where major mode map
  replaced by our copy of t."
   :local t
@@ -178,21 +178,6 @@ May be sub-minor-mode.")
 This function should return funcation that call function
  `isearch-forward' with appropriate regex.")
 
-;; (defvar firstly-search-navigation-map
-;;   (let ((map (make-keymap)))            ; full keymap: char-table at (nth 1 map)
-;;     (set-char-table-range (nth 1 map) (cons #x100 (max-char))
-;;                           #'firstly-search--do-isearch)
-;;     (let ((i ?\s))
-;;       (while (< i 256)
-;;         (define-key map (vector i) #'firstly-search--do-isearch)
-;;         (setq i (1+ i))))
-;;     ;; ignores: explicit nil bindings, replacing the old regex + ignore-map
-;;     ;; (define-key map (kbd "SPC") nil)
-;;     map)
-;;   "Keys that start `firstly-search' navigation.
-;; Bound to `firstly-search--do-isearch' = start; explicit nil = ignore;
-;; unbound = fall through to the normal command loop.")
-
 ;; -=-= saving isearch
 
 (defvar-local firstly-search--isearch-saved-vars-stack nil
@@ -239,7 +224,6 @@ Optional argument BY-TIME used to detect call from timer, to indicate
       (setq firstly-search--renew-timer nil)
       (when firstly-search--isearch-navigation-flag
         (firstly-search--abort)))))
-
 
 ;; -=-= Functions
 
@@ -402,43 +386,6 @@ If search mode is not active and key in `firstly-search-keys' we
                  (memq (aref key 0) (string-to-list firstly-search-keys)))
         (firstly-search--do-isearch key-des)))))
 
-;; (defun firstly-search--pre-command-hook ()
-;;   "Advice to add alphabet fast navigation.
-;; Added locally to buffers.
-
-;; If search mode is not active and key in `firstly-search-keys' we
-;;  activate navigation."
-;;   (let* ((key (this-single-command-keys))
-;;          (key-des (key-description key)))
-;;     (cond
-;;      ;; 1) - activate navigation if printable character key was pressed
-;;      ((and (not isearch-mode)
-;;            (not firstly-search--isearch-navigation-flag)
-;;            (and (integerp (aref key 0))
-;;                 (memq (aref key 0) (string-to-list firstly-search-keys)))
-
-;;            ;; (eq (lookup-key firstly-search-navigation-map key t)
-;;            ;;     #'firstly-search--do-isearch)
-;;            )
-
-;;       (firstly-search--do-isearch key-des))
-
-;;      ;; 2) - clearn isearch for C-m, etc - keys not in isearch-mode-map — only if WE started this isearch
-;;      ;; ((and firstly-search--isearch-navigation-flag
-;;      ;;       (advice-member-p firstly-search--isearch-search-fun-function
-;;      ;;                        'isearch-search-fun-function) ; if it was removed by `isearch-done` or by a user's `C-g.
-;;      ;;       (not (or (memq this-command isearch-menu-bar-commands)
-;;      ;;                ;; (commandp (lookup-key isearch-mode-map key nil))
-;;      ;;                (keymapp (key-binding key t)) ; is prefix
-;;      ;;                (commandp (key-binding key t)) ; whatever keymaps are currently active through all *active* keymaps (local, global, and it unwraps `menu-item`, `tool-bar`, `menu-bar`, etc.)
-;;      ;;                (commandp (keymap-lookup isearch-tool-bar-map key nil))
-;;      ;;                ;; (commandp
-;;      ;;                ;;  (lookup-key
-;;      ;;                ;;   `(keymap (tool-bar menu-item nil ,isearch-tool-bar-map)) key))
-;;      ;;                )))
-;;      ;;  (isearch-done))
-;;      )))
-
 
 (defun firstly-search--abort ()
   "Full isearch forced stop."
@@ -459,7 +406,6 @@ Used in `isearch-repeat', stop isearch on failure."
       (firstly-search--abort))))
 
 ;; -=-= Functions
-
 
 (defun firstly-search--next-single-property-change-by-value (property pos)
   "Return the position of next PROPERTY change by value.

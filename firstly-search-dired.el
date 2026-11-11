@@ -77,7 +77,7 @@ Replacement for `dired-mode-map'.
 It have bindings for commands that unset `firstly-search--change-map'.
 When it have `{minr-mode}-map` it is visible and applied in parallel."
   ;; special-mode-map
-  "M-?"	#'describe-mode
+  ;; "M-?"	#'describe-mode
   "M-h"	#'describe-mode
   ;; ">" #'end-of-buffer
   ;; "<" #'beginning-of-buffer
@@ -105,7 +105,7 @@ When it have `{minr-mode}-map` it is visible and applied in parallel."
   "C-W"       #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
   "C-M-x"     #'dired-do-flagged-delete
-  "M-y"       #'dired-show-file-type
+  "C-M-y"       #'dired-show-file-type
   "M-+"       #'dired-create-directory
   "M-A"       #'dired-do-find-regexp
   "M-C"       #'dired-do-copy
@@ -130,7 +130,7 @@ When it have `{minr-mode}-map` it is visible and applied in parallel."
   "M-U"       #'dired-unmark-all-marks
   ;; "M-<"       #'dired-prev-dirline
   ;; "M->"       #'dired-next-dirline
-  "M-^"       #'dired-up-directory
+  ;; "M-^"       #'dired-up-directory
   "M-SPC"     #'dired-next-line)
 
 
