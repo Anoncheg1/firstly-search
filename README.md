@@ -1,7 +1,7 @@
 [![MELPA](https://melpa.org/packages/firstly-search-badge.svg)](https://melpa.org/#/firstly-search)
 [![MELPA Stable](https://stable.melpa.org/packages/firstly-search-badge.svg)](https://stable.melpa.org/#/firstly-search)
 
-Tested with Emacs 31.1
+Supported Emacs versions 29.1–31.1
 
 # firstly-search
 
@@ -36,28 +36,24 @@ Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** a
 ## Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
 
+Load for required major modes:
 ```lisp
-;; Dired
+(add-to-list 'load-path (expand-file-name "~/sources/firstly-search")) ; optional: for installation from sources
 (require 'firstly-search-dired)
-(add-hook 'dired-mode-hook #'firstly-search-dired-mode)
-;; Package menu
 (require 'firstly-search-package)
-(add-hook 'package-menu-mode-hook #'firstly-search-package-mode)
-;; Buffer Menu
 (require 'firstly-search-buffermenu)
-(add-hook 'Buffer-menu-mode-hook #'firstly-search-buffermenu-mode)
-;; Bookmarks
 (require 'firstly-search-bookmarks)
-(add-hook 'bookmark-bmenu-mode-hook #'firstly-search-bookmarks-mode)
-;; Recentf
 (require 'firstly-search-recentf)
-(add-hook 'recentf-dialog-mode-hook	#'firstly-search-recentf-mode)
-;; IBuffer
 (require 'firstly-search-ibuffer)
-(add-hook 'ibuffer-mode-hook	#'firstly-search-ibuffer-mode)
+(add-hook 'dired-mode-hook		#'firstly-search-dired-mode)
+(add-hook 'package-menu-mode-hook	#'firstly-search-package-mode)
+(add-hook 'Buffer-menu-mode-hook	#'firstly-search-buffermenu-mode)
+(add-hook 'bookmark-bmenu-mode-hook	#'firstly-search-bookmarks-mode)
+(add-hook 'recentf-dialog-mode-hook	#'firstly-search-recentf-mode)
+(add-hook 'ibuffer-mode-hook		#'firstly-search-ibuffer-mode)
 ```
 
-Note, recommendet way to open recentf:
+Note, recommende way to open recentf:
 ```lisp
 (defun my/recentf-open-files ()
   (interactive)
