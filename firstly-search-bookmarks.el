@@ -68,8 +68,8 @@ When it have name `{major-mode}-map` it is visible and applied in
  parallel, that is why we use other name."
   :parent firstly-search-tabulated-list-mode-map
   "RET" #'bookmark-bmenu-this-window
-  "M-v" #'bookmark-bmenu-select
-  "M-w" #'bookmark-bmenu-locate
+  "V" #'bookmark-bmenu-select
+  "W" #'bookmark-bmenu-locate
   "M-5" #'bookmark-bmenu-other-frame
   "M-2" #'bookmark-bmenu-2-window
   "M-1" #'bookmark-bmenu-1-window
@@ -78,24 +78,25 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-o" #'bookmark-bmenu-other-window
   "M-s" #'bookmark-bmenu-save
   "M-k" #'bookmark-bmenu-delete
-  "C-M-x" #'bookmark-bmenu-execute-deletions
+  "X"	#'bookmark-bmenu-execute-deletions
   "M-d" #'bookmark-bmenu-delete
-  "M-D" #'bookmark-bmenu-delete-all
+  ;; "M-D" #'bookmark-bmenu-delete-all
   ;; "S-SPC" #'previous-line
   ;; "SPC" #'next-line
   ;; "DEL" #'bookmark-bmenu-backup-unmark
   "M-u" #'bookmark-bmenu-unmark
-  "M-U" #'bookmark-bmenu-unmark-all
+  ;; "M-U" #'bookmark-bmenu-unmark-all
   "M-m" #'bookmark-bmenu-mark
-  "M-M" #'bookmark-bmenu-mark-all
+  ;; "M-M" #'bookmark-bmenu-mark-all
   "M-l" #'bookmark-bmenu-load
   "M-r" #'bookmark-bmenu-rename
-  "M-R" #'bookmark-bmenu-relocate
+  ;; "M-R" #'bookmark-bmenu-relocate
   "M-t" #'bookmark-bmenu-toggle-filenames
   "M-a" #'bookmark-bmenu-show-annotation
-  "M-A" #'bookmark-bmenu-show-all-annotations
-  "M-E" #'bookmark-bmenu-edit-annotation
-  "M-/" #'bookmark-bmenu-search)
+  ;; "M-A" #'bookmark-bmenu-show-all-annotations
+  ;; "M-E" #'bookmark-bmenu-edit-annotation
+  ;; "M-/" #'bookmark-bmenu-search
+  )
 
 ;;;###autoload
 (define-minor-mode firstly-search-bookmarks-mode

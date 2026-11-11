@@ -68,9 +68,9 @@ When it have name `{major-mode}-map` it is visible and applied in
   :parent firstly-search-tabulated-list-mode-map
   ;; "-"	#'negative-argument
   ;; "0 .. 9"	#'digit-argument
-  "M-H"	#'package-menu-hide-package
-  "M-S"	#'tabulated-list-sort
-  "M-U"	#'package-menu-mark-upgrades
+  ;; "M-H"	#'package-menu-hide-package
+  ;; "M-S"	#'tabulated-list-sort
+  ;; "M-U"	#'package-menu-mark-upgrades
   "M-b"	#'package-report-bug
   "M-d"	#'package-menu-mark-delete
   "M-g"	#'revert-buffer
@@ -81,8 +81,8 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-q"	#'quit-window
   "M-r"	#'revert-buffer
   "M-u"	#'package-menu-mark-unmark
-  "C-M-w"	#'package-browse-url
-  "C-M-x"	#'package-menu-execute)
+  "W"		#'package-browse-url
+  "X"		#'package-menu-execute)
 
 ;;;###autoload
 (define-minor-mode firstly-search-package-mode

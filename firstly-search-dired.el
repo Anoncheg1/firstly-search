@@ -87,7 +87,7 @@ When it have `{minr-mode}-map` it is visible and applied in parallel."
   "M-d"       #'dired-flag-file-deletion
   "M-e"       #'dired-find-file
   ;; "M-f"       #'dired-find-file
-  "C-m"       #'dired-find-file
+  ;; "C-m"       #'dired-find-file
   ;; "M-g"       #'revert-buffer
   "M-i"       #'dired-maybe-insert-subdir
   "M-j"       #'dired-goto-file
@@ -105,33 +105,34 @@ When it have `{minr-mode}-map` it is visible and applied in parallel."
   "C-W"       #'dired-copy-filename-as-kill
   "M-W"       #'browse-url-of-dired-file
   "C-M-x"     #'dired-do-flagged-delete
-  "C-M-y"       #'dired-show-file-type
+  "C-M-y"     #'dired-show-file-type
   "M-+"       #'dired-create-directory
-  "M-A"       #'dired-do-find-regexp
-  "M-C"       #'dired-do-copy
-  "M-B"       #'dired-do-byte-compile
-  "M-D"       #'dired-do-delete
-  "M-G"       #'dired-do-chgrp
-  "M-H"       #'dired-do-hardlink
-  "M-I"       #'dired-do-info
-  "M-L"       #'dired-do-load
-  "M-M"       #'dired-do-chmod
-  "M-N"       #'dired-do-man
-  "C-M-O"     #'dired-do-chown ;; something special here
-  "M-P"       #'dired-do-print
-  "M-Q"       #'dired-do-find-regexp-and-replace
-  "M-R"       #'dired-do-rename
-  "M-S"       #'dired-do-symlink
-  "M-T"       #'dired-do-touch
-  "M-X"       #'dired-do-shell-command
-  "M-Y"       #'dired-do-relsymlink
-  "M-Z"       #'dired-do-compress
-  "M-c"       #'dired-do-compress-to
-  "M-U"       #'dired-unmark-all-marks
+  ;; "M-A"       #'dired-do-find-regexp
+  ;; "M-C"       #'dired-do-copy
+  ;; "M-B"       #'dired-do-byte-compile
+  ;; "M-D"       #'dired-do-delete
+  ;; "M-G"       #'dired-do-chgrp
+  ;; "M-H"       #'dired-do-hardlink
+  ;; "M-I"       #'dired-do-info
+  ;; "M-L"       #'dired-do-load
+  ;; "M-M"       #'dired-do-chmod
+  ;; "M-N"       #'dired-do-man
+  ;; "C-M-O"     #'dired-do-chown ;; something special here
+  ;; "M-P"       #'dired-do-print
+  ;; "M-Q"       #'dired-do-find-regexp-and-replace
+  ;; "M-R"       #'dired-do-rename
+  ;; "M-S"       #'dired-do-symlink
+  ;; "M-T"       #'dired-do-touch
+  ;; "M-X"       #'dired-do-shell-command
+  ;; "M-Y"       #'dired-do-relsymlink
+  ;; "M-Z"       #'dired-do-compress
+  ;; "M-c"       #'dired-do-compress-to
+  ;; "M-U"       #'dired-unmark-all-marks
   ;; "M-<"       #'dired-prev-dirline
   ;; "M->"       #'dired-next-dirline
   ;; "M-^"       #'dired-up-directory
-  "M-SPC"     #'dired-next-line)
+  ;; "M-SPC"     #'dired-next-line
+  )
 
 
 (defun firstly-search-dired-mode-enable ()

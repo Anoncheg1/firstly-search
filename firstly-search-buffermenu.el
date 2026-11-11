@@ -70,12 +70,12 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-1"	#'Buffer-menu-1-window
   "M-2"	#'Buffer-menu-2-window
   ;; "M-3 .. 9"	#'digit-argument
-  "M-?"	#'describe-mode
-  "M-O"	#'Buffer-menu-view-other-window
-  "M-S"	#'tabulated-list-sort
-  "M-T"	#'Buffer-menu-toggle-files-only
-  "M-U"	#'Buffer-menu-unmark-all
-  "M-V"	#'Buffer-menu-view
+  ;; "M-?"	#'describe-mode
+  ;; "M-O"	#'Buffer-menu-view-other-window
+  ;; "M-S"	#'tabulated-list-sort
+  ;; "M-T"	#'Buffer-menu-toggle-files-only
+  ;; "M-U"	#'Buffer-menu-unmark-all
+  ;; "M-V"	#'Buffer-menu-view
   "M-b"	#'Buffer-menu-bury
   "M-d"	#'Buffer-menu-delete
   ;; "M-e .. f"	#'Buffer-menu-this-window
@@ -90,8 +90,8 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-s"	#'Buffer-menu-save
   "M-t"	#'Buffer-menu-visit-tags-table
   "M-u"	#'Buffer-menu-unmark
-  "C-M-v"	#'Buffer-menu-select
-  "C-M-x"	#'Buffer-menu-execute
+  "V"		#'Buffer-menu-select
+  "X"		#'Buffer-menu-execute
   "M-{"	#'tabulated-list-narrow-current-column
   "M-}"	#'tabulated-list-widen-current-column)
 

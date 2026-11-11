@@ -62,7 +62,7 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-s s"	#'ibuffer-do-sort-by-size
   "M-s v"	#'ibuffer-do-sort-by-recency
 
-  "M-`"	#'ibuffer-switch-format
+  ;; "M-`"	#'ibuffer-switch-format
   "M-b"	#'ibuffer-bury-buffer
   "M-d"	#'ibuffer-mark-for-delete
   "M-e"	#'ibuffer-visit-buffer
@@ -81,11 +81,12 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-r"	#'ibuffer-do-replace-regexp
   "M-t"	#'ibuffer-toggle-marks
   "M-u"	#'ibuffer-unmark-forward
-  "M-v"	#'ibuffer-do-view
-  "M-w"	#'ibuffer-copy-filename-as-kill
+  "C-M-v"	#'ibuffer-do-view
+  "C-M-w"	#'ibuffer-copy-filename-as-kill
   "C-M-x"	#'ibuffer-do-kill-on-deletion-marks
-  "M-|"	#'ibuffer-do-shell-command-pipe
-  "M-~"	#'ibuffer-do-toggle-modified)
+  ;; "M-|"	#'ibuffer-do-shell-command-pipe
+  ;; "M-~"	#'ibuffer-do-toggle-modified
+  )
 
 (defun firstly-search-ibuffer--filter-header (beg end)
   "Return non-nil if text between BEG and END is not header and footer.

@@ -124,7 +124,7 @@
   :group 'firstly-search
   :prefix "firstly-search-")
 
-(defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_=+,."
+(defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyz -_=+,." ; ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
   "Keys that activate navigation.
 Those keys unset in `firstly-search--change-map' where major mode map
  replaced by our copy of t."
@@ -291,7 +291,8 @@ If MAP is nil, only the save happens."
                 (copy-keymap (symbol-value (intern (concat (symbol-name major-mode) "-map"))))))
   (when map
     (dolist (c (string-to-list firstly-search-keys))
-        (define-key map (vector c) nil))
+      (unless (= c 32) ; not space
+        (define-key map (vector c) nil)))
     (use-local-map map)))
 
 
@@ -383,6 +384,7 @@ If search mode is not active and key in `firstly-search-keys' we
     (let* ((key (this-single-command-keys))
            (key-des (key-description key)))
       (when (and (integerp (aref key 0))
+                 (not (= (aref key 0) 32)) ; not space
                  (memq (aref key 0) (string-to-list firstly-search-keys)))
         (firstly-search--do-isearch key-des)))))
 
@@ -391,10 +393,8 @@ If search mode is not active and key in `firstly-search-keys' we
   "Full isearch forced stop."
   (isearch-done) ; call `isearch-mode-end-hook' that call `firstly-search--isearch-mode-end-hook' that restire isearch options.
   ;; `isearch-cancel` without moving cursor back.
-  (isearch-clean-overlays)
-  ;; (when isearch-mode
-  ;;   (signal 'quit nil))
-  )
+  (isearch-clean-overlays))
+
 
 (defun firstly-search--abort-on-failed-repeat (&rest _)
   "Do at failed search cancel search completely.
@@ -403,7 +403,8 @@ Used in `isearch-repeat', stop isearch on failure."
              firstly-search--isearch-navigation-flag)
     (firstly-search--renew-timer-callback)
     (when (not isearch-success)
-      (firstly-search--abort))))
+      (firstly-search--abort)
+      (signal 'quit nil))))
 
 ;; -=-= Functions
 
