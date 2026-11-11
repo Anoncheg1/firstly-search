@@ -178,20 +178,20 @@ May be sub-minor-mode.")
 This function should return funcation that call function
  `isearch-forward' with appropriate regex.")
 
-(defvar firstly-search-navigation-map
-  (let ((map (make-keymap)))            ; full keymap: char-table at (nth 1 map)
-    (set-char-table-range (nth 1 map) (cons #x100 (max-char))
-                          #'firstly-search--do-isearch)
-    (let ((i ?\s))
-      (while (< i 256)
-        (define-key map (vector i) #'firstly-search--do-isearch)
-        (setq i (1+ i))))
-    ;; ignores: explicit nil bindings, replacing the old regex + ignore-map
-    ;; (define-key map (kbd "SPC") nil)
-    map)
-  "Keys that start `firstly-search' navigation.
-Bound to `firstly-search--do-isearch' = start; explicit nil = ignore;
-unbound = fall through to the normal command loop.")
+;; (defvar firstly-search-navigation-map
+;;   (let ((map (make-keymap)))            ; full keymap: char-table at (nth 1 map)
+;;     (set-char-table-range (nth 1 map) (cons #x100 (max-char))
+;;                           #'firstly-search--do-isearch)
+;;     (let ((i ?\s))
+;;       (while (< i 256)
+;;         (define-key map (vector i) #'firstly-search--do-isearch)
+;;         (setq i (1+ i))))
+;;     ;; ignores: explicit nil bindings, replacing the old regex + ignore-map
+;;     ;; (define-key map (kbd "SPC") nil)
+;;     map)
+;;   "Keys that start `firstly-search' navigation.
+;; Bound to `firstly-search--do-isearch' = start; explicit nil = ignore;
+;; unbound = fall through to the normal command loop.")
 
 ;; -=-= saving isearch
 
