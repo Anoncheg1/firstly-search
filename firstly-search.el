@@ -157,6 +157,13 @@ while the user is actively typing.  To disable, set to nil."
                  number)
   :group 'firstly-search)
 
+
+(defcustom firstly-search-fail-function #'beginning-of-line
+  "Function to run or use as a fallback when isearch fails.
+If non-nil, this function is called when a search fails."
+  :type '(choice (const nil) function)
+  :group 'firstly-search)
+
 (defvar-local firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
 Allow to separate firstly-search navigation from isearch.
@@ -337,7 +344,6 @@ Used for speed up navingation."
   ;; 0. snapshot the isearch vars we are about to clobber
   (firstly-search--isearch-save-vars)
 
-
   ;; 1. install advice + keymap
   (when firstly-search--isearch-search-fun-function
     (add-function :around (local 'isearch-search-fun-function)
@@ -403,10 +409,13 @@ Used in `isearch-repeat', stop isearch on failure."
              firstly-search--isearch-navigation-flag)
 
     (when (not isearch-success)
-        (run-with-idle-timer
-         0 nil
-         (lambda () ; replace (signal 'quit nil)
-           (firstly-search--renew-timer-callback t)))))) ; calls   (firstly-search--abort)
+      (when firstly-search-fail-function
+        (funcall firstly-search-fail-function)) ; signal failure by moving pointer back
+
+      (run-with-idle-timer
+       0 nil
+       (lambda () ; replace (signal 'quit nil)
+         (firstly-search--renew-timer-callback t)))))) ; calls   (firstly-search--abort)
 
 
 ;; -=-= Functions
