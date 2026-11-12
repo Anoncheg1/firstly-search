@@ -33,7 +33,7 @@ Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** a
 - any printable character activate isearch-navigation. Modifiers used for commands.
 - **C-m** or **RET** quit search and allow quickly select item.
 - disable itself in Editable Dired mode (wdired-mode).
-
+- The `;` key stops the search; if the search failed, move the cursor left.
 
 ## Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:

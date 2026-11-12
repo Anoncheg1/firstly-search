@@ -32,6 +32,8 @@
 ;; There are minor modes for major modes: Dired, Package Menu.
 ;; Pressing any printable character moves the cursor, allowing
 ;; search-based navigation to major elements.
+;; "The \";\" key stops the search; if the search failed, move the
+;; cursor left."
 
 ;;;; Activation:
 
@@ -70,6 +72,8 @@
 ;; To prevent intererence with major-mode keybindings we create copy
 ;; of keymap with :parent of major-mode map at loading. At minor mode
 ;; activation we set our map copy and set hooks.
+;; When isearch is active it uses own keys and decide on its own when
+;; to stop.
 
 ;; For Dired default `isearch-search-fun-in-text-property' function is
 ;; used for search and only in text which have not nil specified "text
@@ -165,6 +169,13 @@ while the user is actively typing.  To disable, set to nil."
 If non-nil, this function is called when a search fails."
   :type '(choice (const nil) function)
   :group 'firstly-search)
+
+(defcustom firstly-search-stop-key ?\;
+  "If non-nil, stop search without signal for failed search."
+  :type '(choice (const :tag "Disabled" nil)
+                 (key :tag "Key sequence"))
+  :group 'firstly-search)
+
 
 (defvar-local firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
@@ -301,7 +312,7 @@ If MAP is nil, only the save happens."
                 (copy-keymap (symbol-value (intern (concat (symbol-name major-mode) "-map"))))))
   (when map
     (dolist (c (string-to-list firstly-search-keys))
-      (unless (= c 32) ; not space
+      (unless (= c 32) ; not space, we left space binded to major-mode native command
         (define-key map (vector c) nil)))
     (use-local-map map)))
 
@@ -387,7 +398,8 @@ Used for speed up navingation."
 Added locally to buffers by mirod Firstly Search modes.
 
 If search mode is not active and key in `firstly-search-keys' we
- activate navigation."
+ activate navigation.
+Note: Executed after isearch `isearch-pre-command-hook'."
   (unless (or isearch-mode
               firstly-search--isearch-navigation-flag)
     (let* ((key (this-single-command-keys))
@@ -412,16 +424,22 @@ Used in `isearch-repeat', stop isearch on failure."
              firstly-search--isearch-navigation-flag)
 
     (if isearch-success
+        ;; success: update timer
         (firstly-search--renew-timer-callback)
-      ;; else - fail
-      (when firstly-search-fail-function
-        (funcall firstly-search-fail-function)) ; signal failure by moving pointer back
+      ;; else - fail: halt
 
-      ;; replace (signal 'quit nil)
-      (run-with-idle-timer
-       0 nil
-       (lambda ()
-         (firstly-search--renew-timer-callback t)))))) ; calls   (firstly-search--abort)
+      (let ((k (this-single-command-keys))) ; ";" stop search normally
+
+        ;; signal failure by moving pointer back
+        (when (and firstly-search-fail-function
+                   (not (and (= (length k) 1) (= (aref k 0) firstly-search-stop-key)))) ; if one key and its key is a stop key
+          (funcall firstly-search-fail-function))
+
+        ;; replace (signal 'quit nil)
+        (run-with-idle-timer
+         0 nil
+         (lambda ()
+           (firstly-search--renew-timer-callback t))))))) ; calls   (firstly-search--abort)
 
 
 
