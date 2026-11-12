@@ -1,11 +1,13 @@
 [![MELPA](https://melpa.org/packages/firstly-search-badge.svg)](https://melpa.org/#/firstly-search)
 [![MELPA Stable](https://stable.melpa.org/packages/firstly-search-badge.svg)](https://stable.melpa.org/#/firstly-search)
 
-Supported Emacs versions 29.1–31.1
-
 # firstly-search
 
 Pressing normal keys activates quick isearch navigation. Typing any printable character moves the cursor with incremental search.
+
+Emacs versions: 29.1–31.1
+
+Version: 0.2
 
 Supported modes:
 

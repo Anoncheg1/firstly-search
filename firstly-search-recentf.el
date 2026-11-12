@@ -1,6 +1,6 @@
 ;;; firstly-search-recentf.el --- Basename isearch for `recentf-dialog-mode'  -*- lexical-binding: t -*-
 
-;; Copyright (c) 2024-2026 github.com/Anoncheg1
+;; Copyright (c) 2024-2026 github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;;; License
