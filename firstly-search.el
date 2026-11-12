@@ -219,14 +219,15 @@ isearch state that `firstly-search--do-isearch' mutates globally.")
 Depending on `isearch-success' renew or stop timer.
 Optional argument BY-TIME used to detect call from timer, to indicate
  expiration of time."
-  (when firstly-search-renew-idle-seconds ; if delete
+  (when firstly-search-renew-idle-seconds
     (when (timerp firstly-search--renew-timer)
       (cancel-timer firstly-search--renew-timer))
 
     (if (and isearch-mode isearch-success (not by-time))
-        (setq firstly-search--renew-timer
-              (run-with-idle-timer firstly-search-renew-idle-seconds
-                                   nil #'firstly-search--renew-timer-callback t))
+        (progn
+          (setq firstly-search--renew-timer
+                (run-with-idle-timer firstly-search-renew-idle-seconds
+                                     nil #'firstly-search--renew-timer-callback t)))
       ;; else: by-time - isearch-success is nil
       (setq firstly-search--renew-timer nil)
       (when firstly-search--isearch-navigation-flag
@@ -408,14 +409,18 @@ Used in `isearch-repeat', stop isearch on failure."
   (when (and isearch-mode
              firstly-search--isearch-navigation-flag)
 
-    (when (not isearch-success)
+    (if isearch-success
+        (firstly-search--renew-timer-callback)
+      ;; else - fail
       (when firstly-search-fail-function
         (funcall firstly-search-fail-function)) ; signal failure by moving pointer back
 
+      ;; replace (signal 'quit nil)
       (run-with-idle-timer
        0 nil
-       (lambda () ; replace (signal 'quit nil)
+       (lambda ()
          (firstly-search--renew-timer-callback t)))))) ; calls   (firstly-search--abort)
+
 
 
 ;; -=-= Functions
