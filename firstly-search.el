@@ -65,9 +65,11 @@
 ;;;; How it works:
 
 ;; We use `pre-command-hook' called for any key pressed, if key is
-;; simple and not in "ignore-keys" we activate incremental search with
-;; modified `isearch-search-fun-function' that limit search to bounds
-;; in buffer and some other tweeks.
+;; in `firstly-search-keys' we activate configured incremental search
+;;  (isearch). Also we correctly handle failed search and set timer.
+;; To prevent intererence with major-mode keybindings we create copy
+;; of keymap with :parent of major-mode map at loading. At minor mode
+;; activation we set our map copy and set hooks.
 
 ;; For Dired default `isearch-search-fun-in-text-property' function is
 ;; used for search and only in text which have not nil specified "text
