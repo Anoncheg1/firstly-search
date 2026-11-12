@@ -65,7 +65,7 @@
 
 (defvar-local firstly-search-dired-mode nil)
 
-(defvar-keymap firstly-search-dired--map-replacement
+(defvar-keymap firstly-search-dired-map
   :parent dired-mode-map
   :doc "Rebinding of keys that interfere with firstly search.
 Replacement for `dired-mode-map'.
@@ -100,7 +100,7 @@ When it have `{minr-mode}-map` it is visible and applied in parallel."
   "M-u"       #'dired-unmark
   "C-M-v"     #'dired-view-file
   "C-W"       #'dired-copy-filename-as-kill
-  "M-W"       #'browse-url-of-dired-file
+  ;; "M-W"       #'browse-url-of-dired-file
   "C-M-x"     #'dired-do-flagged-delete
   "C-M-y"     #'dired-show-file-type
   "M-+"       #'dired-create-directory
@@ -163,7 +163,7 @@ Typing any printable character activate incremental search."
   (if firstly-search-dired-mode
       (progn
         (setq-local firstly-search--isearch-search-fun-function #'dired-isearch-search-filenames)
-        (firstly-search--change-map firstly-search-dired--map-replacement)
+        (firstly-search--change-map firstly-search-dired-map)
         ;; (setq firstly-search--isearch-search-fun-function #'firstly-search--dired-isearch-search-filenames)
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t) ; fast actication
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
