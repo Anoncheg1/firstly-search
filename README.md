@@ -100,7 +100,7 @@ I recommend to highlight current line.
 - 2009 dired-lis https://github.com/weikent/emacs/blob/master/lisps/dired/dired-lis.el or http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el
 
 ## How this works
-We use `pre-command-hook' called for any key pressed, if key is in `firstly-search-keys' we activate configured incremental search (isearch). Also we correctly handle failed search and set timer.  To prevent intererence with major-mode keybindings we create copy of keymap with :parent of major-mode map at loading. At minor mode activation we set our map copy and set hooks.
+We use `pre-command-hook` called for any key pressed, if key is in `firstly-search-keys` we activate configured incremental search (isearch). Also we correctly handle failed search and set timer.  To prevent intererence with major-mode keybindings we create copy of keymap with `:parent` of major-mode map value at loading. At minor mode activation we set our map copy and set hooks.
 
 ## Other packages
 - Navigation in Dired, Packages, Buffers modes https://github.com/Anoncheg1/firstly-search
