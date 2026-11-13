@@ -37,21 +37,21 @@
 
 (require 'firstly-search)
 
-(defvar-keymap firstly-search-tabulated-list-map
-  :parent tabulated-list-mode-map
-  :doc "Replacement for `tabulated-list-mode-map'."
-  ;; "M-?"	#'describe-mode
-  ;; "M-h"	#'describe-mode
-  ;; ">" #'end-of-buffer
-  ;; "<" #'beginning-of-buffer
-  "M-g"	#'revert-buffer
-  ;; `tabulated-list-mode-map':
-  "C-n"		#'next-line
-  "C-p"		#'previous-line
-  ;; "M-S"		#'tabulated-list-sort
-  ;; "M-}"		#'tabulated-list-widen-current-column
-  ;; "M-{"		#'tabulated-list-narrow-current-column
-  )
+;; (defvar-keymap firstly-search-tabulated-list-map
+;;   :parent tabulated-list-mode-map
+;;   :doc "Replacement for `tabulated-list-mode-map'."
+;;   ;; "M-?"	#'describe-mode
+;;   ;; "M-h"	#'describe-mode
+;;   ;; ">" #'end-of-buffer
+;;   ;; "<" #'beginning-of-buffer
+;;   "M-g"	#'revert-buffer
+;;   ;; `tabulated-list-mode-map':
+;;   "C-n"		#'next-line
+;;   "C-p"		#'previous-line
+;;   ;; "M-S"		#'tabulated-list-sort
+;;   ;; "M-}"		#'tabulated-list-widen-current-column
+;;   ;; "M-{"		#'tabulated-list-narrow-current-column
+;;   )
 
 (defcustom firstly-search-tabulated-list-columns '((tabulated-list-column-name . "Name" ))
   "Non-nil means search in these columns."

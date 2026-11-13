@@ -61,12 +61,13 @@
 
 (defvar-keymap firstly-search-bookmarks-map
   :doc "Rebinding of keys that interfere with firstly search.
-Replacement for `Buffer-menu-mode-map'.
+Replacement for `bookmark-map'.
 Optional, may be nil.
 It have bindings for commands that unset `firstly-search--change-map'.
 When it have name `{major-mode}-map` it is visible and applied in
  parallel, that is why we use other name."
-  :parent firstly-search-tabulated-list-map
+  :parent bookmark-map ; firstly-search-tabulated-list-map
+  "M-g" #'revert-buffer
   "RET" #'bookmark-bmenu-this-window
   "V" #'bookmark-bmenu-select
   "W" #'bookmark-bmenu-locate

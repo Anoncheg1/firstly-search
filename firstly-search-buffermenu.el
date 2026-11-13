@@ -64,18 +64,12 @@ Optional, may be nil.
 It have bindings for commands that unset `firstly-search--change-map'.
 When it have name `{major-mode}-map` it is visible and applied in
  parallel, that is why we use other name."
-  :parent firstly-search-tabulated-list-map
+  :parent Buffer-menu-mode-map  ; may be used: (make-composed-keymap Buffer-menu-mode-map firstly-search-tabulated-list-map )
   "RET"	#'Buffer-menu-this-window
   "M-0"	#'digit-argument
   "M-1"	#'Buffer-menu-1-window
   "M-2"	#'Buffer-menu-2-window
   ;; "M-3 .. 9"	#'digit-argument
-  ;; "M-?"	#'describe-mode
-  ;; "M-O"	#'Buffer-menu-view-other-window
-  ;; "M-S"	#'tabulated-list-sort
-  ;; "M-T"	#'Buffer-menu-toggle-files-only
-  ;; "M-U"	#'Buffer-menu-unmark-all
-  ;; "M-V"	#'Buffer-menu-view
   "M-b"	#'Buffer-menu-bury
   "M-d"	#'Buffer-menu-delete
   ;; "M-e .. f"	#'Buffer-menu-this-window
@@ -83,9 +77,9 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-h"	#'describe-mode
   "M-k"	#'Buffer-menu-delete
   "M-m"	#'Buffer-menu-mark
-  "M-n"	#'next-line
+  "C-n"	#'next-line
   "M-o"	#'Buffer-menu-other-window
-  "M-p"	#'previous-line
+  "C-p"	#'previous-line
   "M-q"	#'quit-window
   "M-s"	#'Buffer-menu-save
   "M-t"	#'Buffer-menu-visit-tags-table

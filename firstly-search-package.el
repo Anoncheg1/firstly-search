@@ -65,7 +65,7 @@ Optional, may be nil.
 It have bindings for commands that unset `firstly-search--change-map'.
 When it have name `{major-mode}-map` it is visible and applied in
  parallel, that is why we use other name."
-  :parent firstly-search-tabulated-list-map
+  :parent package-menu-mode-map ; firstly-search-tabulated-list-map
   ;; "-"	#'negative-argument
   ;; "0 .. 9"	#'digit-argument
   ;; "M-H"	#'package-menu-hide-package
@@ -76,8 +76,8 @@ When it have name `{major-mode}-map` it is visible and applied in
   "M-g"	#'revert-buffer
   "M-h"	#'package-menu-quick-help
   "M-i"	#'package-menu-mark-install
-  "M-n"	#'next-line
-  "M-p"	#'previous-line
+  "C-n"	#'next-line
+  "C-p"	#'previous-line
   "M-q"	#'quit-window
   "M-r"	#'revert-buffer
   "M-u"	#'package-menu-mark-unmark
