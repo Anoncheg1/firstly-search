@@ -32,8 +32,8 @@
 (defvar-local firstly-search-anymode--activated-params nil
   "Plist of parameters used by `firstly-search-anymode-activate'.
 Non-nil means firstly-search is active in this buffer.  The plist stores
-only the keys that were actually supplied, so `firstly-search-anymode-deactivate'
-can undo exactly what was applied.")
+ only the keys that were actually supplied, so
+ `firstly-search-anymode-deactivate' can undo exactly what was applied.")
 
 ;; -=-= Two functions
 
