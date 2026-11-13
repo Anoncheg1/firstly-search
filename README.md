@@ -34,7 +34,7 @@ Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** a
 - **C-m** or **RET** quit search and allow quickly select item.
 - disable itself in Editable Dired mode (wdired-mode).
 - The `;` key stops the search; if the search failed, move the cursor left.
-- Easy activation for any mode, see `## Anymode` section
+- Easy activation for any mode, see `## Any mode` section
 
 ## Activation
 Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
@@ -77,7 +77,7 @@ M-x customize-group RET firstly-search-recentf
 M-x customize-group RET firstly-search-ibuffer
 ```
 
-## Anymode
+## Any mode
 You can activate it in any mode with:
 
 ```M-x firstly-search-anymode-ibuffer-activate```
