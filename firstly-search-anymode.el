@@ -42,8 +42,8 @@ can undo exactly what was applied.")
   "Universally activate firstly-search in the current buffer.
 ARGS is a plist; required logic is always applied, optional keys only
 when supplied.  Saves the effective parameters in
-`firstly-search-anymode--activated-params' so `firstly-search-anymode-deactivate' can
-undo them precisely.
+`firstly-search-anymode--activated-params' so
+`firstly-search-anymode-deactivate' can undo them precisely.
 
 Recognized keys:
   :isearch-prefix    STRING   -> `firstly-search-isearch-prefix'
@@ -84,8 +84,9 @@ Returns the saved parameter plist."
 ;;;###autoload
 (defun firstly-search-anymode-deactivate ()
   "Deactivate firstly-search in the current buffer.
-Undoes exactly the parameters saved by `firstly-search-anymode-activate' in
-`firstly-search-anymode--activated-params', plus the always-applied hooks.
+Undoes exactly the parameters saved by `firstly-search-anymode-activate'
+ in `firstly-search-anymode--activated-params', plus the always-applied
+ hooks.
 Safe to call when not active (it is a no-op)."
   (interactive)
   (when firstly-search-anymode--activated-params
