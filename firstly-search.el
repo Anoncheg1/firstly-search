@@ -165,8 +165,8 @@ while the user is actively typing.  To disable, set to nil."
 
 
 (defcustom firstly-search-fail-function #'beginning-of-line
-  "Function to run or use as a fallback when isearch fails.
-If non-nil, this function is called when a search fails."
+  "Function to run when search fails and stop if non-nil.
+If nil, isearch continues normally."
   :type '(choice (const nil) function)
   :group 'firstly-search)
 
@@ -310,11 +310,14 @@ If MAP is nil, only the save happens."
   (unless firstly-search--major-mode-saved-map ; save
     (setq-local firstly-search--major-mode-saved-map
                 (copy-keymap (symbol-value (intern (concat (symbol-name major-mode) "-map"))))))
-  (when map
-    (dolist (c (string-to-list firstly-search-keys))
-      (unless (= c 32) ; not space, we left space binded to major-mode native command
-        (define-key map (vector c) nil)))
-    (use-local-map map)))
+
+  ;; hide keys in map or in major-mode map
+  (let ((map (or map (copy-keymap firstly-search--major-mode-saved-map))))
+    (when map
+      (dolist (c (string-to-list firstly-search-keys))
+        (unless (= c 32) ; not space, we left space binded to major-mode native command
+          (define-key map (vector c) nil)))
+      (use-local-map map))))
 
 
 (defun firstly-search--restore-map ()
@@ -422,25 +425,23 @@ Note: Executed after isearch `isearch-pre-command-hook'."
 Used in `isearch-repeat', stop isearch on failure."
   (when (and isearch-mode
              firstly-search--isearch-navigation-flag)
-
     (if isearch-success
         ;; success: update timer
         (firstly-search--renew-timer-callback)
-      ;; else - fail: halt
-
-      (let ((k (this-single-command-keys))) ; ";" stop search normally
-
-        ;; signal failure by moving pointer back
+      ;; Else: fail: halt
+      (let* ((k (this-single-command-keys)) ; ";" stop search normally
+            (stop-key (and (= (length k) 1) (= (aref k 0) firstly-search-stop-key))))
+        ;; Signal failure by moving pointer back
         (when (and firstly-search-fail-function
-                   (not (and (= (length k) 1) (= (aref k 0) firstly-search-stop-key)))) ; if one key and its key is a stop key
+                   (not stop-key)) ; if one key and its key is a stop key
           (funcall firstly-search-fail-function))
 
-        ;; replace (signal 'quit nil)
-        (run-with-idle-timer
-         0 nil
-         (lambda ()
-           (firstly-search--renew-timer-callback t))))))) ; calls   (firstly-search--abort)
-
+        ;; Replace (signal 'quit nil)
+        (when (or stop-key firstly-search-fail-function) ; dont call if firstly-search-fail-function is nil
+          (run-with-idle-timer
+           0 nil
+           (lambda ()
+             (firstly-search--renew-timer-callback t)))))))) ; calls   (firstly-search--abort)
 
 
 ;; -=-= Functions
