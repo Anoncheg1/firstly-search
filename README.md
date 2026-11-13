@@ -37,7 +37,7 @@ Pay attention, standard keys: **i**, **k**, **d**, **m** is rebinded to **M-** a
 - Easy activation for any mode, see `## Any mode` section
 
 ## Activation
-Add this lines to your configuration Init file: ```~/.emacs```, ```~/.emacs.d/init.el```, ```~/.config/emacs/init.el```:
+Add this lines to your configuration Init file: ```~/.emacs``` or ```~/.emacs.d/init.el``` or ```~/.config/emacs/init.el```:
 
 Load for required major modes:
 ```lisp
