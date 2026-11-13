@@ -80,7 +80,7 @@ M-x customize-group RET firstly-search-ibuffer
 ## Any mode
 You can activate it in any mode with:
 
-```M-x firstly-search-anymode-ibuffer-activate```
+```M-x firstly-search-anymode-activate```
 
 Don't forget to call `(require 'firstly-search-anymode)` in config or with 'M-:' key.
 
