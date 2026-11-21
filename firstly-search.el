@@ -365,7 +365,7 @@ Used for speed up navingation."
 (defun firstly-search--do-isearch (str)
   "Also used for testing with STR."
   (when firstly-search-begin-from-top
-        (beginning-of-buffer))
+    (goto-char (point-min)))
   ;; 0. snapshot the isearch vars we are about to clobber
   (firstly-search--isearch-save-vars)
 
