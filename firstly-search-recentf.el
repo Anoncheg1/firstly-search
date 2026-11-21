@@ -69,7 +69,7 @@ Used in `isearch-regexp-function'."
   :type 'boolean
   :group 'firstly-search-recentf)
 
-(defcustom firstly-search-recentf-from-flash-start-flag t
+(defcustom firstly-search-recentf-from-slash-start-flag t
   "Non-nil means search will be from begining after path separator.
 Works only if `firstly-search-recentf-basename-flag` is true.
 Used in `isearch-regexp-function'."
@@ -164,7 +164,7 @@ The returned function narrows the search in basenames bounds in form of
 Replacement for `isearch-search-fun-function'.
 Argument ORIG-FUN isearch internal function."
   (let ((bounds (if firstly-search-recentf-basename-flag
-                    (if firstly-search-recentf-from-flash-start-flag
+                    (if firstly-search-recentf-from-slash-start-flag
                         (firstly-search-recentf--bounds-with-slash)
                       ;; else
                       (firstly-search-recentf--bounds-normal))
@@ -202,7 +202,7 @@ When it have name `{major-mode}-map` it is visible and applied in
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
         (setq-local firstly-search-regex-prefix firstly-search-recentf-regex-prefix)
-        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-flash-start-flag
+        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-slash-start-flag
                                                    firstly-search-recentf-regex-prefix))
         (setq-local firstly-search--isearch-search-fun-function
                     #'firstly-search-recentf--bounded-isearch)

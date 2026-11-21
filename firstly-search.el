@@ -3,7 +3,7 @@
 ;; Copyright (c) 2024-2026 github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
-;; Keywords: matching, isearch, navigation, dired, packagemenu
+;; Keywords: matching, convenience
 ;; URL: https://codeberg.org/Anoncheg/firstly-search
 ;; Created: 10 Sep 2024
 ;; Version: 0.2
@@ -129,8 +129,7 @@
 
 (defgroup firstly-search nil
   "Search with any key."
-  :group 'firstly-search
-  :prefix "firstly-search-")
+  :group 'firstly-search)
 
 (defcustom firstly-search-keys "abcdefghijklmnopqrstuvwxyz -_=+,." ; ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
   "Keys that activate navigation.
