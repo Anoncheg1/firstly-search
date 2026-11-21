@@ -64,7 +64,12 @@ Used in `isearch-regexp-function'."
   :type 'boolean
   :group 'firstly-search-recentf)
 
-(defcustom firstly-search-recentf-from-start-flag t
+(defcustom firstly-search-recentf-begin-from-top t
+  "Non-nil means every search will be only from top."
+  :type 'boolean
+  :group 'firstly-search-recentf)
+
+(defcustom firstly-search-recentf-from-flash-start-flag t
   "Non-nil means search will be from begining after path separator.
 Works only if `firstly-search-recentf-basename-flag` is true.
 Used in `isearch-regexp-function'."
@@ -159,7 +164,7 @@ The returned function narrows the search in basenames bounds in form of
 Replacement for `isearch-search-fun-function'.
 Argument ORIG-FUN isearch internal function."
   (let ((bounds (if firstly-search-recentf-basename-flag
-                    (if firstly-search-recentf-from-start-flag
+                    (if firstly-search-recentf-from-flash-start-flag
                         (firstly-search-recentf--bounds-with-slash)
                       ;; else
                       (firstly-search-recentf--bounds-normal))
@@ -197,10 +202,11 @@ When it have name `{major-mode}-map` it is visible and applied in
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
         (setq-local firstly-search-regex-prefix firstly-search-recentf-regex-prefix)
-        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-start-flag
+        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-flash-start-flag
                                                    firstly-search-recentf-regex-prefix))
         (setq-local firstly-search--isearch-search-fun-function
                     #'firstly-search-recentf--bounded-isearch)
+        (setq-local firstly-search-begin-from-top firstly-search-recentf-begin-from-top)
         (firstly-search--change-map firstly-search-recentf-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))

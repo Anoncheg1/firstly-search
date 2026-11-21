@@ -94,7 +94,7 @@
 ;;;; Files:
 
 ;; - first-search.el - common functionality for other files.
-;; - first-search-{dired,package,buffermenu,bookmarks,recentf}.el -
+;; - first-search-{dired,package,buffermenu,bookmarks,recentf}.el --
 ;;   define user available minor modes for specific major modes.
 
 ;;;; Other packages from author:
@@ -117,6 +117,8 @@
 ;; - TON (Telegram) address: UQC8rjJFCHQkfdp7KmCkTZCb5dGzLFYe2TzsiZpfsnyTFt9D
 
 ;;;; TODO:
+;; - add option to search: normal, from start at activcation, from
+;;  start for every character
 
 ;;; Code:
 
@@ -138,6 +140,14 @@ Those keys unset in `firstly-search--change-map' where major mode map
   :type '(string)
   :group 'firstly-search)
 
+(defcustom firstly-search-begin-from-top nil
+  "Non-nil means every search will be only from top.
+Usefull when major mode have small area for search with fever choices,
+ so good to set per mode as a local variable in buffer."
+  :type 'boolean
+  :local t
+  :group 'cui)
+
 (defcustom firstly-search-regex-prefix "\\_<"
   "Non-nil means add this as regex prefix to search string.
 For empty string `word-search-regexp' is set to
@@ -147,7 +157,6 @@ by space.  You may use \\(\\_<\\|-\\) for search in words
 separated by -."
   :type 'string
   :group 'firstly-search)
-
 
 (defcustom firstly-search-isearch-prefix "filename "
   "Non-nil means add string to isearch prompt."
@@ -163,7 +172,6 @@ while the user is actively typing.  To disable, set to nil."
                  number)
   :group 'firstly-search)
 
-
 (defcustom firstly-search-fail-function #'beginning-of-line
   "Function to run when search fails and stop if non-nil.
 If nil, isearch continues normally."
@@ -175,7 +183,6 @@ If nil, isearch continues normally."
   :type '(choice (const :tag "Disabled" nil)
                  (key :tag "Key sequence"))
   :group 'firstly-search)
-
 
 (defvar-local firstly-search--isearch-navigation-flag nil
   "Non-nil means firstly-search navigation activated.
@@ -358,6 +365,8 @@ Used for speed up navingation."
 
 (defun firstly-search--do-isearch (str)
   "Also used for testing with STR."
+  (when firstly-search-begin-from-top
+        (beginning-of-buffer))
   ;; 0. snapshot the isearch vars we are about to clobber
   (firstly-search--isearch-save-vars)
 

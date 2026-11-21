@@ -47,6 +47,12 @@
   :type 'sexp
   :group 'firstly-search-buffermenu)
 
+(defcustom firstly-search-buffermenu-begin-from-top t
+  "Non-nil means every search will be only from top."
+  :type 'boolean
+  :group 'firstly-search-buffermenu)
+
+
 (defcustom firstly-search-buffermenu-isearch-prefix "Buffer "
   "Regex for word search in package names."
   :type 'string
@@ -100,6 +106,7 @@ Typing any printable character activate incremental search."
         (setq-local firstly-search-isearch-prefix firstly-search-buffermenu-isearch-prefix)
         ;; search from the begining of the word or after "-" character.
         (setq-local firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
+        (setq-local firstly-search-begin-from-top firstly-search-buffermenu-begin-from-top)
         (firstly-search--change-map firstly-search-buffermenu-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)

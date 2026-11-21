@@ -44,8 +44,12 @@
 (defcustom firstly-search-ibuffer-string-prefix "\\(\\_<\\|*\\)" ; "\\b"
   "Add this as regex prefix to search string."
   :type 'string
-  :group 'firstly-search-package)
+  :group 'firstly-search-ibuffer)
 
+(defcustom firstly-search-ibuffer-begin-from-top t
+  "Non-nil means every search will be only from top."
+  :type 'boolean
+  :group 'firstly-search-ibuffer)
 
 (defvar-keymap firstly-search-ibuffer-map
   :doc "Rebinding of keys that interfere with firstly search.
@@ -115,6 +119,7 @@ This function is intended to be used as `isearch-filter-predicate'."
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-ibuffer-isearch-prefix)
         (setq-local firstly-search-regex-prefix firstly-search-ibuffer-string-prefix)
+        (setq-local firstly-search-begin-from-top firstly-search-ibuffer-begin-from-top)
         (firstly-search--change-map firstly-search-ibuffer-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)
