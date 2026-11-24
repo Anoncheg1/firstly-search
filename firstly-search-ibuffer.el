@@ -90,6 +90,7 @@ When it have name `{major-mode}-map` it is visible and applied in
   "C-M-x"	#'ibuffer-do-kill-on-deletion-marks
   ;; "M-|"	#'ibuffer-do-shell-command-pipe
   ;; "M-~"	#'ibuffer-do-toggle-modified
+  ;; "C-m"	#'ibuffer-visit-buffer
   )
 
 (defun firstly-search-ibuffer--filter-header (beg end)

@@ -71,7 +71,9 @@ It have bindings for commands that unset `firstly-search--change-map'.
 When it have name `{major-mode}-map` it is visible and applied in
  parallel, that is why we use other name."
   :parent Buffer-menu-mode-map  ; may be used: (make-composed-keymap Buffer-menu-mode-map firstly-search-tabulated-list-map )
-  "RET"	#'Buffer-menu-this-window
+  ;; "RET"	#'Buffer-menu-select
+  "<return>"	#'Buffer-menu-select
+  ;; "C-m"	#'Buffer-menu-select
   "M-0"	#'digit-argument
   "M-1"	#'Buffer-menu-1-window
   "M-2"	#'Buffer-menu-2-window
@@ -93,7 +95,8 @@ When it have name `{major-mode}-map` it is visible and applied in
   "V"		#'Buffer-menu-select
   "X"		#'Buffer-menu-execute
   "M-{"	#'tabulated-list-narrow-current-column
-  "M-}"	#'tabulated-list-widen-current-column)
+  "M-}"	#'tabulated-list-widen-current-column
+  )
 
 ;;;###autoload
 (define-minor-mode firstly-search-buffermenu-mode
@@ -107,10 +110,10 @@ Typing any printable character activate incremental search."
         ;; search from the begining of the word or after "-" character.
         (setq-local firstly-search-regex-prefix firstly-search-buffermenu-regex-prefix)
         (setq-local firstly-search-begin-from-top firstly-search-buffermenu-begin-from-top)
-        (firstly-search--change-map firstly-search-buffermenu-map)
         ;; main isearch function to limit search to column, like dired-isearch-search-filenames
         (setq-local firstly-search-tabulated-list-columns firstly-search-buffermenu-columns)
         (setq-local firstly-search--isearch-search-fun-function #'firstly-search-tabulated-list--isearch-search-fun-function)
+        (firstly-search--change-map firstly-search-buffermenu-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t)) ; fast actication
     (progn

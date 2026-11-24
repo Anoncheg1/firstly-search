@@ -202,11 +202,11 @@ When it have name `{major-mode}-map` it is visible and applied in
       (progn
         (setq-local firstly-search-isearch-prefix firstly-search-recentf-isearch-prefix)
         (setq-local firstly-search-regex-prefix firstly-search-recentf-regex-prefix)
-        (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-slash-start-flag
-                                                   firstly-search-recentf-regex-prefix))
+        ;; (setq-local firstly-search-regex-prefix (when firstly-search-recentf-from-slash-start-flag
+        ;;                                            firstly-search-recentf-regex-prefix))
+        (setq-local firstly-search-begin-from-top firstly-search-recentf-begin-from-top)
         (setq-local firstly-search--isearch-search-fun-function
                     #'firstly-search-recentf--bounded-isearch)
-        (setq-local firstly-search-begin-from-top firstly-search-recentf-begin-from-top)
         (firstly-search--change-map firstly-search-recentf-map)
         (add-hook 'isearch-update-post-hook #'firstly-search--my-goto-match-beginning-hook nil t) ; for speed
         (add-hook 'pre-command-hook #'firstly-search--pre-command-hook nil t))
